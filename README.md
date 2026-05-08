@@ -3,30 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jh Seller - Earn Money</title>
+    <title>Jh Seller Dashboard</title>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; background: #f4f4f4; text-align: center; margin: 0; padding: 20px; }
-        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; margin: auto; }
-        h2 { color: #2ecc71; }
-        button { background: #2ecc71; color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 18px; cursor: pointer; width: 100%; margin-top: 10px; }
-        #balanceDisplay { font-size: 24px; font-weight: bold; margin: 20px 0; }
+        body { font-family: sans-serif; background: #1a1a1a; color: white; text-align: center; padding: 50px 20px; }
+        .box { background: #222; padding: 30px; border-radius: 20px; border: 2px solid #00ff88; max-width: 300px; margin: auto; }
+        #balance { font-size: 40px; color: #00ff88; margin: 10px 0; font-weight: bold; }
+        button { background: #00ff88; color: black; border: none; padding: 15px 30px; border-radius: 10px; font-weight: bold; cursor: pointer; width: 100%; }
     </style>
 </head>
 <body>
 
-<div class="card">
-    <h2>Jh Seller Dashboard</h2>
-    <div id="balanceDisplay">Balance: RS <span id="balance">0</span></div>
-    <p>Watch Video to Earn RS 50</p>
-    <button onclick="watchVideo()">Watch & Earn</button>
+<div class="box">
+    <h2>Jh Seller</h2>
+    <p>Current Balance</p>
+    <div id="balance">RS 0</div>
+    <button onclick="addMoney()">Claim RS 50</button>
 </div>
 
 <script>
-    // Aapka Firebase Config
     const firebaseConfig = {
-        apiKey: "AIzaSyC7z-...", // Maine aapke screenshot se utha liya hai
+        apiKey: "AIzaSyC7z-L...", 
         authDomain: "jh-seller-3b8e7.firebaseapp.com",
         databaseURL: "https://jh-seller-3b8e7-default-rtdb.firebaseio.com",
         projectId: "jh-seller-3b8e7",
@@ -38,29 +36,17 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // Balance update function
-    function watchVideo() {
-        alert("Video starting... (Simulated)");
-        setTimeout(() => {
-            let currentBal = parseInt(document.getElementById('balance').innerText);
-            let newBal = currentBal + 50;
-            
-            // Database mein save karein
-            database.ref('users/test_user').update({
-                balance: newBal
-            });
-            
-            document.getElementById('balance').innerText = newBal;
-            alert("RS 50 Added to your account!");
-        }, 3000);
+    function addMoney() {
+        let current = parseInt(document.getElementById('balance').innerText.replace('RS ', ''));
+        let update = current + 50;
+        database.ref('users/test_user').set({ balance: update });
+        alert("Success! RS 50 added.");
     }
 
-    // Database se balance load karein
-    database.ref('users/test_user').on('value', (snapshot) => {
-        const data = snapshot.val();
-        if (data) document.getElementById('balance').innerText = data.balance;
+    database.ref('users/test_user').on('value', (s) => {
+        const val = s.val();
+        if(val) document.getElementById('balance').innerText = "RS " + val.balance;
     });
 </script>
-
 </body>
 </html>
