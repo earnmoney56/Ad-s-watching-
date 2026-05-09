@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jh Seller Dashboard</title>
+    <title>Jh Seller Pro</title>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background-color: #fdf8f3; margin: 0; padding: 20px; text-align: center; }
         .main-card { background: white; border-radius: 30px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 350px; margin: auto; border: 1px solid #eee; }
-        .balance-label { color: #bca08d; font-weight: bold; letter-spacing: 1px; font-size: 14px; margin-top: 10px; }
         .balance-amount { font-size: 50px; color: #6e5444; margin: 15px 0; font-weight: bold; }
         .btn-withdraw { background: #f39200; color: white; border: none; padding: 15px; width: 100%; border-radius: 15px; font-size: 18px; font-weight: bold; cursor: pointer; }
         .menu-grid { display: flex; justify-content: space-around; max-width: 350px; margin: 30px auto; }
@@ -19,64 +18,63 @@
 <body>
 
 <div class="main-card">
-    <div class="balance-label">💳 AVAILABLE BALANCE</div>
+    <div style="color: #bca08d; font-weight: bold;">💳 AVAILABLE BALANCE</div>
     <div class="balance-amount">RS <span id="userBalance">0.00</span></div>
     <button class="btn-withdraw" onclick="withdraw()">Withdraw Funds →</button>
 </div>
 
 <div class="menu-grid">
     <div class="menu-item" onclick="doTask()">📊<br>Tasks</div>
-    <div class="menu-item" onclick="alert('Wallet Empty')">👛<br>Wallet</div>
-    <div class="menu-item" onclick="alert('No Rewards')">🎁<br>Rewards</div>
+    <div class="menu-item" onclick="showWallet()">👛<br>Wallet</div>
+    <div class="menu-item" onclick="alert('Rewards soon!')">🎁<br>Rewards</div>
     <div class="menu-item" onclick="alert('Salary: RS 0')">📈<br>Salary</div>
 </div>
 
 <script>
-    // Aapka Correct Firebase Config
+    // Aapka Naya Correct Config
     const firebaseConfig = {
-        apiKey: "AIzaSyC7z-L...", // Screenshot
-        authDomain: "jh-seller-3b8e7.firebaseapp.com",
-        databaseURL: "https://jh-seller-3b8e7-default-rtdb.firebaseio.com",
-        projectId: "jh-seller-3b8e7",
-        storageBucket: "jh-seller-3b8e7.appspot.com",
-        messagingSenderId: "367123565013",
-        appId: "1:367123565013:web:75304918e7c10b71946001"
+        apiKey: "AIzaSyCPBngHWoQ6CWylLLC6cDFZA8hsR8-K7mY",
+        authDomain: "jkseller.firebaseapp.com",
+        databaseURL: "https://jkseller-default-rtdb.firebaseio.com",
+        projectId: "jkseller",
+        storageBucket: "jkseller.appspot.com",
+        messagingSenderId: "410778583623",
+        appId: "1:410778583623:web:8431529fc0b659414d2762"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // 1. Database se balance uthana
+    // Refresh par 0 na ho is liye local storage
+    let localBal = localStorage.getItem('jh_balance') || "0.00";
+    document.getElementById('userBalance').innerText = localBal;
+
+    // Database se balance sync karein
     db.ref('users/test_user/balance').on('value', (snapshot) => {
-        const val = snapshot.val();
-        if (val !== null) {
-            document.getElementById('userBalance').innerText = val.toFixed(2);
-        } else {
-            // Agar pehli baar hai toh 0 set kar dein
-            db.ref('users/test_user').set({ balance: 0.00 });
+        if (snapshot.exists()) {
+            let bal = snapshot.val().toFixed(2);
+            document.getElementById('userBalance').innerText = bal;
+            localStorage.setItem('jh_balance', bal);
         }
     });
 
-    // 2. Button dabane par balance barhana
     function doTask() {
-        let currentBalance = parseFloat(document.getElementById('userBalance').innerText);
-        let newBalance = currentBalance + 50.00;
+        let current = parseFloat(document.getElementById('userBalance').innerText);
+        let updated = current + 50.00;
         
-        // Database update karein
-        db.ref('users/test_user').update({
-            balance: newBalance
-        }).then(() => {
-            alert("Task Completed! RS 50.00 added to your account.");
-        }).catch((error) => {
-            alert("Error: Database connect nahi hui. Check Rules!");
-        });
+        db.ref('users/test_user').update({ balance: updated }).then(() => {
+            alert("RS 50 Added!");
+        }).catch(err => alert("Rules True karein!"));
+    }
+
+    function showWallet() {
+        let bal = document.getElementById('userBalance').innerText;
+        alert("Wallet Balance: RS " + bal);
     }
 
     function withdraw() {
-        alert("Minimum withdraw RS 500 hai.");
+        alert("Minimum Withdraw RS 500 hai.");
     }
 </script>
-
 </body>
 </html>
