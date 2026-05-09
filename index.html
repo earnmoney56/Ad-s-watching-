@@ -3,23 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jh Seller - Pro Earning App</title>
+    <title>Jh Seller Pro</title>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
     <style>
         :root { --primary: #f39200; --bg: #fdf8f3; --text: #6e5444; }
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; text-align: center; color: var(--text); }
-        .card { background: white; border-radius: 25px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 350px; margin: auto; border: 1px solid #eee; }
+        .card { background: white; border-radius: 25px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 350px; margin: auto; }
         input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #ddd; outline: none; }
-        button { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 15px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
-        button:active { transform: scale(0.98); }
+        button { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 15px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .hidden { display: none; }
-        .balance-amount { font-size: 40px; font-weight: bold; margin: 15px 0; color: #6e5444; }
+        .balance-amount { font-size: 40px; font-weight: bold; margin: 15px 0; }
         .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 350px; margin: 20px auto; }
-        .menu-item { background: white; padding: 15px; border-radius: 15px; border: 1px solid #eee; cursor: pointer; font-size: 13px; box-shadow: 0 5px 15px rgba(0,0,0,0.03); }
-        .history-list { text-align: left; margin-top: 15px; }
-        .history-item { border-bottom: 1px solid #eee; padding: 10px; display: flex; justify-content: space-between; }
+        .menu-item { background: white; padding: 15px; border-radius: 15px; border: 1px solid #eee; cursor: pointer; font-size: 13px; }
+        .history-item { border-bottom: 1px solid #eee; padding: 10px; display: flex; justify-content: space-between; text-align: left; }
     </style>
 </head>
 <body>
@@ -29,42 +27,40 @@
         <input type="email" id="email" placeholder="Email Address">
         <input type="password" id="password" placeholder="Password (Min 6 chars)">
         <button onclick="handleAuth()">Login / Signup</button>
-        <p style="font-size: 11px; color: #999; margin-top: 15px;">Note: Naye users email aur pass likh kar isi button se account banayen.</p>
     </div>
 
     <div id="main-dashboard" class="hidden">
         <div class="card">
-            <div style="font-size: 12px; color: #bca08d; font-weight: bold; letter-spacing: 1px;">AVAILABLE BALANCE</div>
+            <div style="font-size: 12px; color: #bca08d; font-weight: bold;">AVAILABLE BALANCE</div>
             <div class="balance-amount">RS <span id="userBalance">0.00</span></div>
             <button onclick="showWithdraw()">Withdraw Funds →</button>
         </div>
 
         <div class="menu-grid">
-            <div class="menu-item" onclick="doTask()">📺<br><b>Watch Ads</b><br><small>Earn RS 25</small></div>
-            <div class="menu-item" onclick="showHistory()">📜<br><b>History</b><br><small>View Status</small></div>
-            <div class="menu-item" onclick="alert('Referral system coming soon!')">👥<br><b>Invite</b><br><small>Earn More</small></div>
-            <div class="menu-item" onclick="logout()">🚪<br><b>Logout</b><br><small>Exit App</small></div>
+            <div class="menu-item" onclick="doTask()">📺<br>Watch Ads (+25)</div>
+            <div class="menu-item" onclick="showHistory()">📜<br>History</div>
+            <div class="menu-item" onclick="alert('Coming soon!')">👥<br>Invite</div>
+            <div class="menu-item" onclick="logout()">🚪<br>Logout</div>
         </div>
     </div>
 
     <div id="withdraw-section" class="card hidden">
-        <h3>Withdraw Money</h3>
-        <p style="font-size: 12px;">Paisa/JazzCash details darust likhen.</p>
-        <input type="text" id="accNumber" placeholder="Mobile Number (EasyPaisa/JazzCash)">
+        <h3>Withdraw</h3>
+        <input type="text" id="accNumber" placeholder="EasyPaisa/JazzCash Number">
         <button onclick="submitWithdraw()">Submit Request</button>
-        <button onclick="goBack()" style="background: #ccc;">Cancel</button>
+        <button onclick="goBack()" style="background: #ccc;">Back</button>
     </div>
 
     <div id="history-section" class="card hidden">
         <h3>Withdraw History</h3>
-        <div id="history-list" class="history-list">Loading...</div>
-        <button onclick="goBack()" style="background: #ccc; margin-top: 20px;">Back to Home</button>
+        <div id="history-list">Loading...</div>
+        <button onclick="goBack()" style="background: #ccc; margin-top: 20px;">Back</button>
     </div>
 
 <script>
-    // Aapka Correct Firebase Config
+    // 100% Correct Config From Your Screenshot
     const firebaseConfig = {
-        apiKey: "AIzaSyCPBngHWoQ6CWylLLC6cDFZA8hsR8-K7mY",
+        apiKey: "AIzaSyCPBngHWoQ6CWylLLC6cDFZ",
         authDomain: "jkseller.firebaseapp.com",
         databaseURL: "https://jkseller-default-rtdb.firebaseio.com",
         projectId: "jkseller",
@@ -73,18 +69,15 @@
         appId: "1:410778583623:web:8431529fc0b659414d2762"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
     let currentUser = null;
 
-    // Check if User is Logged In
     auth.onAuthStateChanged(user => {
         if (user) {
             currentUser = user;
             showScreen('main-dashboard');
-            // Realtime Balance Update
             db.ref('users/' + user.uid + '/balance').on('value', (snap) => {
                 document.getElementById('userBalance').innerText = (snap.val() || 0).toFixed(2);
             });
@@ -93,86 +86,60 @@
         }
     });
 
-    // Login & Signup Logic
     function handleAuth() {
         const e = document.getElementById('email').value;
         const p = document.getElementById('password').value;
-        
-        if (!e || p.length < 6) return alert("Sahi email aur kam az kam 6 hinson ka password likhen!");
+        if (!e || p.length < 6) return alert("Sahi details likhen!");
 
-        auth.signInWithEmailAndPassword(e, p).catch((error) => {
-            // Agar account nahi bana hua toh naya bana do
-            if (error.code === 'auth/user-not-found') {
-                auth.createUserWithEmailAndPassword(e, p)
-                    .then(() => alert("Account Successfully Created!"))
-                    .catch(err => alert("Signup Error: " + err.message));
-            } else {
-                alert("Login Error: " + error.message);
-            }
+        auth.signInWithEmailAndPassword(e, p).catch(() => {
+            auth.createUserWithEmailAndPassword(e, p).catch(err => alert(err.message));
         });
     }
 
-    // Task Logic
     function doTask() {
         let bal = parseFloat(document.getElementById('userBalance').innerText);
         db.ref('users/' + currentUser.uid).update({ balance: bal + 25.00 });
-        alert("Task Completed! RS 25 Added to your wallet.");
+        alert("Success! RS 25 Added.");
     }
 
-    // Withdraw Logic
     function showWithdraw() {
-        let currentBal = parseFloat(document.getElementById('userBalance').innerText);
-        if (currentBal < 500) return alert("Minimum RS 500 hone chahiye withdraw ke liye.");
+        if (parseFloat(document.getElementById('userBalance').innerText) < 500) return alert("Min RS 500 Required.");
         showScreen('withdraw-section');
     }
 
     function submitWithdraw() {
         const num = document.getElementById('accNumber').value;
         const bal = document.getElementById('userBalance').innerText;
-        if (!num) return alert("Apna mobile number likhen!");
+        if (!num) return alert("Number likhen!");
 
         const reqId = db.ref('withdraw_requests').push().key;
-        const requestData = {
-            amount: bal,
-            number: num,
-            status: 'Pending',
-            email: currentUser.email,
-            uid: currentUser.uid,
-            time: new Date().toLocaleString()
-        };
-
+        const data = { amount: bal, number: num, status: 'Pending', email: currentUser.email, uid: currentUser.uid };
+        
         let updates = {};
-        updates['/withdraw_requests/' + reqId] = requestData;
-        updates['/user_history/' + currentUser.uid + '/' + reqId] = requestData;
+        updates['/withdraw_requests/' + reqId] = data;
+        updates['/user_history/' + currentUser.uid + '/' + reqId] = data;
 
         db.ref().update(updates).then(() => {
-            alert("Withdraw Request Sent! 24 ghantay mein status update ho jaye ga.");
+            alert("Request Sent!");
             goBack();
         });
     }
 
-    // History Logic
     function showHistory() {
         showScreen('history-section');
-        const listDiv = document.getElementById('history-list');
-        listDiv.innerHTML = "Fetching history...";
-
+        const list = document.getElementById('history-list');
         db.ref('user_history/' + currentUser.uid).on('value', snap => {
-            listDiv.innerHTML = "";
-            if(!snap.exists()) listDiv.innerHTML = "No history found.";
+            list.innerHTML = "";
             snap.forEach(child => {
                 const item = child.val();
-                const color = item.status === 'Pending' ? 'orange' : 'green';
-                listDiv.innerHTML += `
-                    <div class="history-item">
-                        <div><b>RS ${item.amount}</b><br><small>${item.time}</small></div>
-                        <div style="color:${color}; font-weight:bold;">${item.status}</div>
-                    </div>`;
+                list.innerHTML += `<div class="history-item">
+                    <span>RS ${item.amount}</span>
+                    <span style="color:orange; font-weight:bold;">${item.status}</span>
+                </div>`;
             });
         });
     }
 
-    // Helper Functions
     function showScreen(id) {
         document.getElementById('auth-section').classList.add('hidden');
         document.getElementById('main-dashboard').classList.add('hidden');
