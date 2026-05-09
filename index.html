@@ -3,63 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jh Seller - Official Earning App</title>
+    <title>Jh Seller - Pro App</title>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
     <style>
         :root { --primary: #f39200; --bg: #fdf8f3; --text: #6e5444; }
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; color: var(--text); }
-        .container { max-width: 400px; margin: auto; }
-        .card { background: white; border-radius: 25px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card { background: white; border-radius: 25px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 20px; text-align: center; }
         input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #ddd; }
-        button { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 15px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:hover { opacity: 0.9; }
-        .balance-amount { font-size: 45px; font-weight: bold; margin: 10px 0; }
+        button { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 15px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .hidden { display: none; }
-        .menu-grid { display: flex; justify-content: space-between; gap: 10px; }
-        .menu-item { background: white; padding: 15px 5px; border-radius: 15px; font-size: 12px; flex: 1; cursor: pointer; border: 1px solid #eee; text-align: center; }
+        .history-item { border-bottom: 1px solid #eee; padding: 10px; text-align: left; font-size: 14px; display: flex; justify-content: space-between; }
+        .status-pending { color: orange; font-weight: bold; }
+        .status-success { color: green; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="auth-section" class="card">
-        <h2 id="auth-title">Welcome to Jh Seller</h2>
-        <input type="email" id="email" placeholder="Email Address">
-        <input type="password" id="password" placeholder="Password">
-        <button onclick="handleAuth()" id="auth-btn">Login / Signup</button>
-        <p style="font-size: 12px; color: #888; margin-top: 15px;">*Agar account nahi hai toh email/pass likh kar button dabayen, account ban jaye ga.</p>
-    </div>
+<div id="auth-section" class="card">
+    <h2>Jh Seller Login</h2>
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="handleAuth()">Login / Signup</button>
+</div>
 
-    <div id="main-dashboard" class="hidden">
-        <div class="card">
-            <div style="font-size: 12px; opacity: 0.7;">TOTAL EARNINGS</div>
-            <div class="balance-amount">RS <span id="userBalance">0.00</span></div>
-            <button onclick="showWithdraw()">Withdraw Now</button>
-        </div>
-
-        <div class="menu-grid">
-            <div class="menu-item" onclick="doTask()">📺<br>Watch Ads</div>
-            <div class="menu-item" onclick="alert('Coming Soon')">👥<br>Referral</div>
-            <div class="menu-item" onclick="logout()">🚪<br>Logout</div>
-        </div>
-    </div>
-
-    <div id="withdraw-section" class="card hidden">
-        <h3>Withdraw Funds</h3>
-        <select id="method" style="width: 100%; padding: 10px; border-radius: 10px; margin-bottom: 10px;">
-            <option value="EasyPaisa">EasyPaisa</option>
-            <option value="JazzCash">JazzCash</option>
-        </select>
-        <input type="text" id="accNumber" placeholder="Account Number">
-        <button onclick="submitWithdraw()">Submit Request</button>
-        <button onclick="hideWithdraw()" style="background: #ccc; margin-top: 10px;">Back</button>
+<div id="main-dashboard" class="hidden">
+    <div class="card">
+        <div style="font-size: 12px; opacity: 0.7;">AVAILABLE BALANCE</div>
+        <div style="font-size: 40px; font-weight: bold;">RS <span id="userBalance">0.00</span></div>
+        <button onclick="showWithdraw()">Withdraw Now</button>
+        <button onclick="showHistory()" style="background: #6e5444;">Withdraw History</button>
+        <button onclick="doTask()" style="background: #4caf50;">Watch Ad (+25)</button>
+        <button onclick="logout()" style="background: #f44336; margin-top: 20px;">Logout</button>
     </div>
 </div>
 
+<div id="withdraw-section" class="card hidden">
+    <h3>Withdraw Request</h3>
+    <input type="text" id="accNumber" placeholder="EasyPaisa/JazzCash Number">
+    <button onclick="submitWithdraw()">Submit</button>
+    <button onclick="goBack()" style="background: #ccc;">Back</button>
+</div>
+
+<div id="history-section" class="card hidden">
+    <h3>Your History</h3>
+    <div id="history-list">Loading...</div>
+    <button onclick="goBack()" style="background: #ccc;">Back</button>
+</div>
+
 <script>
-    // Aapka Config
     const firebaseConfig = {
         apiKey: "AIzaSyCPBngHWoQ6CWylLLC6cDFZA8hsR8-K7mY",
         authDomain: "jkseller.firebaseapp.com",
@@ -73,16 +66,16 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
-
     let currentUser = null;
 
-    // Auth State Check
     auth.onAuthStateChanged(user => {
         if (user) {
             currentUser = user;
             document.getElementById('auth-section').classList.add('hidden');
             document.getElementById('main-dashboard').classList.remove('hidden');
-            loadData(user.uid);
+            db.ref('users/' + user.uid + '/balance').on('value', snap => {
+                document.getElementById('userBalance').innerText = (snap.val() || 0).toFixed(2);
+            });
         } else {
             document.getElementById('auth-section').classList.remove('hidden');
             document.getElementById('main-dashboard').classList.add('hidden');
@@ -92,60 +85,72 @@
     function handleAuth() {
         const e = document.getElementById('email').value;
         const p = document.getElementById('password').value;
-        if(!e || !p) return alert("Email aur Password likhen");
-
-        auth.signInWithEmailAndPassword(e, p).catch(err => {
-            if(err.code === 'auth/user-not-found') {
-                auth.createUserWithEmailAndPassword(e, p);
-            } else { alert(err.message); }
-        });
-    }
-
-    function loadData(uid) {
-        db.ref('users/' + uid + '/balance').on('value', snap => {
-            let val = snap.val() || 0;
-            document.getElementById('userBalance').innerText = val.toFixed(2);
-        });
+        auth.signInWithEmailAndPassword(e, p).catch(() => auth.createUserWithEmailAndPassword(e, p));
     }
 
     function doTask() {
-        let current = parseFloat(document.getElementById('userBalance').innerText);
-        db.ref('users/' + currentUser.uid).update({ balance: current + 25.00 });
-        alert("Task Complete! RS 25 Added.");
+        let bal = parseFloat(document.getElementById('userBalance').innerText);
+        db.ref('users/' + currentUser.uid).update({ balance: bal + 25 });
+        alert("Success! RS 25 Added.");
     }
 
     function showWithdraw() {
-        let bal = parseFloat(document.getElementById('userBalance').innerText);
-        if(bal < 500) return alert("Minimum withdraw RS 500 hai.");
-        document.getElementById('main-dashboard').classList.add('hidden');
-        document.getElementById('withdraw-section').classList.remove('hidden');
+        if(parseFloat(document.getElementById('userBalance').innerText) < 500) return alert("Min RS 500 required.");
+        switchScreen('withdraw-section');
     }
 
     function submitWithdraw() {
-        const method = document.getElementById('method').value;
         const num = document.getElementById('accNumber').value;
         const bal = document.getElementById('userBalance').innerText;
+        if(!num) return alert("Enter number");
 
-        if(!num) return alert("Number likhen");
-
-        db.ref('withdraw_requests').push({
-            uid: currentUser.uid,
-            email: currentUser.email,
+        const reqId = db.ref('withdraw_requests').push().key;
+        const requestData = {
             amount: bal,
-            method: method,
             number: num,
-            status: 'Pending'
-        }).then(() => {
-            alert("Request Sent! 24 ghantay mein paise mil jayenge.");
-            hideWithdraw();
+            status: 'Pending', // Default status hamesha Pending hoga
+            email: currentUser.email,
+            uid: currentUser.uid,
+            timestamp: Date.now()
+        };
+
+        // User ki history mein aur aapki admin list mein data save ho raha hai
+        let updates = {};
+        updates['/withdraw_requests/' + reqId] = requestData;
+        updates['/user_history/' + currentUser.uid + '/' + reqId] = requestData;
+
+        db.ref().update(updates).then(() => {
+            alert("Request Sent!");
+            goBack();
         });
     }
 
-    function hideWithdraw() {
-        document.getElementById('withdraw-section').classList.add('hidden');
-        document.getElementById('main-dashboard').classList.remove('hidden');
+    function showHistory() {
+        switchScreen('history-section');
+        const list = document.getElementById('history-list');
+        list.innerHTML = "";
+
+        db.ref('user_history/' + currentUser.uid).on('value', snap => {
+            list.innerHTML = "";
+            snap.forEach(child => {
+                const data = child.val();
+                const statusClass = data.status === 'Pending' ? 'status-pending' : 'status-success';
+                list.innerHTML += `<div class="history-item">
+                    <span>RS ${data.amount}</span>
+                    <span class="${statusClass}">${data.status}</span>
+                </div>`;
+            });
+        });
     }
 
+    function switchScreen(id) {
+        document.getElementById('main-dashboard').classList.add('hidden');
+        document.getElementById('withdraw-section').classList.add('hidden');
+        document.getElementById('history-section').classList.add('hidden');
+        document.getElementById(id).classList.remove('hidden');
+    }
+
+    function goBack() { switchScreen('main-dashboard'); }
     function logout() { auth.signOut(); }
 </script>
 </body>
