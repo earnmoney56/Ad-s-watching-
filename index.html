@@ -3,56 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jh Seller - Pro App</title>
+    <title>Jh Seller Pro Dashboard</title>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
     <style>
         :root { --primary: #f39200; --bg: #fdf8f3; --text: #6e5444; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; color: var(--text); }
-        .card { background: white; border-radius: 25px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-bottom: 20px; text-align: center; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; text-align: center; color: var(--text); }
+        .card { background: white; border-radius: 25px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 350px; margin: auto; border: 1px solid #eee; }
         input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #ddd; }
         button { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 15px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .hidden { display: none; }
-        .history-item { border-bottom: 1px solid #eee; padding: 10px; text-align: left; font-size: 14px; display: flex; justify-content: space-between; }
-        .status-pending { color: orange; font-weight: bold; }
-        .status-success { color: green; font-weight: bold; }
+        .balance-amount { font-size: 40px; font-weight: bold; margin: 15px 0; color: #6e5444; }
+        .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 350px; margin: 20px auto; }
+        .menu-item { background: white; padding: 15px; border-radius: 15px; border: 1px solid #eee; cursor: pointer; font-size: 13px; }
     </style>
 </head>
 <body>
 
-<div id="auth-section" class="card">
-    <h2>Jh Seller Login</h2>
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="handleAuth()">Login / Signup</button>
-</div>
-
-<div id="main-dashboard" class="hidden">
-    <div class="card">
-        <div style="font-size: 12px; opacity: 0.7;">AVAILABLE BALANCE</div>
-        <div style="font-size: 40px; font-weight: bold;">RS <span id="userBalance">0.00</span></div>
-        <button onclick="showWithdraw()">Withdraw Now</button>
-        <button onclick="showHistory()" style="background: #6e5444;">Withdraw History</button>
-        <button onclick="doTask()" style="background: #4caf50;">Watch Ad (+25)</button>
-        <button onclick="logout()" style="background: #f44336; margin-top: 20px;">Logout</button>
+    <div id="auth-section" class="card">
+        <h2>Jh Seller Login</h2>
+        <input type="email" id="email" placeholder="Email Address">
+        <input type="password" id="password" placeholder="Password (Min 6 chars)">
+        <button onclick="handleAuth()">Login / Signup</button>
     </div>
-</div>
 
-<div id="withdraw-section" class="card hidden">
-    <h3>Withdraw Request</h3>
-    <input type="text" id="accNumber" placeholder="EasyPaisa/JazzCash Number">
-    <button onclick="submitWithdraw()">Submit</button>
-    <button onclick="goBack()" style="background: #ccc;">Back</button>
-</div>
+    <div id="main-dashboard" class="hidden">
+        <div class="card">
+            <div style="font-size: 12px; color: #bca08d; font-weight: bold;">AVAILABLE BALANCE</div>
+            <div class="balance-amount">RS <span id="userBalance">0.00</span></div>
+            <button onclick="showWithdraw()">Withdraw Funds →</button>
+        </div>
 
-<div id="history-section" class="card hidden">
-    <h3>Your History</h3>
-    <div id="history-list">Loading...</div>
-    <button onclick="goBack()" style="background: #ccc;">Back</button>
-</div>
+        <div class="menu-grid">
+            <div class="menu-item" onclick="doTask()">📺<br>Watch Ads (+25)</div>
+            <div class="menu-item" onclick="showHistory()">📜<br>History</div>
+            <div class="menu-item" onclick="alert('Invite link soon!')">👥<br>Invite</div>
+            <div class="menu-item" onclick="logout()">🚪<br>Logout</div>
+        </div>
+    </div>
+
+    <div id="withdraw-section" class="card hidden">
+        <h3>Withdraw</h3>
+        <input type="text" id="accNumber" placeholder="EasyPaisa/JazzCash Number">
+        <button onclick="submitWithdraw()">Submit Request</button>
+        <button onclick="goBack()" style="background: #ccc;">Back</button>
+    </div>
+
+    <div id="history-section" class="card hidden">
+        <h3>History</h3>
+        <div id="history-list">Loading...</div>
+        <button onclick="goBack()" style="background: #ccc; margin-top: 20px;">Back</button>
+    </div>
 
 <script>
+    // Naya Correct Config
     const firebaseConfig = {
         apiKey: "AIzaSyCPBngHWoQ6CWylLLC6cDFZA8hsR8-K7mY",
         authDomain: "jkseller.firebaseapp.com",
@@ -68,56 +73,56 @@
     const db = firebase.database();
     let currentUser = null;
 
+    // Login State Checker
     auth.onAuthStateChanged(user => {
         if (user) {
             currentUser = user;
             document.getElementById('auth-section').classList.add('hidden');
             document.getElementById('main-dashboard').classList.remove('hidden');
-            db.ref('users/' + user.uid + '/balance').on('value', snap => {
+            // User ka balance load karein
+            db.ref('users/' + user.uid + '/balance').on('value', (snap) => {
                 document.getElementById('userBalance').innerText = (snap.val() || 0).toFixed(2);
             });
         } else {
             document.getElementById('auth-section').classList.remove('hidden');
             document.getElementById('main-dashboard').classList.add('hidden');
+            document.getElementById('withdraw-section').classList.add('hidden');
+            document.getElementById('history-section').classList.add('hidden');
         }
     });
 
     function handleAuth() {
         const e = document.getElementById('email').value;
         const p = document.getElementById('password').value;
-        auth.signInWithEmailAndPassword(e, p).catch(() => auth.createUserWithEmailAndPassword(e, p));
+        if (!e || p.length < 6) return alert("Sahi email aur 6 hinson ka password likhen!");
+
+        auth.signInWithEmailAndPassword(e, p).catch(() => {
+            auth.createUserWithEmailAndPassword(e, p).catch(err => alert(err.message));
+        });
     }
 
     function doTask() {
         let bal = parseFloat(document.getElementById('userBalance').innerText);
-        db.ref('users/' + currentUser.uid).update({ balance: bal + 25 });
-        alert("Success! RS 25 Added.");
+        db.ref('users/' + currentUser.uid).update({ balance: bal + 25.00 });
+        alert("Task Complete! RS 25 added.");
     }
 
     function showWithdraw() {
-        if(parseFloat(document.getElementById('userBalance').innerText) < 500) return alert("Min RS 500 required.");
+        if (parseFloat(document.getElementById('userBalance').innerText) < 500) return alert("Min Withdraw RS 500!");
         switchScreen('withdraw-section');
     }
 
     function submitWithdraw() {
         const num = document.getElementById('accNumber').value;
         const bal = document.getElementById('userBalance').innerText;
-        if(!num) return alert("Enter number");
+        if (!num) return alert("Number likhen!");
 
         const reqId = db.ref('withdraw_requests').push().key;
-        const requestData = {
-            amount: bal,
-            number: num,
-            status: 'Pending', // Default status hamesha Pending hoga
-            email: currentUser.email,
-            uid: currentUser.uid,
-            timestamp: Date.now()
-        };
-
-        // User ki history mein aur aapki admin list mein data save ho raha hai
+        const data = { amount: bal, number: num, status: 'Pending', email: currentUser.email, uid: currentUser.uid };
+        
         let updates = {};
-        updates['/withdraw_requests/' + reqId] = requestData;
-        updates['/user_history/' + currentUser.uid + '/' + reqId] = requestData;
+        updates['/withdraw_requests/' + reqId] = data;
+        updates['/user_history/' + currentUser.uid + '/' + reqId] = data;
 
         db.ref().update(updates).then(() => {
             alert("Request Sent!");
@@ -128,16 +133,12 @@
     function showHistory() {
         switchScreen('history-section');
         const list = document.getElementById('history-list');
-        list.innerHTML = "";
-
         db.ref('user_history/' + currentUser.uid).on('value', snap => {
             list.innerHTML = "";
             snap.forEach(child => {
-                const data = child.val();
-                const statusClass = data.status === 'Pending' ? 'status-pending' : 'status-success';
-                list.innerHTML += `<div class="history-item">
-                    <span>RS ${data.amount}</span>
-                    <span class="${statusClass}">${data.status}</span>
+                const item = child.val();
+                list.innerHTML += `<div style="border-bottom:1px solid #eee; padding:10px; text-align:left;">
+                    <b>RS ${item.amount}</b> - <span style="color:orange">${item.status}</span>
                 </div>`;
             });
         });
