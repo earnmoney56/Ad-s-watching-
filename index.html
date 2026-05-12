@@ -3,153 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jh Seller Pro</title>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <title>Jh Seller - Pro Earning App</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
-        :root { --primary: #f39200; --bg: #fdf8f3; --text: #6e5444; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 20px; text-align: center; color: var(--text); }
-        .card { background: white; border-radius: 25px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 350px; margin: auto; }
-        input { width: 90%; padding: 12px; margin: 10px 0; border-radius: 10px; border: 1px solid #ddd; outline: none; }
-        button { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 15px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        body { font-family: Arial, sans-serif; background: #f4f4f4; text-align: center; padding: 20px; }
+        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; margin: auto; }
+        input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        button { width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #218838; }
         .hidden { display: none; }
-        .balance-amount { font-size: 40px; font-weight: bold; margin: 15px 0; }
-        .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; max-width: 350px; margin: 20px auto; }
-        .menu-item { background: white; padding: 15px; border-radius: 15px; border: 1px solid #eee; cursor: pointer; font-size: 13px; }
-        .history-item { border-bottom: 1px solid #eee; padding: 10px; display: flex; justify-content: space-between; text-align: left; }
+        #userBalance { font-size: 24px; color: #28a745; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div id="auth-section" class="card">
-        <h2 style="color: var(--primary);">Jh Seller Login</h2>
+        <h2>Jh Seller Login</h2>
         <input type="email" id="email" placeholder="Email Address">
-        <input type="password" id="password" placeholder="Password (Min 6 chars)">
-        <button onclick="handleAuth()">Login / Signup</button>
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+        <p id="login-error" style="color: red; font-size: 12px;"></p>
     </div>
 
-    <div id="main-dashboard" class="hidden">
-        <div class="card">
-            <div style="font-size: 12px; color: #bca08d; font-weight: bold;">AVAILABLE BALANCE</div>
-            <div class="balance-amount">RS <span id="userBalance">0.00</span></div>
-            <button onclick="showWithdraw()">Withdraw Funds →</button>
-        </div>
-
-        <div class="menu-grid">
-            <div class="menu-item" onclick="doTask()">📺<br>Watch Ads (+25)</div>
-            <div class="menu-item" onclick="showHistory()">📜<br>History</div>
-            <div class="menu-item" onclick="alert('Coming soon!')">👥<br>Invite</div>
-            <div class="menu-item" onclick="logout()">🚪<br>Logout</div>
-        </div>
+    <div id="main-dashboard" class="card hidden">
+        <h2>Welcome to Dashboard</h2>
+        <p>Current Balance</p>
+        <div id="userBalance">0.00 PKR</div>
+        <hr>
+        <button onclick="logout()" style="background: #dc3545;">Logout</button>
     </div>
 
-    <div id="withdraw-section" class="card hidden">
-        <h3>Withdraw</h3>
-        <input type="text" id="accNumber" placeholder="EasyPaisa/JazzCash Number">
-        <button onclick="submitWithdraw()">Submit Request</button>
-        <button onclick="goBack()" style="background: #ccc;">Back</button>
-    </div>
+    <script>
+        // 1. Firebase Configuration (Nayi API Key aur URL ke sath)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCPBhgHWoO6CWy1LIC6cDFZA8hsR8-K7mY",
+            authDomain: "jkseller.firebaseapp.com",
+            databaseURL: "https://jkseller-default-rtdb.firebaseio.com/",
+            projectId: "jkseller",
+            storageBucket: "jkseller.appspot.com",
+            messagingSenderId: "410778583623",
+            appId: "1:410778583623:web:8431529fc0b659414d2762"
+        };
 
-    <div id="history-section" class="card hidden">
-        <h3>Withdraw History</h3>
-        <div id="history-list">Loading...</div>
-        <button onclick="goBack()" style="background: #ccc; margin-top: 20px;">Back</button>
-    </div>
+        // 2. Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
 
-<script>
-    // 100% Correct Config From Your Screenshot
-    const firebaseConfig = {
-        apiKey:"AIzaSyCPBhgHWoO6CWy1LlC6cDFZA8hsR8-K7mY"
-        authDomain: "jkseller.firebaseapp.com",
-        databaseURL: "https://jkseller-default-rtdb.firebaseio.com",
-        projectId: "jkseller",
-        storageBucket: "jkseller.appspot.com",
-        messagingSenderId: "410778583623",
-        appId: "1:410778583623:web:8431529fc0b659414d2762"
-    };
+        // 3. Login Function
+        function login() {
+            const email = document.getElementById('email').value;
+            const pass = document.getElementById('password').value;
+            const errorElement = document.getElementById('login-error');
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.database();
-    let currentUser = null;
+            if(email === "" || pass === "") {
+                errorElement.innerText = "Please fill all fields.";
+                return;
+            }
 
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            currentUser = user;
-            showScreen('main-dashboard');
-            db.ref('users/' + user.uid + '/balance').on('value', (snap) => {
-                document.getElementById('userBalance').innerText = (snap.val() || 0).toFixed(2);
+            auth.signInWithEmailAndPassword(email, pass)
+            .then((userCredential) => {
+                console.log("Logged In!");
+            })
+            .catch((error) => {
+                errorElement.innerText = error.message;
             });
-        } else {
-            showScreen('auth-section');
         }
-    });
 
-    function handleAuth() {
-        const e = document.getElementById('email').value;
-        const p = document.getElementById('password').value;
-        if (!e || p.length < 6) return alert("Sahi details likhen!");
-
-        auth.signInWithEmailAndPassword(e, p).catch(() => {
-            auth.createUserWithEmailAndPassword(e, p).catch(err => alert(err.message));
+        // 4. Auth State (Check if user is logged in)
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                showScreen('main-dashboard');
+                // Fetch Balance from Database
+                db.ref('users/' + user.uid + '/balance').on('value', (snap) => {
+                    const balance = snap.val() || 0;
+                    document.getElementById('userBalance').innerText = balance + " PKR";
+                });
+            } else {
+                showScreen('auth-section');
+            }
         });
-    }
 
-    function doTask() {
-        let bal = parseFloat(document.getElementById('userBalance').innerText);
-        db.ref('users/' + currentUser.uid).update({ balance: bal + 25.00 });
-        alert("Success! RS 25 Added.");
-    }
+        // 5. Logout Function
+        function logout() {
+            auth.signOut();
+        }
 
-    function showWithdraw() {
-        if (parseFloat(document.getElementById('userBalance').innerText) < 500) return alert("Min RS 500 Required.");
-        showScreen('withdraw-section');
-    }
-
-    function submitWithdraw() {
-        const num = document.getElementById('accNumber').value;
-        const bal = document.getElementById('userBalance').innerText;
-        if (!num) return alert("Number likhen!");
-
-        const reqId = db.ref('withdraw_requests').push().key;
-        const data = { amount: bal, number: num, status: 'Pending', email: currentUser.email, uid: currentUser.uid };
-        
-        let updates = {};
-        updates['/withdraw_requests/' + reqId] = data;
-        updates['/user_history/' + currentUser.uid + '/' + reqId] = data;
-
-        db.ref().update(updates).then(() => {
-            alert("Request Sent!");
-            goBack();
-        });
-    }
-
-    function showHistory() {
-        showScreen('history-section');
-        const list = document.getElementById('history-list');
-        db.ref('user_history/' + currentUser.uid).on('value', snap => {
-            list.innerHTML = "";
-            snap.forEach(child => {
-                const item = child.val();
-                list.innerHTML += `<div class="history-item">
-                    <span>RS ${item.amount}</span>
-                    <span style="color:orange; font-weight:bold;">${item.status}</span>
-                </div>`;
-            });
-        });
-    }
-
-    function showScreen(id) {
-        document.getElementById('auth-section').classList.add('hidden');
-        document.getElementById('main-dashboard').classList.add('hidden');
-        document.getElementById('withdraw-section').classList.add('hidden');
-        document.getElementById('history-section').classList.add('hidden');
-        document.getElementById(id).classList.remove('hidden');
-    }
-
-    function goBack() { showScreen('main-dashboard'); }
-    function logout() { auth.signOut(); }
-</script>
+        // 6. Utility Function to switch screens
+        function showScreen(screenId) {
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('main-dashboard').classList.add('hidden');
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+    </script>
 </body>
 </html>
