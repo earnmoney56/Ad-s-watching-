@@ -4,29 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jh Seller - Pro Earning App</title>
+    
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <style>
-        body { font-family: Arial, sans-serif; background: #f4f4f4; text-align: center; padding: 20px; }
-        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); max-width: 400px; margin: auto; }
-        input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
-        button { width: 100%; padding: 10px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
-        button:hover { background: #218838; }
-        .hidden { display: none; }
-        #userBalance { font-size: 24px; color: #28a745; font-weight: bold; 
-                      
-.dashboard-container { max-width: 450px; margin: auto; padding: 10px; }
-.profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.user-info { display: flex; align-items: center; gap: 10px; }
-.logo-img { border-radius: 50%; width: 50px; height: 50px; }
-.balance-card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; }
-.stats-row { display: flex; justify-content: space-between; margin-top: 15px; border-top: 1px solid #eee; padding-top: 10px; }
-.menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 20px; }
-.menu-item { text-align: center; font-size: 12px; cursor: pointer; }
-.icon-bg { background: #fff; padding: 15px; border-radius: 12px; font-size: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 5px; }
-.withdraw-main-btn { width: 100%; background: #f39c12; color: white; border: none; padding: 10px; border-radius: 10px; margin-top: 15px; font-weight: bold; }
 
+    <style>
+        :root { --primary: #f39c12; --bg: #fffbf2; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 15px; text-align: center; }
+        .hidden { display: none !important; }
+        
+        /* Login Card */
+        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 400px; margin: 50px auto; }
+        input { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; }
+        .login-btn { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+
+        /* Professional Dashboard */
+        .dashboard-container { max-width: 450px; margin: auto; }
+        .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .logo-img { border-radius: 50%; width: 50px; height: 50px; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        
+        .balance-card { background: white; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #f9ebd2; }
+        .balance-label { color: #b5832e; font-weight: 600; font-size: 12px; margin-bottom: 5px; }
+        #userBalance { font-size: 42px; margin: 10px 0; color: #333; font-weight: bold; }
+        
+        .stats-row { display: flex; justify-content: space-around; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; }
+        .stat-box { display: flex; flex-direction: column; font-size: 12px; color: #888; }
+        .stat-box strong { color: #333; font-size: 16px; }
+
+        .withdraw-main-btn { background: var(--primary); color: white; border: none; width: 100%; padding: 15px; border-radius: 15px; font-weight: bold; margin-top: 20px; cursor: pointer; }
+
+        /* Menu Grid */
+        .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .menu-item { display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; color: #555; cursor: pointer; }
+        .icon-bg { width: 55px; height: 55px; background: white; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
@@ -35,78 +47,43 @@
         <h2>Jh Seller Login</h2>
         <input type="email" id="email" placeholder="Email Address">
         <input type="password" id="password" placeholder="Password">
-        <button onclick="login()">Login</button>
+        <button class="login-btn" onclick="login()">Login</button>
         <p id="login-error" style="color: red; font-size: 12px;"></p>
     </div>
 
- <div id="main-dashboard" class="dashboard-container hidden">
-    <div class="profile-header">
-        <div class="user-info">
-            <img src="https://via.placeholder.com/50" alt="Logo" class="logo-img">
-            <div class="user-text">
-                <span class="user-name">Networker</span>
-                <span class="status-dot"></span>
+    <div id="main-dashboard" class="dashboard-container hidden">
+        <div class="profile-header">
+            <div class="user-info">
+                <img src="https://via.placeholder.com/50" class="logo-img">
+                <span style="font-weight: bold;">Networker</span>
             </div>
+            <span>🔔</span>
         </div>
-        <button class="notif-btn">🔔</button>
+
+        <div class="balance-card">
+            <p class="balance-label">💳 AVAILABLE BALANCE</p>
+            <h1 id="userBalance">0 PKR</h1>
+            <div class="stats-row">
+                <div class="stat-box"><span>LEVEL</span><strong>8</strong></div>
+                <div class="stat-box"><span>WITHDRAWN</span><strong>0 PKR</strong></div>
+            </div>
+            <button class="withdraw-main-btn" onclick="showWithdraw()">Withdraw Funds ➔</button>
+        </div>
+
+        <div class="menu-grid">
+            <div class="menu-item" onclick="watchAd()"><div class="icon-bg">📊</div><span>Tasks</span></div>
+            <div class="menu-item"><div class="icon-bg">👛</div><span>Wallet</span></div>
+            <div class="menu-item"><div class="icon-bg">🎁</div><span>Rewards</span></div>
+            <div class="menu-item"><div class="icon-bg">📈</div><span>Salary</span></div>
+            <div class="menu-item"><div class="icon-bg">👥</div><span>Team</span></div>
+            <div class="menu-item"><div class="icon-bg">🏆</div><span>Levels</span></div>
+            <div class="menu-item"><div class="icon-bg">🌐</div><span>Support</span></div>
+            <div class="menu-item" onclick="logout()"><div class="icon-bg">⚙️</div><span>Logout</span></div>
+        </div>
     </div>
 
-    <div class="balance-card">
-        <p class="balance-label">💳 AVAILABLE BALANCE</p>
-        <h1 id="userBalance">$0</h1>
-        <div class="stats-row">
-            <div class="stat-box">
-                <span class="stat-icon">👑</span>
-                <div class="stat-txt"><span>LEVEL</span><strong>8</strong></div>
-            </div>
-            <div class="stat-box">
-                <span class="stat-icon">📥</span>
-                <div class="stat-txt"><span>WITHDRAWN</span><strong>$877.281</strong></div>
-            </div>
-        </div>
-        <button class="withdraw-main-btn" onclick="showWithdraw()">Withdraw Funds ➔</button>
-    </div>
-
-    <p class="section-title">Quick Actions ➔</p>
-
-    <div class="menu-grid">
-        <div class="menu-item" onclick="watchAd()">
-            <div class="icon-bg task-bg">📊</div>
-            <span>Tasks</span>
-        </div>
-        <div class="menu-item">
-            <div class="icon-bg wallet-bg">👛</div>
-            <span>Wallet</span>
-        </div>
-        <div class="menu-item">
-            <div class="icon-bg reward-bg">🎁</div>
-            <span>Rewards</span>
-        </div>
-        <div class="menu-item">
-            <div class="icon-bg salary-bg">📈</div>
-            <span>Salary</span>
-        </div>
-        <div class="menu-item">
-            <div class="icon-bg team-bg">👥</div>
-            <span>Team</span>
-        </div>
-        <div class="menu-item">
-            <div class="icon-bg level-bg">🏆</div>
-            <span>Levels</span>
-        </div>
-        <div class="menu-item">
-            <div class="icon-bg support-bg">🌐</div>
-            <span>Support</span>
-        </div>
-        <div class="menu-item" onclick="logout()">
-            <div class="icon-bg settings-bg">⚙️</div>
-            <span>Logout</span>
-        </div>
-    </div>
-</div>
-    
     <script>
-        // 1. Firebase Configuration (Nayi API Key aur URL ke sath)
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyB8r-JkscDuet3gf33WhTgGxTdLMObCmc8",
             authDomain: "jkseller.firebaseapp.com",
@@ -117,56 +94,47 @@
             appId: "1:410778583623:web:8431529fc0b659414d2762"
         };
 
-        // 2. Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
 
-        // 3. Login Function
+        // Login Function
         function login() {
             const email = document.getElementById('email').value;
             const pass = document.getElementById('password').value;
-            const errorElement = document.getElementById('login-error');
-
-            if(email === "" || pass === "") {
-                errorElement.innerText = "Please fill all fields.";
-                return;
-            }
-
-            auth.signInWithEmailAndPassword(email, pass)
-            .then((userCredential) => {
-                console.log("Logged In!");
-            })
-            .catch((error) => {
-                errorElement.innerText = error.message;
+            auth.signInWithEmailAndPassword(email, pass).catch(err => {
+                document.getElementById('login-error').innerText = err.message;
             });
         }
 
-        // 4. Auth State (Check if user is logged in)
+        // Logout Function
+        function logout() {
+            auth.signOut().then(() => { location.reload(); });
+        }
+
+        // Watch Ad Function (Earn 5 PKR)
+        function watchAd() {
+            const user = auth.currentUser;
+            if (user) {
+                db.ref('users/' + user.uid + '/balance').transaction(curr => (curr || 0) + 5);
+                alert("Mubarak ho! 5 PKR add ho gaye.");
+            }
+        }
+
+        function showWithdraw() { alert("Withdraw system coming soon!"); }
+
+        // Auth State Change
         auth.onAuthStateChanged(user => {
             if (user) {
-                showScreen('main-dashboard');
-                // Fetch Balance from Database
-                db.ref('users/' + user.uid + '/balance').on('value', (snap) => {
-                    const balance = snap.val() || 0;
-                    document.getElementById('userBalance').innerText = balance + " PKR";
+                document.getElementById('auth-section').classList.add('hidden');
+                document.getElementById('main-dashboard').classList.remove('hidden');
+                
+                // Realtime Balance update
+                db.ref('users/' + user.uid + '/balance').on('value', snap => {
+                    document.getElementById('userBalance').innerText = (snap.val() || 0) + " PKR";
                 });
-            } else {
-                showScreen('auth-section');
             }
         });
-
-        // 5. Logout Function
-        function logout() {
-            auth.signOut();
-        }
-
-        // 6. Utility Function to switch screens
-        function showScreen(screenId) {
-            document.getElementById('auth-section').classList.add('hidden');
-            document.getElementById('main-dashboard').classList.add('hidden');
-            document.getElementById(screenId).classList.remove('hidden');
-        }
     </script>
 </body>
 </html>
