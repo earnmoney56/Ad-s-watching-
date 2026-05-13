@@ -27,14 +27,71 @@
         <p id="login-error" style="color: red; font-size: 12px;"></p>
     </div>
 
- <div id="main-dashboard" class="card hidden">
-        <h2>Welcome to Dashboard</h2>
-        <p>Current Balance</p>
-        <div id="userBalance">0 PKR</div>
-        <hr>
-        <button onclick="watchAd()" style="background: #007bff; margin-bottom: 10px;">Watch Ad (Earn 5 PKR)</button>
-        <button onclick="logout()" style="background: #dc3545;">Logout</button>
+ <div id="main-dashboard" class="dashboard-container hidden">
+    <div class="profile-header">
+        <div class="user-info">
+            <img src="https://via.placeholder.com/50" alt="Logo" class="logo-img">
+            <div class="user-text">
+                <span class="user-name">Networker</span>
+                <span class="status-dot"></span>
+            </div>
+        </div>
+        <button class="notif-btn">🔔</button>
     </div>
+
+    <div class="balance-card">
+        <p class="balance-label">💳 AVAILABLE BALANCE</p>
+        <h1 id="userBalance">$0</h1>
+        <div class="stats-row">
+            <div class="stat-box">
+                <span class="stat-icon">👑</span>
+                <div class="stat-txt"><span>LEVEL</span><strong>8</strong></div>
+            </div>
+            <div class="stat-box">
+                <span class="stat-icon">📥</span>
+                <div class="stat-txt"><span>WITHDRAWN</span><strong>$877.281</strong></div>
+            </div>
+        </div>
+        <button class="withdraw-main-btn" onclick="showWithdraw()">Withdraw Funds ➔</button>
+    </div>
+
+    <p class="section-title">Quick Actions ➔</p>
+
+    <div class="menu-grid">
+        <div class="menu-item" onclick="watchAd()">
+            <div class="icon-bg task-bg">📊</div>
+            <span>Tasks</span>
+        </div>
+        <div class="menu-item">
+            <div class="icon-bg wallet-bg">👛</div>
+            <span>Wallet</span>
+        </div>
+        <div class="menu-item">
+            <div class="icon-bg reward-bg">🎁</div>
+            <span>Rewards</span>
+        </div>
+        <div class="menu-item">
+            <div class="icon-bg salary-bg">📈</div>
+            <span>Salary</span>
+        </div>
+        <div class="menu-item">
+            <div class="icon-bg team-bg">👥</div>
+            <span>Team</span>
+        </div>
+        <div class="menu-item">
+            <div class="icon-bg level-bg">🏆</div>
+            <span>Levels</span>
+        </div>
+        <div class="menu-item">
+            <div class="icon-bg support-bg">🌐</div>
+            <span>Support</span>
+        </div>
+        <div class="menu-item" onclick="logout()">
+            <div class="icon-bg settings-bg">⚙️</div>
+            <span>Logout</span>
+        </div>
+    </div>
+</div>
     
     <script>
         // 1. Firebase Configuration (Nayi API Key aur URL ke sath)
