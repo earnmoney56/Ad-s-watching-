@@ -27,14 +27,15 @@
         <p id="login-error" style="color: red; font-size: 12px;"></p>
     </div>
 
-    <div id="main-dashboard" class="card hidden">
+ <div id="main-dashboard" class="card hidden">
         <h2>Welcome to Dashboard</h2>
         <p>Current Balance</p>
-        <div id="userBalance">0.00 PKR</div>
+        <div id="userBalance">0 PKR</div>
         <hr>
+        <button onclick="watchAd()" style="background: #007bff; margin-bottom: 10px;">Watch Ad (Earn 5 PKR)</button>
         <button onclick="logout()" style="background: #dc3545;">Logout</button>
     </div>
-
+    
     <script>
         // 1. Firebase Configuration (Nayi API Key aur URL ke sath)
         const firebaseConfig = {
