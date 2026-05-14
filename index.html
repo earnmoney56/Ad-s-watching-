@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jh Seller - Pro App with Admin</title>
+    <title>Jh Seller - Referral & Team App</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -31,10 +31,20 @@
 <body>
 
     <div id="auth-section" class="card">
-        <h2>Jh Seller Login</h2>
-        <input type="email" id="email" placeholder="Email Address">
-        <input type="password" id="password" placeholder="Password">
-        <button class="btn-green" onclick="login()">Login</button>
+        <h2>Jh Seller</h2>
+        <div id="login-fields">
+            <input type="email" id="email" placeholder="Email Address">
+            <input type="password" id="password" placeholder="Password">
+            <button class="btn-green" onclick="login()">Login</button>
+            <p onclick="toggleAuth(true)" style="cursor:pointer; color:var(--primary);">Naya account banayein (Signup)</p>
+        </div>
+        <div id="signup-fields" class="hidden">
+            <input type="email" id="reg-email" placeholder="Email Address">
+            <input type="password" id="reg-password" placeholder="Create Password">
+            <input type="text" id="reg-ref" placeholder="Referral Code (Optional)">
+            <button class="btn-orange" onclick="signup()">Create Account</button>
+            <p onclick="toggleAuth(false)" style="cursor:pointer; color:var(--primary);">Pehle se account hai? Login</p>
+        </div>
     </div>
 
     <div id="main-dashboard" class="hidden">
@@ -49,32 +59,24 @@
             <div class="menu-item" onclick="showPage('wallet-page')"><div class="icon-bg">👛</div><span>Wallet</span></div>
             <div class="menu-item" onclick="showRewards()"><div class="icon-bg">🎁</div><span>Rewards</span></div>
             <div class="menu-item" onclick="showSalary()"><div class="icon-bg">📈</div><span>Salary</span></div>
-            <div class="menu-item"><div class="icon-bg">👥</div><span>Team</span></div>
+            <div class="menu-item" onclick="showTeam()"><div class="icon-bg">👥</div><span>Team</span></div>
             <div class="menu-item"><div class="icon-bg">🏆</div><span>Levels</span></div>
             <div class="menu-item" onclick="window.location.href='https://wa.me/YOURNUMBER'"><div class="icon-bg">🌐</div><span>Support</span></div>
-            <div class="menu-item" id="admin-btn" class="hidden" onclick="openAdminPanel()"><div class="icon-bg" style="background:#333; color:white;">🛡️</div><span>Admin</span></div>
+            <div class="menu-item id="admin-btn" class="hidden" onclick="openAdminPanel()"><div class="icon-bg" style="background:#333; color:white;">🛡️</div><span>Admin</span></div>
             <div class="menu-item" onclick="logout()"><div class="icon-bg">⚙️</div><span>Logout</span></div>
         </div>
     </div>
 
-    <div id="task-page" class="full-page hidden">
-        <div style="display:flex; align-items:center; padding: 0 20px;"><button onclick="closeTasks()" style="background:none; border:none; font-size:28px;">←</button><h2>Daily Tasks</h2></div>
+    <div id="team-page" class="full-page hidden">
+        <div style="display:flex; align-items:center; padding: 0 20px;"><button onclick="closePage('team-page')" style="background:none; border:none; font-size:28px;">←</button><h2>My Team</h2></div>
         <div class="card">
-            <div id="task-timer" style="font-size:30px; font-weight:bold; color:var(--primary);">20</div>
-            <iframe id="task-video" width="100%" height="200" src="" frameborder="0"></iframe>
-            <p>Watch for 20s to earn 50 PKR</p>
+            <h3>Invite & Earn 700 PKR</h3>
+            <p>Apna referral code share karein:</p>
+            <div id="ref-code-box" style="background:#eee; padding:10px; font-weight:bold; border-radius:8px; margin-bottom:10px;">LOADING...</div>
+            <button class="btn-orange" onclick="copyRefLink()">Copy Invite Link</button>
         </div>
-    </div>
-
-    <div id="rewards-page" class="full-page hidden">
-        <div style="display:flex; align-items:center; padding: 0 20px;"><button onclick="closePage('rewards-page')" style="background:none; border:none; font-size:28px;">←</button><h2>Daily Reward</h2></div>
-        <div class="card">
-            <h3>Claim 300 PKR</h3>
-            <p>Once every 24 hours</p>
-            <button class="btn-orange" onclick="claimDaily()">Claim Now</button>
-        </div>
-        <h4>History</h4>
-        <div id="reward-history"></div>
+        <h4>Team History</h4>
+        <div id="team-list"></div>
     </div>
 
     <div id="wallet-page" class="full-page hidden">
@@ -84,27 +86,6 @@
             <div class="card" style="margin:0; padding:15px;">🏧<br><small>Withdrawn</small><br><b id="wOut">0</b></div>
             <div class="card" style="margin:0; padding:15px;">📺<br><small>Videos</small><br><b id="wVid">0</b></div>
             <div class="card" style="margin:0; padding:15px;">🎁<br><small>Rewards</small><br><b id="wRew">0</b></div>
-        </div>
-    </div>
-
-    <div id="salary-page" class="full-page hidden">
-        <div style="display:flex; align-items:center; padding: 0 20px;"><button onclick="closePage('salary-page')" style="background:none; border:none; font-size:28px;">←</button><h2>Withraw History</h2></div>
-        <div id="salary-list"></div>
-    </div>
-
-    <div id="admin-page" class="full-page hidden">
-        <div style="display:flex; align-items:center; padding: 0 20px;"><button onclick="closePage('admin-page')" style="background:none; border:none; font-size:28px;">←</button><h2>Admin Panel</h2></div>
-        <div id="admin-withdraw-list" style="padding: 10px;"></div>
-    </div>
-
-    <div id="withdraw-modal" class="overlay hidden">
-        <div class="card" style="width:80%; color:black;">
-            <h3>Withdraw</h3>
-            <select id="wMethod"><option>Easypaisa</option><option>JazzCash</option></select>
-            <input type="text" id="wAcc" placeholder="Account Number">
-            <input type="number" id="wAmt" placeholder="Amount (Min 500)">
-            <button class="btn-green" onclick="submitWithdraw()">Submit Request</button>
-            <button onclick="hideWithdraw()" style="color:red; background:none; border:none; margin-top:10px;">Cancel</button>
         </div>
     </div>
 
@@ -121,123 +102,31 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
-        const ADMIN_EMAIL = "waqas@gmail.com"; // Yahan apni email likhein
+        const ADMIN_EMAIL = "waqas@gmail.com";
+
+        // Auth Logic
+        function toggleAuth(isSignup) {
+            document.getElementById('login-fields').classList.toggle('hidden', isSignup);
+            document.getElementById('signup-fields').classList.toggle('hidden', !isSignup);
+        }
 
         function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value).catch(e => alert(e.message)); }
-        function logout() { auth.signOut().then(() => location.reload()); }
-        function showPage(id) { document.getElementById(id).classList.remove('hidden'); }
-        function closePage(id) { document.getElementById(id).classList.add('hidden'); }
-        function showWithdrawModal() { document.getElementById('withdraw-modal').classList.remove('hidden'); }
-        function hideWithdraw() { document.getElementById('withdraw-modal').classList.add('hidden'); }
+        
+        function signup() {
+            const email = document.getElementById('reg-email').value;
+            const pass = document.getElementById('reg-password').value;
+            const refCode = document.getElementById('reg-ref').value.trim();
 
-        // Rewards
-        function showRewards() { showPage('rewards-page'); loadRewardHistory(); }
-        function claimDaily() {
-            const u = auth.currentUser;
-            db.ref('users/' + u.uid).once('value', s => {
-                const d = s.val() || {};
-                const now = new Date().getTime();
-                if (now - (d.lastRewardTime || 0) > 86400000) {
-                    db.ref('users/' + u.uid).update({ balance: (d.balance || 0) + 300, dailyRewardsTotal: (d.dailyRewardsTotal || 0) + 300, lastRewardTime: now });
-                    db.ref('reward_history/' + u.uid).push({ amount: 300, date: new Date().toLocaleString() });
-                    alert("300 PKR Claimed!");
-                } else alert("24 hours wait karein!");
-            });
-        }
-        function loadRewardHistory() {
-            db.ref('reward_history/' + auth.currentUser.uid).on('value', s => {
-                const list = document.getElementById('reward-history');
-                list.innerHTML = "";
-                s.forEach(c => { list.innerHTML += `<div class="history-item">💰 <b>${c.val().amount} PKR</b><br><small>${c.val().date}</small></div>`; });
-            });
-        }
-
-        // Tasks
-        let taskTimer;
-        function openTasks() {
-            showPage('task-page');
-            let t = 20;
-            document.getElementById('task-video').src = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1";
-            taskTimer = setInterval(() => {
-                t--; document.getElementById('task-timer').innerText = t;
-                if (t <= 0) {
-                    clearInterval(taskTimer);
-                    const u = auth.currentUser;
-                    db.ref('users/' + u.uid).once('value', s => {
-                        const d = s.val() || {};
-                        db.ref('users/' + u.uid).update({ balance: (d.balance || 0) + 50, videosWatched: (d.videosWatched || 0) + 1 });
-                    });
-                    alert("50 PKR Added!"); closeTasks();
-                }
-            }, 1000);
-        }
-        function closeTasks() { clearInterval(taskTimer); document.getElementById('task-video').src = ""; closePage('task-page'); }
-
-        // History
-        function showSalary() {
-            showPage('salary-page');
-            db.ref('withdrawals').orderByChild('uid').equalTo(auth.currentUser.uid).on('value', s => {
-                const list = document.getElementById('salary-list');
-                list.innerHTML = "";
-                s.forEach(c => {
-                    const d = c.val();
-                    list.innerHTML += `<div class="history-item"><b>${d.amount} PKR</b> - ${d.status}<br><small>${d.date}</small></div>`;
+            auth.createUserWithEmailAndPassword(email, pass).then((user) => {
+                const uid = user.user.uid;
+                // Naya user data
+                db.ref('users/' + uid).set({
+                    email: email,
+                    balance: 0,
+                    refBy: refCode || "none",
+                    myRefCode: uid.substring(0, 6) // Chota referral code
                 });
-            });
-        }
 
-        // Withdraw
-        function submitWithdraw() {
-            const u = auth.currentUser;
-            const amt = parseInt(document.getElementById('wAmt').value);
-            db.ref('users/' + u.uid).once('value', s => {
-                const d = s.val() || {};
-                if (d.balance >= amt && amt >= 500) {
-                    db.ref('users/' + u.uid).update({ balance: d.balance - amt, withdrawn: (d.withdrawn || 0) + amt });
-                    db.ref('withdrawals').push({ uid: u.uid, email: u.email, amount: amt, method: document.getElementById('wMethod').value, account: document.getElementById('wAcc').value, status: "Pending", date: new Date().toLocaleString() });
-                    alert("Request Sent!"); hideWithdraw();
-                } else alert("Low balance or min 500!");
-            });
-        }
-
-        // Admin Panel Logic
-        function openAdminPanel() {
-            showPage('admin-page');
-            const adminList = document.getElementById('admin-withdraw-list');
-            db.ref('withdrawals').on('value', s => {
-                adminList.innerHTML = "";
-                s.forEach(c => {
-                    const d = c.val();
-                    const id = c.key;
-                    adminList.innerHTML += `<div class="history-item" style="border-left:5px solid ${d.status=='Pending'?'#f39c12':'#28a745'}">
-                        <b>User: ${d.email}</b><br>
-                        Amount: ${d.amount} PKR (${d.method})<br>
-                        Acc: ${d.account}<br>
-                        Status: ${d.status}<br><br>
-                        ${d.status == 'Pending' ? `<button onclick="approve('${id}')" style="background:green;color:white;border:none;padding:5px 10px;border-radius:5px;">Approve</button>` : '✓ Done'}
-                    </div>`;
-                });
-            });
-        }
-        function approve(id) { if(confirm("Pay kar diya?")) db.ref('withdrawals/'+id).update({status: "Success"}); }
-
-        // Auth State
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                document.getElementById('auth-section').classList.add('hidden');
-                document.getElementById('main-dashboard').classList.remove('hidden');
-                if (user.email === ADMIN_EMAIL) document.getElementById('admin-btn').classList.remove('hidden');
-                
-                db.ref('users/' + user.uid).on('value', s => {
-                    const d = s.val() || {};
-                    document.getElementById('userBalance').innerText = (d.balance || 0) + " PKR";
-                    document.getElementById('wBal').innerText = (d.balance || 0) + " PKR";
-                    document.getElementById('wOut').innerText = (d.withdrawn || 0) + " PKR";
-                    document.getElementById('wVid').innerText = (d.videosWatched || 0);
-                    document.getElementById('wRew').innerText = (d.dailyRewardsTotal || 0) + " PKR";
-                });
-            }
-        });
-    </script>
-</body>
-</html>
+                // Agar kisi ke link se aaya hai toh usay 700 PKR dein
+                if (refCode) {
+                    db.ref('users').orderByChild
