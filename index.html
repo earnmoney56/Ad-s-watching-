@@ -113,13 +113,38 @@
         }
 
         // Watch Ad Function (Earn 5 PKR)
-        function watchAd() {
-            const user = auth.currentUser;
+        // Watch Ad Function (Ab payment timer ke baad hi hogi)
+function watchAd() {
+    const videoSection = document.getElementById('video-player');
+    const countdownEl = document.getElementById('countdown');
+    let timeLeft = 20;
+
+    // Pehle video screen dikhao
+    videoSection.classList.remove('hidden');
+
+    const timer = setInterval(() => {
+        timeLeft--;
+        countdownEl.innerText = timeLeft;
+
+        // Jab timer 0 ho jaye, sirf tab hi ye kaam honge:
+        if (timeLeft <= 0) {
+            clearInterval(timer); // Timer roko
+            videoSection.classList.add('hidden'); // Video band karo
+            
+            // PAYMENTS LOGIC: Ab ye timer khatam hone par hi chalegi
+            const user = firebase.auth().currentUser;
             if (user) {
-                db.ref('users/' + user.uid + '/balance').transaction(curr => (curr || 0) + 50);
-                alert("Mubarak ho! 50 PKR add ho gaye.");
+                const balanceRef = firebase.database().ref('users/' + user.uid + '/balance');
+                balanceRef.transaction((curr) => {
+                    return (curr || 0) + 5; // 5 PKR add karo
+                }).then(() => {
+                    alert("Task Complete! 20 second puray hue, 5 PKR add kar diye gaye hain.");
+                });
             }
         }
+    }, 1000); // Har 1 second baad timer chalega
+}
+
 
         function showWithdraw() { alert("Withdraw system coming soon!"); }
 
