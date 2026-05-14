@@ -14,35 +14,25 @@
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 15px; text-align: center; }
         .hidden { display: none !important; }
         
-        /* Login Card */
-        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 400px; margin: 50px auto; }
-        input { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; }
-        .login-btn { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
-
-        /* Professional Dashboard */
-        .dashboard-container { max-width: 450px; margin: auto; }
-        .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .user-info { display: flex; align-items: center; gap: 10px; }
-        .logo-img { border-radius: 50%; width: 50px; height: 50px; border: 2px solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        
-        .balance-card { background: white; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #f9ebd2; }
-        .balance-label { color: #b5832e; font-weight: 600; font-size: 12px; margin-bottom: 5px; }
-        #userBalance { font-size: 42px; margin: 10px 0; color: #333; font-weight: bold; }
-        
-        .stats-row { display: flex; justify-content: space-around; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; }
-        .stat-box { display: flex; flex-direction: column; font-size: 12px; color: #888; }
-        .stat-box strong { color: #333; font-size: 16px; }
-
-        .withdraw-main-btn { background: var(--primary); color: white; border: none; width: 100%; padding: 15px; border-radius: 15px; font-weight: bold; margin-top: 20px; cursor: pointer; }
+        /* Dashboard & Cards */
+        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 400px; margin: 20px auto; }
+        input, select { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; }
+        .btn-green { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .btn-orange { background: var(--primary); color: white; border: none; width: 100%; padding: 15px; border-radius: 15px; font-weight: bold; margin-top: 20px; cursor: pointer; }
 
         /* Menu Grid */
         .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
         .menu-item { display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; color: #555; cursor: pointer; }
         .icon-bg { width: 55px; height: 55px; background: white; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
 
-        /* Video Overlay Style */
-        .video-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; }
+        /* Status Styles */
+        .status-pending { color: #f39c12; font-weight: bold; }
+        .status-success { color: #28a745; font-weight: bold; }
+        
+        /* Overlays */
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; }
         .timer-circle { width: 80px; height: 80px; border: 5px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 20px; font-weight: bold; }
+        .modal { background: white; color: black; padding: 20px; border-radius: 20px; width: 85%; max-width: 400px; }
     </style>
 </head>
 <body>
@@ -51,45 +41,51 @@
         <h2>Jh Seller Login</h2>
         <input type="email" id="email" placeholder="Email Address">
         <input type="password" id="password" placeholder="Password">
-        <button class="login-btn" onclick="login()">Login</button>
-        <p id="login-error" style="color: red; font-size: 12px;"></p>
+        <button class="btn-green" onclick="login()">Login</button>
     </div>
 
     <div id="main-dashboard" class="dashboard-container hidden">
-        <div class="profile-header">
-            <div class="user-info">
-                <img src="https://via.placeholder.com/50" class="logo-img">
-                <span style="font-weight: bold;">Networker</span>
-            </div>
-            <span>🔔</span>
-        </div>
-
-        <div class="balance-card">
-            <p class="balance-label">💳 AVAILABLE BALANCE</p>
+        <div class="card">
+            <p style="color: #888; font-size: 12px;">AVAILABLE BALANCE</p>
             <h1 id="userBalance">0 PKR</h1>
-            <div class="stats-row">
-                <div class="stat-box"><span>LEVEL</span><strong>8</strong></div>
-                <div class="stat-box"><span>WITHDRAWN</span><strong>0 PKR</strong></div>
-            </div>
-            <button class="withdraw-main-btn" onclick="showWithdraw()">Withdraw Funds ➔</button>
+            <button class="btn-orange" onclick="showWithdrawModal()">Withdraw Funds ➔</button>
         </div>
 
         <div class="menu-grid">
             <div class="menu-item" onclick="watchAd()"><div class="icon-bg">📊</div><span>Tasks</span></div>
-            <div class="menu-item"><div class="icon-bg">👛</div><span>Wallet</span></div>
-            <div class="menu-item"><div class="icon-bg">🎁</div><span>Rewards</span></div>
-            <div class="menu-item"><div class="icon-bg">📈</div><span>Salary</span></div>
-            <div class="menu-item"><div class="icon-bg">👥</div><span>Team</span></div>
-            <div class="menu-item"><div class="icon-bg">🏆</div><span>Levels</span></div>
-            <div class="menu-item"><div class="icon-bg">🌐</div><span>Support</span></div>
+            <div class="menu-item" onclick="showSalary()"><div class="icon-bg">📈</div><span>Salary</span></div>
             <div class="menu-item" onclick="logout()"><div class="icon-bg">⚙️</div><span>Logout</span></div>
         </div>
     </div>
 
-    <div id="video-player" class="video-overlay hidden">
+    <div id="withdraw-modal" class="overlay hidden">
+        <div class="modal">
+            <h3>Withdraw Funds</h3>
+            <select id="withdraw-method">
+                <option value="Easypaisa">Easypaisa</option>
+                <option value="JazzCash">JazzCash</option>
+            </select>
+            <input type="text" id="account-num" placeholder="Account Number">
+            <input type="number" id="withdraw-amount" placeholder="Amount (Min 500)">
+            <button class="btn-green" onclick="submitWithdraw()">Submit Request</button>
+            <button onclick="closeModals()" style="margin-top:10px; background:none; border:none; color:red;">Close</button>
+        </div>
+    </div>
+
+    <div id="salary-modal" class="overlay hidden">
+        <div class="modal">
+            <h3>Withdrawal History</h3>
+            <div id="salary-list" style="text-align: left; max-height: 300px; overflow-y: auto;">
+                <p>No history found.</p>
+            </div>
+            <button class="btn-orange" onclick="closeModals()">Back to Dashboard</button>
+        </div>
+    </div>
+
+    <div id="video-player" class="overlay hidden">
         <div class="timer-circle" id="countdown">20</div>
-        <p>Please watch the video to earn rewards...</p>
-        <iframe id="ad-video" width="320" height="180" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1" frameborder="0"></iframe>
+        <p>Watching Ad...</p>
+        <iframe width="300" height="180" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1" frameborder="0"></iframe>
     </div>
 
     <script>
@@ -103,63 +99,97 @@
             messagingSenderId: "410778583623",
             appId: "1:410778583623:web:8431529fc0b659414d2762"
         };
-
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
 
-        // Login Function
         function login() {
-            const email = document.getElementById('email').value;
-            const pass = document.getElementById('password').value;
-            auth.signInWithEmailAndPassword(email, pass).catch(err => {
-                document.getElementById('login-error').innerText = err.message;
+            auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value);
+        }
+
+        function logout() { auth.signOut().then(() => location.reload()); }
+
+        function showWithdrawModal() { document.getElementById('withdraw-modal').classList.remove('hidden'); }
+        function closeModals() { 
+            document.getElementById('withdraw-modal').classList.add('hidden'); 
+            document.getElementById('salary-modal').classList.add('hidden');
+        }
+
+        // 1. Withdrawal Apply
+        function submitWithdraw() {
+            const user = auth.currentUser;
+            const amount = parseInt(document.getElementById('withdraw-amount').value);
+            const method = document.getElementById('withdraw-method').value;
+            const account = document.getElementById('account-num').value;
+
+            if (amount < 500) return alert("Minimum withdraw is 500 PKR");
+
+            db.ref('users/' + user.uid + '/balance').once('value', snap => {
+                const currentBalance = snap.val() || 0;
+                if (currentBalance >= amount) {
+                    // Deduct balance and save request
+                    db.ref('users/' + user.uid + '/balance').set(currentBalance - amount);
+                    const requestRef = db.ref('withdrawals').push();
+                    requestRef.set({
+                        uid: user.uid,
+                        amount: amount,
+                        method: method,
+                        account: account,
+                        status: "Pending",
+                        date: new Date().toLocaleDateString()
+                    });
+                    alert("Request Sent! Check Salary option for status.");
+                    closeModals();
+                } else {
+                    alert("Insufficient balance!");
+                }
             });
         }
 
-        // Logout Function
-        function logout() {
-            auth.signOut().then(() => { location.reload(); });
+        // 2. Show Status in Salary
+        function showSalary() {
+            const user = auth.currentUser;
+            const list = document.getElementById('salary-list');
+            document.getElementById('salary-modal').classList.remove('hidden');
+            
+            db.ref('withdrawals').orderByChild('uid').equalTo(user.uid).on('value', snap => {
+                list.innerHTML = "";
+                if (snap.exists()) {
+                    snap.forEach(child => {
+                        const data = child.val();
+                        list.innerHTML += `<div style="border-bottom:1px solid #eee; padding:10px 0;">
+                            <b>${data.amount} PKR</b> - ${data.method}<br>
+                            Status: <span class="status-${data.status.toLowerCase()}">${data.status}</span><br>
+                            <small>${data.date}</small>
+                        </div>`;
+                    });
+                } else {
+                    list.innerHTML = "<p>No history found.</p>";
+                }
+            });
         }
 
-        // Watch Ad Function (20 Sec Timer + Earn 50 PKR)
         function watchAd() {
-            const videoSection = document.getElementById('video-player');
-            const countdownEl = document.getElementById('countdown');
-            let timeLeft = 20;
-
-            videoSection.classList.remove('hidden');
-
+            const player = document.getElementById('video-player');
+            const countdown = document.getElementById('countdown');
+            let time = 20;
+            player.classList.remove('hidden');
             const timer = setInterval(() => {
-                timeLeft--;
-                countdownEl.innerText = timeLeft;
-
-                if (timeLeft <= 0) {
+                time--;
+                countdown.innerText = time;
+                if (time <= 0) {
                     clearInterval(timer);
-                    videoSection.classList.add('hidden'); 
-                    
-                    const user = auth.currentUser;
-                    if (user) {
-                        // Balance update only after timer ends
-                        db.ref('users/' + user.uid + '/balance').transaction((curr) => {
-                            return (curr || 0) + 50; 
-                        }).then(() => {
-                            alert("Task Complete! 50 PKR add ho gaye hain.");
-                        });
-                    }
+                    player.classList.add('hidden');
+                    db.ref('users/' + auth.currentUser.uid + '/balance').transaction(c => (c || 0) + 50);
+                    alert("Task Done! 50 PKR added.");
                 }
             }, 1000);
         }
 
-        function showWithdraw() { alert("Withdraw system coming soon!"); }
-
-        // Auth State Change
         auth.onAuthStateChanged(user => {
             if (user) {
                 document.getElementById('auth-section').classList.add('hidden');
                 document.getElementById('main-dashboard').classList.remove('hidden');
-                
-                // Realtime Balance update
                 db.ref('users/' + user.uid + '/balance').on('value', snap => {
                     document.getElementById('userBalance').innerText = (snap.val() || 0) + " PKR";
                 });
