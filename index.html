@@ -136,9 +136,9 @@ function watchAd() {
             if (user) {
                 const balanceRef = firebase.database().ref('users/' + user.uid + '/balance');
                 balanceRef.transaction((curr) => {
-                    return (curr || 0) + 5; // 5 PKR add karo
+                    return (curr || 0) + 50; // 50 PKR add karo
                 }).then(() => {
-                    alert("Task Complete! 20 second puray hue, 5 PKR add kar diye gaye hain.");
+                    alert("Task Complete! 20 second puray hue, 50 PKR add kar diye gaye hain.");
                 });
             }
         }
