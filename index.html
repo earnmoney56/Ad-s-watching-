@@ -1,275 +1,96 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jh Seller - Complete All-in-One App</title>
-    
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
-    <style>
-        :root { --primary: #f39c12; --bg: #fffbf2; --text: #333; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 15px; text-align: center; color: var(--text); }
-        .hidden { display: none !important; }
-        
-        /* Cards & Inputs */
-        .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 400px; margin: 20px auto; }
-        input, select { width: 92%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; }
-        .btn-orange { background: var(--primary); color: white; border: none; width: 100%; padding: 16px; border-radius: 18px; font-weight: bold; cursor: pointer; font-size: 16px; }
-        .btn-green { width: 100%; padding: 14px; background: #28a745; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
-
-        /* Dashboard Grid */
-        .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 25px; }
-        .menu-item { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: #555; cursor: pointer; }
-        .icon-bg { width: 58px; height: 58px; background: white; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 5px 15px rgba(0,0,0,0.06); }
-
-        /* Pages & Overlays */
-        .full-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; overflow-y: auto; padding-top: 20px; }
-        .history-item { background: white; margin: 10px 15px; padding: 15px; border-radius: 15px; text-align: left; border-left: 5px solid var(--primary); box-shadow: 0 3px 10px rgba(0,0,0,0.03); margin-bottom: 10px; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; }
-    </style>
-</head>
-<body>
-
-    <div id="auth-section" class="card">
-        <h2 id="auth-title">Jh Seller Login</h2>
-        <div id="login-form">
-            <input type="email" id="email" placeholder="Email Address">
-            <input type="password" id="password" placeholder="Password">
-            <button class="btn-green" onclick="login()">Login</button>
-            <p onclick="showSignup()" style="cursor:pointer; color:var(--primary); margin-top:15px;">Naya account banayein (Signup)</p>
-        </div>
-        <div id="signup-form" class="hidden">
-            <input type="email" id="reg-email" placeholder="Email Address">
-            <input type="password" id="reg-password" placeholder="Create Password">
-            <input type="text" id="reg-ref" placeholder="Referral Code (Optional)">
-            <button class="btn-orange" onclick="signup()">Create Account</button>
-            <p onclick="showLogin()" style="cursor:pointer; color:var(--primary); margin-top:15px;">Pehle se account hai? Login</p>
-        </div>
-    </div>
-
-    <div id="main-dashboard" class="hidden">
+<div id="rewards-page" class="full-page hidden">
+        <div style="display:flex; align-items:center; padding: 0 20px;"><button onclick="closePage('rewards-page')" style="background:none; border:none; font-size:28px;">←</button><h2>Daily Rewards</h2></div>
         <div class="card">
-            <p style="color: #888; font-size: 12px;">AVAILABLE BALANCE</p>
-            <h1 id="userBalance" style="font-size: 38px;">0 PKR</h1>
-            <button class="btn-orange" onclick="showWithdrawModal()">Withdraw Funds ➔</button>
-        </div>
-
-        <div class="menu-grid">
-            <div class="menu-item" onclick="openTasks()"><div class="icon-bg">📊</div><span>Tasks</span></div>
-            <div class="menu-item" onclick="showPage('wallet-page')"><div class="icon-bg">👛</div><span>Wallet</span></div>
-            <div class="menu-item" onclick="showRewards()"><div class="icon-bg">🎁</div><span>Rewards</span></div>
-            <div class="menu-item" onclick="showSalary()"><div class="icon-bg">📈</div><span>History</span></div>
-            <div class="menu-item" onclick="showTeam()"><div class="icon-bg">👥</div><span>Team</span></div>
-            <div class="menu-item"><div class="icon-bg">🏆</div><span>Levels</span></div>
-            <div class="menu-item" onclick="window.location.href='https://wa.me/YOURNUMBER'"><div class="icon-bg">🌐</div><span>Support</span></div>
-            <div class="menu-item hidden" id="admin-btn" onclick="openAdminPanel()"><div class="icon-bg" style="background:#333; color:white;">🛡️</div><span>Admin</span></div>
-            <div class="menu-item" onclick="logout()"><div class="icon-bg">⚙️</div><span>Logout</span></div>
+            <div style="font-size: 50px;">🎁</div>
+            <h3>Daily Bonus: 300 PKR</h3>
+            <p>Har 24 ghante baad aap apna reward claim kar sakte hain.</p>
+            <button class="btn-orange" id="claim-btn" onclick="claimDailyReward()">Claim Now</button>
+            <p id="reward-status" style="margin-top:10px; color: #888;"></p>
         </div>
     </div>
 
-    <div id="task-page" class="full-page hidden">
-        <div style="display:flex; align-items:center; padding: 0 20px;"><button onclick="closeTasks()" style="background:none; border:none; font-size:28px;">←</button><h2>Daily Tasks</h2></div>
-        <div class="card">
-            <div id="task-timer" style="font-size:30px; font-weight:bold; color:var(--primary);">20</div>
-            <iframe id="task-video" width="100%" height="200" src="" frameborder="0"></iframe>
-            <p>Watch for 20s to earn 50 PKR</p>
-        </div>
+    <div id="salary-page" class="full-page hidden">
+        <div style="display:flex; align-items:center; padding: 0 20px;"><button onclick="closePage('salary-page')" style="background:none; border:none; font-size:28px;">←</button><h2>Earning History</h2></div>
+        <div id="history-list">
+            </div>
     </div>
 
-    <div id="wallet-page" class="full-page hidden">
-        <div style="display:flex; align-items:center; padding: 0 20px;"><button onclick="closePage('wallet-page')" style="background:none; border:none; font-size:28px;">←</button><h2>My Wallet</h2></div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; padding:15px;">
-            <div class="card" style="margin:0; padding:15px;">💰 Balance<br><b id="wBal">0</b></div>
-            <div class="card" style="margin:0; padding:15px;">🏧 Withdrawn<br><b id="wOut">0</b></div>
-            <div class="card" style="margin:0; padding:15px;">📺 Videos<br><b id="wVid">0</b></div>
-            <div class="card" style="margin:0; padding:15px;">🎁 Rewards<br><b id="wRew">0</b></div>
-        </div>
-    </div>
+<script>
+    // ... (Firebase config aur baaki functions wahi rakhein) ...
 
-    <div id="team-page" class="full-page hidden">
-        <div style="display:flex; align-items:center; padding: 0 20px;"><button onclick="closePage('team-page')" style="background:none; border:none; font-size:28px;">←</button><h2>My Team</h2></div>
-        <div class="card">
-            <h3>Invite & Earn 700 PKR</h3>
-            <p>Your Referral Code:</p>
-            <div id="ref-code-display" style="background:#eee; padding:10px; font-weight:bold; border-radius:8px; margin-bottom:10px;">...</div>
-            <button class="btn-orange" onclick="copyRefLink()">Copy Invite Link</button>
-        </div>
-        <h4>Joined Members</h4>
-        <div id="team-list"></div>
-    </div>
+    // --- REWARDS LOGIC ---
+    function showRewards() {
+        showPage('rewards-page');
+        updateRewardUI();
+    }
 
-    <div id="admin-page" class="full-page hidden">
-        <div style="display:flex; align-items:center; padding: 0 20px;"><button onclick="closePage('admin-page')" style="background:none; border:none; font-size:28px;">←</button><h2>Admin Panel</h2></div>
-        <div id="admin-list" style="padding:10px;"></div>
-    </div>
-
-    <div id="withdraw-modal" class="overlay hidden">
-        <div class="card" style="width:80%; color:black;">
-            <h3>Withdraw</h3>
-            <select id="wMethod"><option>Easypaisa</option><option>JazzCash</option></select>
-            <input type="text" id="wAcc" placeholder="Account Number">
-            <input type="number" id="wAmt" placeholder="Amount (Min 500)">
-            <button class="btn-green" onclick="submitWithdraw()">Submit Request</button>
-            <button onclick="hideWithdraw()" style="color:red; background:none; border:none; margin-top:10px;">Cancel</button>
-        </div>
-    </div>
-
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyB8r-JkscDuet3gf33WhTgGxTdLMObCmc8",
-            authDomain: "jkseller.firebaseapp.com",
-            databaseURL: "https://jkseller-default-rtdb.firebaseio.com/",
-            projectId: "jkseller",
-            storageBucket: "jkseller.appspot.com",
-            messagingSenderId: "410778583623",
-            appId: "1:410778583623:web:8431529fc0b659414d2762"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.database();
-        const ADMIN_EMAIL = "waqas@gmail.com";
-
-        // UI Functions
-        function showPage(id) { document.getElementById(id).classList.remove('hidden'); }
-        function closePage(id) { document.getElementById(id).classList.add('hidden'); }
-        function showSignup() { document.getElementById('login-form').classList.add('hidden'); document.getElementById('signup-form').classList.remove('hidden'); }
-        function showLogin() { document.getElementById('signup-form').classList.add('hidden'); document.getElementById('login-form').classList.remove('hidden'); }
-        function showWithdrawModal() { document.getElementById('withdraw-modal').classList.remove('hidden'); }
-        function hideWithdraw() { document.getElementById('withdraw-modal').classList.add('hidden'); }
-
-        // Auth Logic
-        function login() {
-            const e = document.getElementById('email').value;
-            const p = document.getElementById('password').value;
-            auth.signInWithEmailAndPassword(e, p).catch(err => alert(err.message));
-        }
-
-        function signup() {
-            const e = document.getElementById('reg-email').value;
-            const p = document.getElementById('reg-password').value;
-            const ref = document.getElementById('reg-ref').value.trim();
-            if(p.length < 6) return alert("Password min 6 chars!");
-
-            auth.createUserWithEmailAndPassword(e, p).then(cred => {
-                const uid = cred.user.uid;
-                const myCode = uid.substring(0, 6).toUpperCase();
-                db.ref('users/' + uid).set({ email: e, balance: 0, myRefCode: myCode, refBy: ref || "none" });
-                
-                if(ref && ref !== "none") {
-                    db.ref('users').orderByChild('myRefCode').equalTo(ref).once('value', snapshot => {
-                        snapshot.forEach(child => {
-                            const pUid = child.key;
-                            db.ref('users/' + pUid).child('balance').transaction(b => (b || 0) + 700);
-                            db.ref('team/' + pUid).push({ email: e, date: new Date().toLocaleDateString() });
-                        });
-                    });
-                }
-            }).catch(err => alert(err.message));
-        }
-
-        // Team Functions
-        function showTeam() {
-            showPage('team-page');
-            db.ref('users/' + auth.currentUser.uid).once('value', s => {
-                document.getElementById('ref-code-display').innerText = s.val().myRefCode;
-            });
-            db.ref('team/' + auth.currentUser.uid).on('value', s => {
-                const list = document.getElementById('team-list');
-                list.innerHTML = "";
-                s.forEach(c => { list.innerHTML += `<div class="history-item">👤 <b>${c.val().email}</b><br><small>Joined: ${c.val().date}</small></div>`; });
-            });
-        }
-
-        function copyRefLink() {
-            const code = document.getElementById('ref-code-display').innerText;
-            const link = window.location.href.split('?')[0] + "?ref=" + code;
-            navigator.clipboard.writeText(link); alert("Link Copied!");
-        }
-
-        // Tasks & Rewards
-        let timer;
-        function openTasks() {
-            showPage('task-page');
-            let s = 20;
-            document.getElementById('task-video').src = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1";
-            timer = setInterval(() => {
-                s--; document.getElementById('task-timer').innerText = s;
-                if(s <= 0) {
-                    clearInterval(timer);
-                    db.ref('users/' + auth.currentUser.uid).child('balance').transaction(b => (b || 0) + 50);
-                    db.ref('users/' + auth.currentUser.uid).child('videosWatched').transaction(v => (v || 0) + 1);
-                    alert("50 PKR Added!"); closeTasks();
-                }
-            }, 1000);
-        }
-        function closeTasks() { clearInterval(timer); document.getElementById('task-video').src = ""; closePage('task-page'); }
-
-        function showRewards() {
+    function updateRewardUI() {
+        const u = auth.currentUser;
+        db.ref('users/' + u.uid).once('value', s => {
+            const last = s.val().lastReward || 0;
             const now = new Date().getTime();
-            db.ref('users/' + auth.currentUser.uid).once('value', s => {
-                const d = s.val();
-                if(now - (d.lastReward || 0) > 86400000) {
-                    db.ref('users/' + auth.currentUser.uid).update({ lastReward: now });
-                    db.ref('users/' + auth.currentUser.uid).child('balance').transaction(b => (b || 0) + 300);
-                    db.ref('users/' + auth.currentUser.uid).child('dailyRewardsTotal').transaction(r => (r || 0) + 300);
-                    alert("300 PKR Claimed!");
-                } else alert("Wait 24 hours!");
-            });
-        }
-
-        // Withdraw & Admin
-        function submitWithdraw() {
-            const amt = parseInt(document.getElementById('wAmt').value);
-            const u = auth.currentUser;
-            db.ref('users/' + u.uid).once('value', s => {
-                if(s.val().balance >= amt && amt >= 500) {
-                    db.ref('users/' + u.uid).child('balance').transaction(b => b - amt);
-                    db.ref('users/' + u.uid).child('withdrawn').transaction(w => (w || 0) + amt);
-                    db.ref('withdrawals').push({ uid: u.uid, email: u.email, amount: amt, method: document.getElementById('wMethod').value, account: document.getElementById('wAcc').value, status: "Pending", date: new Date().toLocaleString() });
-                    alert("Submitted!"); hideWithdraw();
-                } else alert("Check balance or Min 500");
-            });
-        }
-
-        function openAdminPanel() {
-            showPage('admin-page');
-            db.ref('withdrawals').on('value', s => {
-                const list = document.getElementById('admin-list');
-                list.innerHTML = "";
-                s.forEach(c => {
-                    const d = c.val();
-                    list.innerHTML += `<div class="history-item" style="border-left:5px solid ${d.status=='Pending'?'orange':'green'}">
-                        <b>${d.email}</b><br>${d.amount} PKR (${d.method})<br>Acc: ${d.account}<br>Status: ${d.status}<br>
-                        ${d.status=='Pending' ? `<button onclick="approve('${c.key}')" style="background:green;color:white;border:none;padding:5px 10px;border-radius:5px;margin-top:5px;">Approve</button>` : ''}
-                    </div>`;
-                });
-            });
-        }
-        function approve(id) { db.ref('withdrawals/'+id).update({status: "Success"}); }
-
-        // Observer
-        auth.onAuthStateChanged(user => {
-            if(user) {
-                document.getElementById('auth-section').classList.add('hidden');
-                document.getElementById('main-dashboard').classList.remove('hidden');
-                if(user.email === ADMIN_EMAIL) document.getElementById('admin-btn').classList.remove('hidden');
-                db.ref('users/' + user.uid).on('value', s => {
-                    const d = s.val() || {};
-                    document.getElementById('userBalance').innerText = (d.balance || 0) + " PKR";
-                    document.getElementById('wBal').innerText = (d.balance || 0) + " PKR";
-                    document.getElementById('wOut').innerText = (d.withdrawn || 0) + " PKR";
-                    document.getElementById('wVid').innerText = (d.videosWatched || 0);
-                    document.getElementById('wRew').innerText = (d.dailyRewardsTotal || 0) + " PKR";
-                });
+            if (now - last < 86400000) {
+                document.getElementById('claim-btn').disabled = true;
+                document.getElementById('claim-btn').style.background = "#ccc";
+                document.getElementById('reward-status').innerText = "Already claimed! Come back tomorrow.";
             } else {
-                document.getElementById('auth-section').classList.remove('hidden');
-                document.getElementById('main-dashboard').classList.add('hidden');
+                document.getElementById('claim-btn').disabled = false;
+                document.getElementById('claim-btn').style.background = "var(--primary)";
+                document.getElementById('reward-status').innerText = "Reward is ready!";
             }
         });
-        function logout() { auth.signOut().then(() => location.reload()); }
-    </script>
-</body>
-</html>
+    }
+
+    function claimDailyReward() {
+        const u = auth.currentUser;
+        const now = new Date().getTime();
+        
+        db.ref('users/' + u.uid).child('balance').transaction(b => (b || 0) + 300);
+        db.ref('users/' + u.uid).update({ lastReward: now });
+        
+        // History mein record add karna
+        db.ref('history/' + u.uid).push({
+            type: "Daily Reward",
+            amount: 300,
+            date: new Date().toLocaleString()
+        });
+
+        alert("300 PKR Added to your wallet!");
+        updateRewardUI();
+    }
+
+    // --- HISTORY (SALARY) LOGIC ---
+    function showSalary() {
+        showPage('salary-page');
+        const u = auth.currentUser;
+        db.ref('history/' + u.uid).on('value', s => {
+            const list = document.getElementById('history-list');
+            list.innerHTML = "";
+            if(!s.exists()) {
+                list.innerHTML = "<p>No history found yet.</p>";
+                return;
+            }
+            s.forEach(item => {
+                const h = item.val();
+                list.innerHTML += `
+                    <div class="history-item">
+                        <div style="display:flex; justify-content:space-between;">
+                            <b>${h.type}</b>
+                            <span style="color:green;">+${h.amount} PKR</span>
+                        </div>
+                        <small style="color:#888;">${h.date}</small>
+                    </div>`;
+            });
+        });
+    }
+
+    // Task complete hone par bhi history mein entry add karein
+    // (Aapke openTasks function ke timer khatam hone wali jagah ye line add karein):
+    /*
+    db.ref('history/' + auth.currentUser.uid).push({
+        type: "Video Task",
+        amount: 50,
+        date: new Date().toLocaleString()
+    });
+    */
+</script>
