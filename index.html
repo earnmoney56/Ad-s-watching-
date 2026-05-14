@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jh Seller - Referral & Team App</title>
+    <title>Jh Seller - Final Fixed Login</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -13,37 +13,34 @@
         :root { --primary: #f39c12; --bg: #fffbf2; --text: #333; }
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 15px; text-align: center; color: var(--text); }
         .hidden { display: none !important; }
-        
         .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 400px; margin: 20px auto; }
-        input, select { width: 92%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; }
-        .btn-orange { background: var(--primary); color: white; border: none; width: 100%; padding: 16px; border-radius: 18px; font-weight: bold; cursor: pointer; font-size: 16px; }
-        .btn-green { width: 100%; padding: 14px; background: #28a745; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
-
+        input { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; font-size: 16px; }
+        .btn-orange { background: var(--primary); color: white; border: none; width: 100%; padding: 16px; border-radius: 18px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        .btn-green { width: 100%; padding: 14px; background: #28a745; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px; }
         .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 25px; }
         .menu-item { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: #555; cursor: pointer; }
         .icon-bg { width: 58px; height: 58px; background: white; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 5px 15px rgba(0,0,0,0.06); }
-
         .full-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; overflow-y: auto; padding-top: 20px; }
-        .history-item { background: white; margin: 10px 15px; padding: 15px; border-radius: 15px; text-align: left; border-left: 5px solid var(--primary); box-shadow: 0 3px 10px rgba(0,0,0,0.03); }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; }
     </style>
 </head>
 <body>
 
     <div id="auth-section" class="card">
-        <h2>Jh Seller</h2>
-        <div id="login-fields">
+        <h2 id="auth-title">Jh Seller Login</h2>
+        
+        <div id="login-form">
             <input type="email" id="email" placeholder="Email Address">
             <input type="password" id="password" placeholder="Password">
-            <button class="btn-green" onclick="login()">Login</button>
-            <p onclick="toggleAuth(true)" style="cursor:pointer; color:var(--primary);">Naya account banayein (Signup)</p>
+            <button class="btn-green" id="login-btn" onclick="login()">Login</button>
+            <p onclick="showSignup()" style="cursor:pointer; color:var(--primary); margin-top:15px; font-weight:bold;">Naya account banayein (Signup)</p>
         </div>
-        <div id="signup-fields" class="hidden">
+
+        <div id="signup-form" class="hidden">
             <input type="email" id="reg-email" placeholder="Email Address">
             <input type="password" id="reg-password" placeholder="Create Password">
             <input type="text" id="reg-ref" placeholder="Referral Code (Optional)">
-            <button class="btn-orange" onclick="signup()">Create Account</button>
-            <p onclick="toggleAuth(false)" style="cursor:pointer; color:var(--primary);">Pehle se account hai? Login</p>
+            <button class="btn-orange" id="signup-btn" onclick="signup()">Create Account</button>
+            <p onclick="showLogin()" style="cursor:pointer; color:var(--primary); margin-top:15px; font-weight:bold;">Pehle se account hai? Login</p>
         </div>
     </div>
 
@@ -51,45 +48,16 @@
         <div class="card">
             <p style="color: #888; font-size: 12px;">AVAILABLE BALANCE</p>
             <h1 id="userBalance" style="font-size: 38px;">0 PKR</h1>
-            <button class="btn-orange" onclick="showWithdrawModal()">Withdraw Funds ➔</button>
         </div>
 
         <div class="menu-grid">
-            <div class="menu-item" onclick="openTasks()"><div class="icon-bg">📊</div><span>Tasks</span></div>
-            <div class="menu-item" onclick="showPage('wallet-page')"><div class="icon-bg">👛</div><span>Wallet</span></div>
-            <div class="menu-item" onclick="showRewards()"><div class="icon-bg">🎁</div><span>Rewards</span></div>
-            <div class="menu-item" onclick="showSalary()"><div class="icon-bg">📈</div><span>Salary</span></div>
-            <div class="menu-item" onclick="showTeam()"><div class="icon-bg">👥</div><span>Team</span></div>
-            <div class="menu-item"><div class="icon-bg">🏆</div><span>Levels</span></div>
-            <div class="menu-item" onclick="window.location.href='https://wa.me/YOURNUMBER'"><div class="icon-bg">🌐</div><span>Support</span></div>
-            <div class="menu-item id="admin-btn" class="hidden" onclick="openAdminPanel()"><div class="icon-bg" style="background:#333; color:white;">🛡️</div><span>Admin</span></div>
+            <div class="menu-item" onclick="alert('Referral System Active!')"><div class="icon-bg">👥</div><span>Team</span></div>
             <div class="menu-item" onclick="logout()"><div class="icon-bg">⚙️</div><span>Logout</span></div>
         </div>
     </div>
 
-    <div id="team-page" class="full-page hidden">
-        <div style="display:flex; align-items:center; padding: 0 20px;"><button onclick="closePage('team-page')" style="background:none; border:none; font-size:28px;">←</button><h2>My Team</h2></div>
-        <div class="card">
-            <h3>Invite & Earn 700 PKR</h3>
-            <p>Apna referral code share karein:</p>
-            <div id="ref-code-box" style="background:#eee; padding:10px; font-weight:bold; border-radius:8px; margin-bottom:10px;">LOADING...</div>
-            <button class="btn-orange" onclick="copyRefLink()">Copy Invite Link</button>
-        </div>
-        <h4>Team History</h4>
-        <div id="team-list"></div>
-    </div>
-
-    <div id="wallet-page" class="full-page hidden">
-        <div style="display:flex; align-items:center; padding: 0 20px;"><button onclick="closePage('wallet-page')" style="background:none; border:none; font-size:28px;">←</button><h2>My Wallet</h2></div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; padding:15px;">
-            <div class="card" style="margin:0; padding:15px;">💰<br><small>Balance</small><br><b id="wBal">0</b></div>
-            <div class="card" style="margin:0; padding:15px;">🏧<br><small>Withdrawn</small><br><b id="wOut">0</b></div>
-            <div class="card" style="margin:0; padding:15px;">📺<br><small>Videos</small><br><b id="wVid">0</b></div>
-            <div class="card" style="margin:0; padding:15px;">🎁<br><small>Rewards</small><br><b id="wRew">0</b></div>
-        </div>
-    </div>
-
     <script>
+        // Double Check your Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyB8r-JkscDuet3gf33WhTgGxTdLMObCmc8",
             authDomain: "jkseller.firebaseapp.com",
@@ -102,31 +70,91 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
-        const ADMIN_EMAIL = "samiseyam49@gmail.com";
 
-        // Auth Logic
-        function toggleAuth(isSignup) {
-            document.getElementById('login-fields').classList.toggle('hidden', isSignup);
-            document.getElementById('signup-fields').classList.toggle('hidden', !isSignup);
+        // UI Switches
+        function showSignup() {
+            document.getElementById('login-form').classList.add('hidden');
+            document.getElementById('signup-form').classList.remove('hidden');
+            document.getElementById('auth-title').innerText = "Create Account";
         }
 
-        function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value).catch(e => alert(e.message)); }
-        
+        function showLogin() {
+            document.getElementById('signup-form').classList.add('hidden');
+            document.getElementById('login-form').classList.remove('hidden');
+            document.getElementById('auth-title').innerText = "Jh Seller Login";
+        }
+
+        // Login Logic
+        function login() {
+            const e = document.getElementById('email').value;
+            const p = document.getElementById('password').value;
+            if(!e || !p) return alert("Email aur Password likhein!");
+
+            auth.signInWithEmailAndPassword(e, p)
+                .then(() => console.log("Login Success"))
+                .catch(err => alert("Login Error: " + err.message));
+        }
+
+        // Signup Logic (The fix is here)
         function signup() {
-            const email = document.getElementById('reg-email').value;
-            const pass = document.getElementById('reg-password').value;
-            const refCode = document.getElementById('reg-ref').value.trim();
+            const e = document.getElementById('reg-email').value;
+            const p = document.getElementById('reg-password').value;
+            const ref = document.getElementById('reg-ref').value.trim();
 
-            auth.createUserWithEmailAndPassword(email, pass).then((user) => {
-                const uid = user.user.uid;
-                // Naya user data
-                db.ref('users/' + uid).set({
-                    email: email,
-                    balance: 0,
-                    refBy: refCode || "none",
-                    myRefCode: uid.substring(0, 6) // Chota referral code
+            if(!e || !p) return alert("Tamam fields fill karein!");
+            if(p.length < 6) return alert("Password kam az kam 6 huroof ka hona chahiye!");
+
+            auth.createUserWithEmailAndPassword(e, p)
+                .then((userCredential) => {
+                    const uid = userCredential.user.uid;
+                    const myCode = uid.substring(0, 6).toUpperCase();
+
+                    // Database mein data save karna
+                    db.ref('users/' + uid).set({
+                        email: e,
+                        balance: 0,
+                        myRefCode: myCode,
+                        refBy: ref || "none"
+                    }).then(() => {
+                        // Agar referral code use hua hai toh reward dena
+                        if(ref !== "" && ref !== "none") {
+                            giveReferralReward(ref, e);
+                        }
+                        alert("Account ban gaya!");
+                    });
+                })
+                .catch(err => alert("Signup Error: " + err.message));
+        }
+
+        function giveReferralReward(code, newMemberEmail) {
+            db.ref('users').orderByChild('myRefCode').equalTo(code).once('value', snapshot => {
+                if(snapshot.exists()) {
+                    snapshot.forEach(child => {
+                        const parentUid = child.key;
+                        const currentBal = child.val().balance || 0;
+                        db.ref('users/' + parentUid).update({ balance: currentBal + 700 });
+                        db.ref('team/' + parentUid).push({ member: newMemberEmail, date: new Date().toLocaleDateString() });
+                    });
+                }
+            });
+        }
+
+        // Auth Observer
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                document.getElementById('auth-section').classList.add('hidden');
+                document.getElementById('main-dashboard').classList.remove('hidden');
+                db.ref('users/' + user.uid).on('value', s => {
+                    const d = s.val() || {};
+                    document.getElementById('userBalance').innerText = (d.balance || 0) + " PKR";
                 });
+            } else {
+                document.getElementById('auth-section').classList.remove('hidden');
+                document.getElementById('main-dashboard').classList.add('hidden');
+            }
+        });
 
-                // Agar kisi ke link se aaya hai toh usay 700 PKR dein
-                if (refCode) {
-                    db.ref('users').orderByChild
+        function logout() { auth.signOut(); }
+    </script>
+</body>
+</html>
