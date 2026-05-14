@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jh Seller - Daily Rewards Pro</title>
+    <title>Jh Seller - Pro Earning App</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -14,28 +14,34 @@
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 15px; text-align: center; color: var(--text); }
         .hidden { display: none !important; }
         
+        /* Main UI Elements */
         .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 400px; margin: 20px auto; }
+        input, select { width: 92%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 12px; }
         .btn-orange { background: var(--primary); color: white; border: none; width: 100%; padding: 16px; border-radius: 18px; font-weight: bold; cursor: pointer; font-size: 16px; }
         .btn-green { width: 100%; padding: 14px; background: #28a745; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; }
 
+        /* Dashboard Grid */
         .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 25px; }
-        .menu-item { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; cursor: pointer; }
+        .menu-item { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: #555; cursor: pointer; }
         .icon-bg { width: 58px; height: 58px; background: white; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 5px 15px rgba(0,0,0,0.06); }
 
-        .wallet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; }
-        .stat-box-new { background: white; padding: 20px 10px; border-radius: 22px; box-shadow: 0 5px 20px rgba(0,0,0,0.04); display: flex; flex-direction: column; align-items: center; border: 1px solid #f9ebd2; }
-        .stat-label-new { font-size: 10px; color: #888; font-weight: bold; text-transform: uppercase; margin-top: 8px; }
-
+        /* Full Page View (Tasks, Wallet, Salary) */
         .full-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; overflow-y: auto; padding-top: 20px; }
-        .history-item { background: white; margin: 10px 15px; padding: 15px; border-radius: 15px; text-align: left; border-left: 5px solid #28a745; box-shadow: 0 3px 10px rgba(0,0,0,0.03); }
+        .history-item { background: white; margin: 10px 15px; padding: 15px; border-radius: 15px; text-align: left; border-left: 5px solid var(--primary); box-shadow: 0 3px 10px rgba(0,0,0,0.03); }
+        
+        /* Video Container on Task Page */
+        .video-box { background: #000; border-radius: 20px; overflow: hidden; margin: 20px; position: relative; }
+        .timer-badge { background: var(--primary); color: white; padding: 10px 20px; border-radius: 50px; font-size: 20px; font-weight: bold; display: inline-block; margin-bottom: 15px; }
+        
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; }
     </style>
 </head>
 <body>
 
     <div id="auth-section" class="card">
         <h2>Jh Seller Login</h2>
-        <input type="email" id="email" style="width:90%; padding:12px; margin:10px 0;" placeholder="Email">
-        <input type="password" id="password" style="width:90%; padding:12px; margin:10px 0;" placeholder="Password">
+        <input type="email" id="email" placeholder="Email Address">
+        <input type="password" id="password" placeholder="Password">
         <button class="btn-green" onclick="login()">Login</button>
     </div>
 
@@ -43,42 +49,66 @@
         <div class="card">
             <p style="color: #888; font-size: 12px;">AVAILABLE BALANCE</p>
             <h1 id="userBalance" style="font-size: 38px;">0 PKR</h1>
-            <button class="btn-orange" onclick="showWithdraw()">Withdraw Funds ➔</button>
+            <button class="btn-orange" onclick="showWithdrawModal()">Withdraw Funds ➔</button>
         </div>
 
         <div class="menu-grid">
-            <div class="menu-item" onclick="watchAd()"><div class="icon-bg">📊</div><span>Tasks</span></div>
-            <div class="menu-item" onclick="showWallet()"><div class="icon-bg">👛</div><span>Wallet</span></div>
-            <div class="menu-item" onclick="openRewards()"><div class="icon-bg">🎁</div><span>Rewards</span></div>
+            <div class="menu-item" onclick="openTasks()"><div class="icon-bg">📊</div><span>Tasks</span></div>
+            <div class="menu-item" onclick="showPage('wallet-page')"><div class="icon-bg">👛</div><span>Wallet</span></div>
+            <div class="menu-item" onclick="showRewards()"><div class="icon-bg">🎁</div><span>Rewards</span></div>
             <div class="menu-item" onclick="showSalary()"><div class="icon-bg">📈</div><span>Salary</span></div>
+            <div class="menu-item"><div class="icon-bg">👥</div><span>Team</span></div>
+            <div class="menu-item"><div class="icon-bg">🏆</div><span>Levels</span></div>
+            <div class="menu-item" onclick="window.location.href='https://wa.me/YOURNUMBER'"><div class="icon-bg">🌐</div><span>Support</span></div>
             <div class="menu-item" onclick="logout()"><div class="icon-bg">⚙️</div><span>Logout</span></div>
         </div>
     </div>
 
-    <div id="wallet-page" class="full-page hidden">
-        <div style="display:flex; align-items:center; padding: 0 20px;"><button onclick="closePage('wallet-page')" style="background:none; border:none; font-size:28px;">←</button><h2>My Wallet</h2></div>
-        <div class="wallet-grid">
-            <div class="stat-box-new"><span>💰</span><div class="stat-label-new">Available</div><div id="wBal" style="font-weight:bold; color:#28a745;">0 PKR</div></div>
-            <div class="stat-box-new"><span>🏧</span><div class="stat-label-new">Withdrawn</div><div id="wOut" style="font-weight:bold; color:#e74c3c;">0 PKR</div></div>
-            <div class="stat-box-new"><span>📺</span><div class="stat-label-new">Videos</div><div id="wVid" style="font-weight:bold;">0</div></div>
-            <div class="stat-box-new"><span>🎁</span><div class="stat-label-new">Rewards</div><div id="wRew" style="font-weight:bold;">0 PKR</div></div>
+    <div id="task-page" class="full-page hidden">
+        <div style="display:flex; align-items:center; padding: 0 20px;">
+            <button onclick="closeTasks()" style="background:none; border:none; font-size:28px; cursor:pointer;">←</button>
+            <h2 style="margin-left: 20px;">Daily Video Tasks</h2>
         </div>
-    </div>
-
-    <div id="rewards-page" class="full-page hidden">
-        <div style="display:flex; align-items:center; padding: 0 20px;"><button onclick="closePage('rewards-page')" style="background:none; border:none; font-size:28px;">←</button><h2>Daily Rewards</h2></div>
-        <div class="card">
-            <h3>Claim 300 PKR</h3>
-            <p style="font-size:13px; color:#666;">You can claim this reward once every 24 hours.</p>
-            <button id="claimBtn" class="btn-orange" onclick="claimDaily()">Claim Reward</button>
+        
+        <div id="task-content">
+            <div class="timer-badge" id="task-timer">20</div>
+            <div class="video-box">
+                <iframe id="task-video" width="100%" height="220" src="" frameborder="0" allow="autoplay"></iframe>
+            </div>
+            <p id="task-status">Watch video for 20 seconds to earn 50 PKR</p>
         </div>
-        <h4 style="margin-top:20px;">Reward History</h4>
-        <div id="reward-history"></div>
     </div>
 
     <div id="salary-page" class="full-page hidden">
-        <div style="display:flex; align-items:center; padding: 0 20px;"><button onclick="closePage('salary-page')" style="background:none; border:none; font-size:28px;">←</button><h2>History</h2></div>
+        <div style="display:flex; align-items:center; padding: 0 20px;">
+            <button onclick="closePage('salary-page')" style="background:none; border:none; font-size:28px; cursor:pointer;">←</button>
+            <h2 style="margin-left: 20px;">Withdrawal History</h2>
+        </div>
         <div id="salary-list"></div>
+    </div>
+
+    <div id="wallet-page" class="full-page hidden">
+        <div style="display:flex; align-items:center; padding: 0 20px;">
+            <button onclick="closePage('wallet-page')" style="background:none; border:none; font-size:28px; cursor:pointer;">←</button>
+            <h2 style="margin-left: 20px;">My Wallet</h2>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; padding:15px;">
+            <div class="card" style="margin:0; padding:15px;">💰<br><small>Balance</small><br><b id="wBal">0</b></div>
+            <div class="card" style="margin:0; padding:15px;">🏧<br><small>Withdrawn</small><br><b id="wOut">0</b></div>
+            <div class="card" style="margin:0; padding:15px;">📺<br><small>Videos</small><br><b id="wVid">0</b></div>
+            <div class="card" style="margin:0; padding:15px;">🎁<br><small>Rewards</small><br><b id="wRew">0</b></div>
+        </div>
+    </div>
+
+    <div id="withdraw-modal" class="overlay hidden">
+        <div class="card" style="width:80%; color:black;">
+            <h3>Withdraw</h3>
+            <select id="wMethod"><option>Easypaisa</option><option>JazzCash</option></select>
+            <input type="text" id="wAcc" placeholder="Account Number">
+            <input type="number" id="wAmt" placeholder="Amount (Min 500)">
+            <button class="btn-green" onclick="submitWithdraw()">Submit</button>
+            <button onclick="hideWithdraw()" style="color:red; background:none; border:none; margin-top:10px;">Cancel</button>
+        </div>
     </div>
 
     <script>
@@ -97,51 +127,75 @@
 
         function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value); }
         function logout() { auth.signOut().then(() => location.reload()); }
-        function showWallet() { document.getElementById('wallet-page').classList.remove('hidden'); }
-        function openRewards() { document.getElementById('rewards-page').classList.remove('hidden'); loadRewardHistory(); }
-        function showSalary() { document.getElementById('salary-page').classList.remove('hidden'); }
+        function showPage(id) { document.getElementById(id).classList.remove('hidden'); }
         function closePage(id) { document.getElementById(id).classList.add('hidden'); }
+        function showWithdrawModal() { document.getElementById('withdraw-modal').classList.remove('hidden'); }
+        function hideWithdraw() { document.getElementById('withdraw-modal').classList.add('hidden'); }
 
-        // Daily Reward Logic (300 PKR / 24 Hours)
-        function claimDaily() {
-            const u = auth.currentUser;
-            const now = new Date().getTime();
-            db.ref('users/' + u.uid).once('value', s => {
-                const d = s.val() || {};
-                const lastClaim = d.lastRewardTime || 0;
+        // TASK PAGE LOGIC
+        let taskTimerInterval;
+        function openTasks() {
+            showPage('task-page');
+            const video = document.getElementById('task-video');
+            const timerDisplay = document.getElementById('task-timer');
+            let timeLeft = 20;
+            
+            timerDisplay.innerText = timeLeft;
+            video.src = "https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1";
+            
+            taskTimerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.innerText = timeLeft;
                 
-                if (now - lastClaim > 24 * 60 * 60 * 1000) { // 24 Hours check
-                    const newBal = (d.balance || 0) + 300;
-                    const newRew = (d.dailyRewardsTotal || 0) + 300;
-                    
-                    db.ref('users/' + u.uid).update({ 
-                        balance: newBal, 
-                        dailyRewardsTotal: newRew,
-                        lastRewardTime: now 
+                if (timeLeft <= 0) {
+                    clearInterval(taskTimerInterval);
+                    const u = auth.currentUser;
+                    db.ref('users/' + u.uid).once('value', s => {
+                        const d = s.val() || {};
+                        db.ref('users/' + u.uid).update({ 
+                            balance: (d.balance || 0) + 50, 
+                            videosWatched: (d.videosWatched || 0) + 1 
+                        });
                     });
-                    
-                    db.ref('reward_history/' + u.uid).push({
-                        amount: 300,
-                        date: new Date().toLocaleString(),
-                        type: "Daily Reward"
-                    });
-                    
-                    alert("Mubarak ho! 300 PKR claim ho gaye.");
-                } else {
-                    const hoursLeft = Math.ceil((24 * 60 * 60 * 1000 - (now - lastClaim)) / (1000 * 60 * 60));
-                    alert(`Abhi wait karein! Agla reward ${hoursLeft} ghante baad milega.`);
+                    alert("Reward Added: 50 PKR");
+                    closeTasks();
                 }
-            });
+            }, 1000);
         }
 
-        function loadRewardHistory() {
-            const list = document.getElementById('reward-history');
-            db.ref('reward_history/' + auth.currentUser.uid).on('value', s => {
+        function closeTasks() {
+            clearInterval(taskTimerInterval);
+            document.getElementById('task-video').src = "";
+            closePage('task-page');
+        }
+
+        function showSalary() {
+            showPage('salary-page');
+            const list = document.getElementById('salary-list');
+            db.ref('withdrawals').orderByChild('uid').equalTo(auth.currentUser.uid).on('value', s => {
                 list.innerHTML = "";
                 s.forEach(c => {
                     const d = c.val();
-                    list.innerHTML += `<div class="history-item">💰 <b>${d.amount} PKR</b> Claimed<br><small>${d.date}</small></div>`;
+                    list.innerHTML += `<div class="history-item">
+                        <b>${d.amount} PKR</b> - ${d.method}<br>
+                        Status: <span style="color:${d.status=='Pending'?'#f39c12':'#28a745'}">${d.status}</span><br>
+                        <small>${d.date}</small>
+                    </div>`;
                 });
+            });
+        }
+
+        function submitWithdraw() {
+            const u = auth.currentUser;
+            const amt = parseInt(document.getElementById('wAmt').value);
+            if (amt < 500) return alert("Min 500 PKR");
+            db.ref('users/' + u.uid).once('value', s => {
+                const d = s.val() || {};
+                if (d.balance >= amt) {
+                    db.ref('users/' + u.uid).update({ balance: d.balance - amt, withdrawn: (d.withdrawn || 0) + amt });
+                    db.ref('withdrawals').push({ uid: u.uid, amount: amt, method: document.getElementById('wMethod').value, account: document.getElementById('wAcc').value, status: "Pending", date: new Date().toLocaleDateString() });
+                    alert("Requested!"); hideWithdraw();
+                } else { alert("Insufficient balance!"); }
             });
         }
 
