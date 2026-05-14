@@ -3,79 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jh Seller - Task Pro</title>
+    <title>Jh Seller - Elite App</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
-        :root { --primary: #f39c12; --bg: #f8f9fa; --card-bg: #ffffff; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 15px; text-align: center; }
+        :root { --primary: #f39c12; --bg: #f4f7f6; --card-bg: #ffffff; --dark: #2c3e50; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 0; text-align: center; color: #333; }
         .hidden { display: none !important; }
         
-        .card { background: var(--card-bg); padding: 25px; border-radius: 24px; box-shadow: 0 12px 30px rgba(0,0,0,0.08); max-width: 420px; margin: 20px auto; }
-        .btn-main { background: var(--primary); color: white; border: none; width: 100%; padding: 16px; border-radius: 18px; font-weight: 700; cursor: pointer; font-size: 16px; }
-        
-        .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 25px; }
-        .menu-item { background: white; padding: 15px 5px; border-radius: 20px; display: flex; flex-direction: column; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid #f0f0f0; }
-        
+        /* UI Components */
+        .card { background: var(--card-bg); padding: 30px; border-radius: 28px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); max-width: 450px; margin: 20px auto; border: 1px solid #eee; }
+        input { width: 90%; padding: 15px; margin: 12px 0; border: 1.5px solid #eee; border-radius: 15px; font-size: 16px; outline: none; }
+        .btn-orange { background: var(--primary); color: white; border: none; width: 100%; padding: 18px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 17px; box-shadow: 0 5px 15px rgba(243,156,18,0.3); }
+        .btn-green { background: #27ae60; color: white; border: none; width: 100%; padding: 18px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 17px; }
+
+        /* Dashboard */
+        .balance-card { background: linear-gradient(135deg, var(--dark), #34495e); color: white; padding: 40px 20px; border-radius: 30px; margin: 20px; position: relative; overflow: hidden; }
+        .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 20px; }
+        .menu-item { background: white; padding: 20px 10px; border-radius: 25px; display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; }
+        .menu-item:active { transform: scale(0.9); }
+        .icon-bg { font-size: 32px; }
+
+        /* Pages */
         .full-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; overflow-y: auto; }
-        .header { display: flex; align-items: center; padding: 15px 20px; background: white; border-bottom: 1px solid #eee; }
+        .header { display: flex; align-items: center; padding: 20px; background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; }
+        .history-item { background: white; margin: 12px 20px; padding: 20px; border-radius: 20px; text-align: left; border-left: 8px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.04); }
         
-        #video-container { width: 90%; margin: 20px auto; border-radius: 15px; overflow: hidden; background: #000; height: 220px; }
-        .timer-circle { width: 80px; height: 80px; border: 5px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; margin: 20px auto; }
-        .history-item { background: white; margin: 10px 15px; padding: 15px; border-radius: 18px; text-align: left; border-left: 6px solid var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+        /* Video Player */
+        #video-box { width: 90%; margin: 20px auto; aspect-ratio: 16/9; background: #000; border-radius: 20px; overflow: hidden; }
+        .timer-ui { width: 100px; height: 100px; border: 6px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: bold; margin: 25px auto; color: var(--primary); }
     </style>
 </head>
 <body>
 
-    <div id="auth-section" class="card">
-        <h2>Jh Seller Login</h2>
+    <div id="auth-section" class="card" style="margin-top: 50px;">
+        <h1 style="color: var(--primary); margin-bottom: 5px;">Jh Seller</h1>
+        <p style="color: #888; margin-bottom: 30px;">Login to your account</p>
         <div id="login-form">
-            <input type="email" id="email" placeholder="Email" style="width:90%; padding:12px; margin:10px 0; border-radius:10px; border:1px solid #ddd;">
-            <input type="password" id="password" placeholder="Password" style="width:90%; padding:12px; margin:10px 0; border-radius:10px; border:1px solid #ddd;">
-            <button class="btn-main" onclick="login()" style="background:#2ecc71;">Sign In</button>
-            <p onclick="showSignup()" style="cursor:pointer; color:var(--primary); margin-top:15px;">Create Account</p>
+            <input type="email" id="email" placeholder="Email Address">
+            <input type="password" id="password" placeholder="Password">
+            <button class="btn-green" onclick="login()">Login Now</button>
+            <p onclick="showSignup()" style="cursor:pointer; color:var(--primary); font-weight:bold; margin-top:20px;">Don't have an account? Signup</p>
         </div>
         <div id="signup-form" class="hidden">
-            <input type="email" id="reg-email" placeholder="Email" style="width:90%; padding:12px; margin:10px 0;">
-            <input type="password" id="reg-password" placeholder="Password" style="width:90%; padding:12px; margin:10px 0;">
-            <input type="text" id="reg-ref" placeholder="Referral Code" style="width:90%; padding:12px; margin:10px 0;">
-            <button class="btn-main" onclick="signup()">Register</button>
-            <p onclick="showLogin()" style="cursor:pointer; color:var(--primary); margin-top:15px;">Back to Login</p>
+            <input type="email" id="reg-email" placeholder="Email Address">
+            <input type="password" id="reg-password" placeholder="Password (Min 6 chars)">
+            <input type="text" id="reg-ref" placeholder="Referral Code (Optional)">
+            <button class="btn-orange" onclick="signup()">Create Account</button>
+            <p onclick="showLogin()" style="cursor:pointer; color:var(--primary); font-weight:bold; margin-top:20px;">Back to Login</p>
         </div>
     </div>
 
     <div id="main-dashboard" class="hidden">
-        <div class="card" style="background: #2c3e50; color: white;">
-            <p style="opacity: 0.8;">BALANCE</p>
-            <h1 id="userBalance">0 PKR</h1>
+        <div class="balance-card">
+            <p style="opacity: 0.7; font-size: 14px; letter-spacing: 1px;">TOTAL AVAILABLE BALANCE</p>
+            <h1 id="userBalance" style="font-size: 45px; margin: 15px 0;">0 PKR</h1>
+            <button class="btn-orange" style="background: rgba(255,255,255,0.15); border: 1px solid white;" onclick="showPage('withdraw-page')">Withdraw Funds</button>
         </div>
+
         <div class="menu-grid">
-            <div class="menu-item" onclick="openTasks()"><span>📺</span><span>Tasks</span></div>
-            <div class="menu-item" onclick="showRewards()"><span>🎁</span><span>Rewards</span></div>
-            <div class="menu-item" onclick="showSalary()"><span>📜</span><span>History</span></div>
-            <div class="menu-item" id="admin-btn" class="hidden" onclick="showPage('admin-page')"><span>🛡️</span><span>Admin</span></div>
-            <div class="menu-item" onclick="logout()"><span>🚪</span><span>Logout</span></div>
+            <div class="menu-item" onclick="openTasks()"><span class="icon-bg">🎬</span><span>Tasks</span></div>
+            <div class="menu-item" onclick="showPage('wallet-page')"><span class="icon-bg">💳</span><span>Wallet</span></div>
+            <div class="menu-item" onclick="showRewards()"><span class="icon-bg">🎁</span><span>Rewards</span></div>
+            <div class="menu-item" onclick="showSalary()"><span class="icon-bg">📝</span><span>History</span></div>
+            <div class="menu-item" onclick="showTeam()"><span class="icon-bg">👥</span><span>Team</span></div>
+            <div class="menu-item" id="admin-btn" class="hidden" onclick="showPage('admin-page')"><span class="icon-bg">🛡️</span><span>Admin</span></div>
+            <div class="menu-item" onclick="logout()"><span class="icon-bg">🚪</span><span>Logout</span></div>
         </div>
     </div>
 
+    <div id="wallet-page" class="full-page hidden">
+        <div class="header"><button onclick="closePage('wallet-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">My Wallet</h2></div>
+        <div class="card" style="margin-top:20px; text-align:left;">
+            <p>💰 Current Balance: <b id="wal-bal">0 PKR</b></p>
+            <p>📤 Total Withdrawn: <b id="wal-out">0 PKR</b></p>
+            <p>🎁 Total Rewards: <b id="wal-rew">0 PKR</b></p>
+            <p>📺 Videos Watched: <b id="wal-vid">0</b></p>
+        </div>
+        <button class="btn-orange" style="width:90%;" onclick="showPage('withdraw-page')">Request Withdrawal</button>
+    </div>
+
     <div id="task-page" class="full-page hidden">
-        <div class="header"><button onclick="closeTasks()" style="background:none; border:none; font-size:24px;">✕</button><h3 style="margin-left:15px;">Watch & Earn</h3></div>
+        <div class="header"><button onclick="closeTasks()" style="background:none; border:none; font-size:28px;">✕</button><h2 style="margin-left:15px;">Daily Tasks</h2></div>
         <div class="card">
-            <p id="task-count" style="font-weight:bold; color:var(--primary);">Tasks Remaining: 30/30</p>
-            <div id="video-container">
-                <iframe id="task-iframe" width="100%" height="100%" src="" frameborder="0" allow="autoplay"></iframe>
+            <h3 id="task-info">Remaining: 30/30</h3>
+            <div id="video-box">
+                <iframe id="task-frame" width="100%" height="100%" src="" frameborder="0" allow="autoplay"></iframe>
             </div>
-            <div class="timer-circle" id="timer-display">60</div>
-            <p>Video dekhte rahein, timer khatam hone par reward milega.</p>
+            <div class="timer-ui" id="timer-txt">60</div>
+            <p style="color:#777;">Watch for 60 seconds to earn 50 PKR</p>
         </div>
     </div>
 
     <div id="salary-page" class="full-page hidden">
-        <div class="header"><button onclick="closePage('salary-page')" style="background:none; border:none; font-size:24px;">✕</button><h3>History</h3></div>
+        <div class="header"><button onclick="closePage('salary-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Earning History</h2></div>
         <div id="history-list"></div>
+    </div>
+
+    <div id="admin-page" class="full-page hidden">
+        <div class="header"><button onclick="closePage('admin-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Admin Panel</h2></div>
+        <div id="admin-list"></div>
     </div>
 
     <script>
@@ -91,100 +121,72 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
+        const ADMIN = "samiseyam49@gmail.com";
 
-        // Video List
-        const videos = [
-            "dQw4w9WgXcQ", "3JZ_D3ELwOQ", "V-_O7nl0Ii0", "L_jWHffIx5E", "7wtfhZwyrcc"
-        ];
+        const vids = ["dQw4w9WgXcQ", "3JZ_D3ELwOQ", "V-_O7nl0Ii0", "L_jWHffIx5E", "7wtfhZwyrcc"];
+        let clock;
+        let timeLeft = 60;
 
-        let taskTimer;
-        let seconds = 60;
-
+        // UI Logic
         function showPage(id) { document.getElementById(id).classList.remove('hidden'); }
         function closePage(id) { document.getElementById(id).classList.add('hidden'); }
         function showSignup() { document.getElementById('login-form').classList.add('hidden'); document.getElementById('signup-form').classList.remove('hidden'); }
         function showLogin() { document.getElementById('signup-form').classList.add('hidden'); document.getElementById('login-form').classList.remove('hidden'); }
 
-        // Video Task Logic
+        // Video Logic
         function openTasks() {
             const u = auth.currentUser;
             db.ref('users/' + u.uid).once('value', s => {
-                const data = s.val();
-                const lastTaskDate = data.lastTaskDate || "";
+                const d = s.val();
                 const today = new Date().toLocaleDateString();
-                let count = data.dailyTasksDone || 0;
+                let done = (d.lastDate === today) ? (d.tasksDone || 0) : 0;
 
-                if (lastTaskDate !== today) { count = 0; } // New Day Reset
-
-                if (count >= 30) {
-                    alert("Daily limit (30 videos) reached! Please come back after 24 hours.");
-                    return;
-                }
-
+                if (done >= 30) return alert("Daily limit (30) reached! Come back in 24h.");
+                
                 showPage('task-page');
-                startNewVideo(count);
+                timeLeft = 60;
+                document.getElementById('task-info').innerText = `Tasks Done: ${done}/30`;
+                const v = vids[Math.floor(Math.random() * vids.length)];
+                document.getElementById('task-frame').src = `https://www.youtube.com/embed/${v}?autoplay=1&controls=0`;
+
+                clock = setInterval(() => {
+                    timeLeft--;
+                    document.getElementById('timer-txt').innerText = timeLeft;
+                    if(timeLeft <= 0) {
+                        clearInterval(clock);
+                        finishTask(done);
+                    }
+                }, 1000);
             });
         }
 
-        function startNewVideo(currentCount) {
-            seconds = 60;
-            document.getElementById('timer-display').innerText = seconds;
-            document.getElementById('task-count').innerText = `Tasks Done Today: ${currentCount}/30`;
-            
-            const randomVid = videos[Math.floor(Math.random() * videos.length)];
-            document.getElementById('task-iframe').src = `https://www.youtube.com/embed/${randomVid}?autoplay=1&controls=0&disablekb=1`;
-
-            taskTimer = setInterval(() => {
-                seconds--;
-                document.getElementById('timer-display').innerText = seconds;
-                if (seconds <= 0) {
-                    clearInterval(taskTimer);
-                    completeTask();
-                }
-            }, 1000);
-        }
-
-        function completeTask() {
+        function finishTask(count) {
             const u = auth.currentUser;
             const today = new Date().toLocaleDateString();
-
-            db.ref('users/' + u.uid).once('value', s => {
-                const data = s.val();
-                let count = (data.lastTaskDate === today) ? (data.dailyTasksDone || 0) : 0;
-                
-                db.ref('users/' + u.uid).update({
-                    balance: (data.balance || 0) + 50,
-                    dailyTasksDone: count + 1,
-                    lastTaskDate: today
-                });
-
-                db.ref('history/' + u.uid).push({
-                    type: "Video Task Reward",
-                    amount: 50,
-                    date: new Date().toLocaleString()
-                });
-
-                alert("Success! 50 PKR added.");
-                closeTasks();
+            db.ref('users/' + u.uid).transaction(d => {
+                if(d) {
+                    d.balance = (d.balance || 0) + 50;
+                    d.tasksDone = count + 1;
+                    d.lastDate = today;
+                    d.totalVideos = (d.totalVideos || 0) + 1;
+                }
+                return d;
             });
+            db.ref('history/' + u.uid).push({ type: "Video Reward", amount: 50, date: new Date().toLocaleString() });
+            alert("50 PKR Added!");
+            closeTasks();
         }
 
-        function closeTasks() {
-            clearInterval(taskTimer);
-            document.getElementById('task-iframe').src = "";
-            closePage('task-page');
-        }
+        function closeTasks() { clearInterval(clock); document.getElementById('task-frame').src = ""; closePage('task-page'); }
 
-        // Auth Logic
+        // Auth
         function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value).catch(e => alert(e.message)); }
-        
         function signup() {
             const e = document.getElementById('reg-email').value;
             const p = document.getElementById('reg-password').value;
-            const ref = document.getElementById('reg-ref').value.trim();
-            auth.createUserWithEmailAndPassword(e, p).then(cred => {
-                const uid = cred.user.uid;
-                db.ref('users/' + uid).set({ email: e, balance: 0, myRefCode: uid.substring(0,6).toUpperCase(), refBy: ref || "none", dailyTasksDone: 0 });
+            const r = document.getElementById('reg-ref').value;
+            auth.createUserWithEmailAndPassword(e, p).then(c => {
+                db.ref('users/' + c.user.uid).set({ email: e, balance: 0, myRef: c.user.uid.substring(0,6).toUpperCase(), refBy: r || "none", tasksDone: 0 });
             }).catch(e => alert(e.message));
         }
 
@@ -192,8 +194,12 @@
             if(user) {
                 document.getElementById('auth-section').classList.add('hidden');
                 document.getElementById('main-dashboard').classList.remove('hidden');
+                if(user.email === ADMIN) document.getElementById('admin-btn').classList.remove('hidden');
                 db.ref('users/' + user.uid).on('value', s => {
-                    document.getElementById('userBalance').innerText = (s.val().balance || 0) + " PKR";
+                    const d = s.val() || {};
+                    document.getElementById('userBalance').innerText = (d.balance || 0) + " PKR";
+                    document.getElementById('wal-bal').innerText = (d.balance || 0) + " PKR";
+                    document.getElementById('wal-vid').innerText = (d.totalVideos || 0);
                 });
             } else {
                 document.getElementById('auth-section').classList.remove('hidden');
@@ -208,9 +214,9 @@
             db.ref('history/' + auth.currentUser.uid).on('value', s => {
                 const list = document.getElementById('history-list');
                 list.innerHTML = "";
-                s.forEach(item => {
-                    const h = item.val();
-                    list.innerHTML += `<div class="history-item"><b>${h.type}</b><br><span style="color:#2ecc71;">+${h.amount} PKR</span><br><small>${h.date}</small></div>`;
+                s.forEach(i => {
+                    const h = i.val();
+                    list.innerHTML += `<div class="history-item"><b>${h.type}</b><br><span style="color:green;">+${h.amount} PKR</span><br><small>${h.date}</small></div>`;
                 });
             });
         }
