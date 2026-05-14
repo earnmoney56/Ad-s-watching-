@@ -39,6 +39,10 @@
         .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
         .menu-item { display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; color: #555; cursor: pointer; }
         .icon-bg { width: 55px; height: 55px; background: white; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+
+        /* Video Overlay Style */
+        .video-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; }
+        .timer-circle { width: 80px; height: 80px; border: 5px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -82,6 +86,12 @@
         </div>
     </div>
 
+    <div id="video-player" class="video-overlay hidden">
+        <div class="timer-circle" id="countdown">20</div>
+        <p>Please watch the video to earn rewards...</p>
+        <iframe id="ad-video" width="320" height="180" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1" frameborder="0"></iframe>
+    </div>
+
     <script>
         // Firebase Config
         const firebaseConfig = {
@@ -112,37 +122,34 @@
             auth.signOut().then(() => { location.reload(); });
         }
 
-function watchAd() {
-    const videoSection = document.getElementById('video-player');
-    const countdownEl = document.getElementById('countdown');
-    let timeLeft = 20;
+        // Watch Ad Function (20 Sec Timer + Earn 50 PKR)
+        function watchAd() {
+            const videoSection = document.getElementById('video-player');
+            const countdownEl = document.getElementById('countdown');
+            let timeLeft = 20;
 
-    // Pehle video screen dikhao
-    videoSection.classList.remove('hidden');
+            videoSection.classList.remove('hidden');
 
-    const timer = setInterval(() => {
-        timeLeft--;
-        countdownEl.innerText = timeLeft;
+            const timer = setInterval(() => {
+                timeLeft--;
+                countdownEl.innerText = timeLeft;
 
-        // Jab timer 0 ho jaye, sirf tab hi ye kaam honge:
-        if (timeLeft <= 0) {
-            clearInterval(timer); // Timer roko
-            videoSection.classList.add('hidden'); // Video band karo
-            
-            // PAYMENTS LOGIC: Ab ye timer khatam hone par hi chalegi
-            const user = firebase.auth().currentUser;
-            if (user) {
-                const balanceRef = firebase.database().ref('users/' + user.uid + '/balance');
-                balanceRef.transaction((curr) => {
-                    return (curr || 0) + 50; // 50 PKR add karo
-                }).then(() => {
-                    alert("Task Complete! 20 second puray hue, 50 PKR add kar diye gaye hain.");
-                });
-            }
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    videoSection.classList.add('hidden'); 
+                    
+                    const user = auth.currentUser;
+                    if (user) {
+                        // Balance update only after timer ends
+                        db.ref('users/' + user.uid + '/balance').transaction((curr) => {
+                            return (curr || 0) + 50; 
+                        }).then(() => {
+                            alert("Task Complete! 50 PKR add ho gaye hain.");
+                        });
+                    }
+                }
+            }, 1000);
         }
-    }, 1000); // Har 1 second baad timer chalega
-}
-
 
         function showWithdraw() { alert("Withdraw system coming soon!"); }
 
@@ -158,11 +165,6 @@ function watchAd() {
                 });
             }
         });
-        <div id="video-player" class="video-overlay hidden">
-    <div class="timer-circle" id="countdown">20</div>
-    <p>Please watch the video to earn rewards...</p>
-    <iframe id="ad-video" width="320" height="180" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1" frameborder="0"></iframe>
-</div>
-  </script>
+    </script>
 </body>
 </html>
