@@ -14,24 +14,25 @@
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 15px; text-align: center; }
         .hidden { display: none !important; }
         
-        /* Dashboard & Cards */
+        /* Dashboard Layout */
         .card { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 400px; margin: 20px auto; }
         input, select { width: 90%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 10px; }
         .btn-green { width: 100%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
         .btn-orange { background: var(--primary); color: white; border: none; width: 100%; padding: 15px; border-radius: 15px; font-weight: bold; margin-top: 20px; cursor: pointer; }
 
-        /* Menu Grid */
+        /* Full Menu Grid (All Buttons Restored) */
         .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
         .menu-item { display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; color: #555; cursor: pointer; }
         .icon-bg { width: 55px; height: 55px; background: white; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
 
-        /* Status Styles */
+        /* History Page View */
+        .history-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; overflow-y: auto; padding: 20px 0; }
+        .history-item { background: white; margin: 10px 15px; padding: 15px; border-radius: 15px; text-align: left; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-left: 5px solid var(--primary); }
         .status-pending { color: #f39c12; font-weight: bold; }
         .status-success { color: #28a745; font-weight: bold; }
         
         /* Overlays */
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; }
-        .timer-circle { width: 80px; height: 80px; border: 5px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 20px; font-weight: bold; }
         .modal { background: white; color: black; padding: 20px; border-radius: 20px; width: 85%; max-width: 400px; }
     </style>
 </head>
@@ -53,9 +54,23 @@
 
         <div class="menu-grid">
             <div class="menu-item" onclick="watchAd()"><div class="icon-bg">📊</div><span>Tasks</span></div>
+            <div class="menu-item"><div class="icon-bg">👛</div><span>Wallet</span></div>
+            <div class="menu-item"><div class="icon-bg">🎁</div><span>Rewards</span></div>
             <div class="menu-item" onclick="showSalary()"><div class="icon-bg">📈</div><span>Salary</span></div>
-            <div class="menu-item" onclick="logout()"><div class="icon-bg">🚫</div><span>Logout</span></div>
+            <div class="menu-item"><div class="icon-bg">👥</div><span>Team</span></div>
+            <div class="menu-item"><div class="icon-bg">🏆</div><span>Levels</span></div>
+            <div class="menu-item"><div class="icon-bg">🌐</div><span>Support</span></div>
+            <div class="menu-item" onclick="logout()"><div class="icon-bg">⚙️</div><span>Logout</span></div>
         </div>
+    </div>
+
+    <div id="salary-page" class="history-page hidden">
+        <div style="display:flex; align-items:center; padding: 0 15px;">
+            <button onclick="closeSalary()" style="background:none; border:none; font-size:24px;">←</button>
+            <h2 style="margin-left: 20px;">Withdrawal History</h2>
+        </div>
+        <div id="salary-list">
+            </div>
     </div>
 
     <div id="withdraw-modal" class="overlay hidden">
@@ -68,28 +83,16 @@
             <input type="text" id="account-num" placeholder="Account Number">
             <input type="number" id="withdraw-amount" placeholder="Amount (Min 500)">
             <button class="btn-green" onclick="submitWithdraw()">Submit Request</button>
-            <button onclick="closeModals()" style="margin-top:10px; background:none; border:none; color:red;">Close</button>
-        </div>
-    </div>
-
-    <div id="salary-modal" class="overlay hidden">
-        <div class="modal">
-            <h3>Withdrawal History</h3>
-            <div id="salary-list" style="text-align: left; max-height: 300px; overflow-y: auto;">
-                <p>No history found.</p>
-            </div>
-            <button class="btn-orange" onclick="closeModals()">Back to Dashboard</button>
+            <button onclick="closeModals()" style="margin-top:10px; background:none; border:none; color:red;">Cancel</button>
         </div>
     </div>
 
     <div id="video-player" class="overlay hidden">
-        <div class="timer-circle" id="countdown">20</div>
-        <p>Watching Ad...</p>
+        <div style="font-size:30px; font-weight:bold; margin-bottom:15px;" id="countdown">20</div>
         <iframe width="300" height="180" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1" frameborder="0"></iframe>
     </div>
 
     <script>
-        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyB8r-JkscDuet3gf33WhTgGxTdLMObCmc8",
             authDomain: "jkseller.firebaseapp.com",
@@ -103,85 +106,65 @@
         const auth = firebase.auth();
         const db = firebase.database();
 
-        function login() {
-            auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value);
-        }
-
+        function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value); }
         function logout() { auth.signOut().then(() => location.reload()); }
-
         function showWithdrawModal() { document.getElementById('withdraw-modal').classList.remove('hidden'); }
-        function closeModals() { 
-            document.getElementById('withdraw-modal').classList.add('hidden'); 
-            document.getElementById('salary-modal').classList.add('hidden');
-        }
+        function closeModals() { document.getElementById('withdraw-modal').classList.add('hidden'); }
 
-        // 1. Withdrawal Apply
+        // Salary View Control
+        function showSalary() { document.getElementById('salary-page').classList.remove('hidden'); loadHistory(); }
+        function closeSalary() { document.getElementById('salary-page').classList.add('hidden'); }
+
         function submitWithdraw() {
             const user = auth.currentUser;
             const amount = parseInt(document.getElementById('withdraw-amount').value);
             const method = document.getElementById('withdraw-method').value;
             const account = document.getElementById('account-num').value;
 
-            if (amount < 500) return alert("Minimum withdraw is 500 PKR");
+            if (amount < 500) return alert("Minimum 500 PKR required!");
 
             db.ref('users/' + user.uid + '/balance').once('value', snap => {
-                const currentBalance = snap.val() || 0;
-                if (currentBalance >= amount) {
-                    // Deduct balance and save request
-                    db.ref('users/' + user.uid + '/balance').set(currentBalance - amount);
-                    const requestRef = db.ref('withdrawals').push();
-                    requestRef.set({
-                        uid: user.uid,
-                        amount: amount,
-                        method: method,
-                        account: account,
-                        status: "Pending",
-                        date: new Date().toLocaleDateString()
+                const bal = snap.val() || 0;
+                if (bal >= amount) {
+                    db.ref('users/' + user.uid + '/balance').set(bal - amount);
+                    db.ref('withdrawals').push({
+                        uid: user.uid, amount: amount, method: method, account: account,
+                        status: "Pending", date: new Date().toLocaleDateString()
                     });
-                    alert("Request Sent! Check Salary option for status.");
+                    alert("Request Submitted!");
                     closeModals();
-                } else {
-                    alert("Insufficient balance!");
-                }
+                } else { alert("Insufficient Balance!"); }
             });
         }
 
-        // 2. Show Status in Salary
-        function showSalary() {
+        function loadHistory() {
             const user = auth.currentUser;
             const list = document.getElementById('salary-list');
-            document.getElementById('salary-modal').classList.remove('hidden');
-            
             db.ref('withdrawals').orderByChild('uid').equalTo(user.uid).on('value', snap => {
                 list.innerHTML = "";
                 if (snap.exists()) {
                     snap.forEach(child => {
-                        const data = child.val();
-                        list.innerHTML += `<div style="border-bottom:1px solid #eee; padding:10px 0;">
-                            <b>${data.amount} PKR</b> - ${data.method}<br>
-                            Status: <span class="status-${data.status.toLowerCase()}">${data.status}</span><br>
-                            <small>${data.date}</small>
+                        const d = child.val();
+                        list.innerHTML += `<div class="history-item">
+                            <strong>${d.amount} PKR</strong> via ${d.method}<br>
+                            <small>Account: ${d.account}</small><br>
+                            Status: <span class="status-${d.status.toLowerCase()}">${d.status}</span>
+                            <div style="font-size:10px; color:#aaa;">${d.date}</div>
                         </div>`;
                     });
-                } else {
-                    list.innerHTML = "<p>No history found.</p>";
-                }
+                } else { list.innerHTML = "<p>No history yet.</p>"; }
             });
         }
 
         function watchAd() {
             const player = document.getElementById('video-player');
-            const countdown = document.getElementById('countdown');
-            let time = 20;
+            let t = 20;
             player.classList.remove('hidden');
             const timer = setInterval(() => {
-                time--;
-                countdown.innerText = time;
-                if (time <= 0) {
-                    clearInterval(timer);
-                    player.classList.add('hidden');
+                t--; document.getElementById('countdown').innerText = t;
+                if (t <= 0) {
+                    clearInterval(timer); player.classList.add('hidden');
                     db.ref('users/' + auth.currentUser.uid + '/balance').transaction(c => (c || 0) + 50);
-                    alert("Task Done! 50 PKR added.");
                 }
             }, 1000);
         }
