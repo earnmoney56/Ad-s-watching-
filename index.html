@@ -116,8 +116,8 @@
         function watchAd() {
             const user = auth.currentUser;
             if (user) {
-                db.ref('users/' + user.uid + '/balance').transaction(curr => (curr || 0) + 5);
-                alert("Mubarak ho! 5 PKR add ho gaye.");
+                db.ref('users/' + user.uid + '/balance').transaction(curr => (curr || 0) + 50);
+                alert("Mubarak ho! 50 PKR add ho gaye.");
             }
         }
 
