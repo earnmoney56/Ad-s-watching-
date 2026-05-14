@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jh Seller - Complete Fixed App</title>
+    <title>Jh Seller - Pro App with Admin</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -52,6 +52,7 @@
             <div class="menu-item"><div class="icon-bg">👥</div><span>Team</span></div>
             <div class="menu-item"><div class="icon-bg">🏆</div><span>Levels</span></div>
             <div class="menu-item" onclick="window.location.href='https://wa.me/YOURNUMBER'"><div class="icon-bg">🌐</div><span>Support</span></div>
+            <div class="menu-item" id="admin-btn" class="hidden" onclick="openAdminPanel()"><div class="icon-bg" style="background:#333; color:white;">🛡️</div><span>Admin</span></div>
             <div class="menu-item" onclick="logout()"><div class="icon-bg">⚙️</div><span>Logout</span></div>
         </div>
     </div>
@@ -66,13 +67,13 @@
     </div>
 
     <div id="rewards-page" class="full-page hidden">
-        <div style="display:flex; align-items:center; padding: 0 20px;"><button onclick="closePage('rewards-page')" style="background:none; border:none; font-size:28px;">←</button><h2>Rewards</h2></div>
+        <div style="display:flex; align-items:center; padding: 0 20px;"><button onclick="closePage('rewards-page')" style="background:none; border:none; font-size:28px;">←</button><h2>Daily Reward</h2></div>
         <div class="card">
             <h3>Claim 300 PKR</h3>
             <p>Once every 24 hours</p>
             <button class="btn-orange" onclick="claimDaily()">Claim Now</button>
         </div>
-        <h4>Claim History</h4>
+        <h4>History</h4>
         <div id="reward-history"></div>
     </div>
 
@@ -87,8 +88,13 @@
     </div>
 
     <div id="salary-page" class="full-page hidden">
-        <div style="display:flex; align-items:center; padding: 0 20px;"><button onclick="closePage('salary-page')" style="background:none; border:none; font-size:28px;">←</button><h2>History</h2></div>
+        <div style="display:flex; align-items:center; padding: 0 20px;"><button onclick="closePage('salary-page')" style="background:none; border:none; font-size:28px;">←</button><h2>Withraw History</h2></div>
         <div id="salary-list"></div>
+    </div>
+
+    <div id="admin-page" class="full-page hidden">
+        <div style="display:flex; align-items:center; padding: 0 20px;"><button onclick="closePage('admin-page')" style="background:none; border:none; font-size:28px;">←</button><h2>Admin Panel</h2></div>
+        <div id="admin-withdraw-list" style="padding: 10px;"></div>
     </div>
 
     <div id="withdraw-modal" class="overlay hidden">
@@ -97,7 +103,7 @@
             <select id="wMethod"><option>Easypaisa</option><option>JazzCash</option></select>
             <input type="text" id="wAcc" placeholder="Account Number">
             <input type="number" id="wAmt" placeholder="Amount (Min 500)">
-            <button class="btn-green" onclick="submitWithdraw()">Submit</button>
+            <button class="btn-green" onclick="submitWithdraw()">Submit Request</button>
             <button onclick="hideWithdraw()" style="color:red; background:none; border:none; margin-top:10px;">Cancel</button>
         </div>
     </div>
@@ -115,47 +121,38 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
+        const ADMIN_EMAIL = "waqas@gmail.com"; // Yahan apni email likhein
 
-        function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value); }
+        function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value).catch(e => alert(e.message)); }
         function logout() { auth.signOut().then(() => location.reload()); }
         function showPage(id) { document.getElementById(id).classList.remove('hidden'); }
         function closePage(id) { document.getElementById(id).classList.add('hidden'); }
         function showWithdrawModal() { document.getElementById('withdraw-modal').classList.remove('hidden'); }
         function hideWithdraw() { document.getElementById('withdraw-modal').classList.add('hidden'); }
 
-        // Rewards Logic
-        function showRewards() { 
-            showPage('rewards-page'); 
-            loadRewardHistory(); 
-        }
-
+        // Rewards
+        function showRewards() { showPage('rewards-page'); loadRewardHistory(); }
         function claimDaily() {
             const u = auth.currentUser;
-            const now = new Date().getTime();
             db.ref('users/' + u.uid).once('value', s => {
                 const d = s.val() || {};
-                const last = d.lastRewardTime || 0;
-                if (now - last > 24 * 60 * 60 * 1000) {
-                    db.ref('users/' + u.uid).update({ 
-                        balance: (d.balance || 0) + 300, 
-                        dailyRewardsTotal: (d.dailyRewardsTotal || 0) + 300,
-                        lastRewardTime: now 
-                    });
+                const now = new Date().getTime();
+                if (now - (d.lastRewardTime || 0) > 86400000) {
+                    db.ref('users/' + u.uid).update({ balance: (d.balance || 0) + 300, dailyRewardsTotal: (d.dailyRewardsTotal || 0) + 300, lastRewardTime: now });
                     db.ref('reward_history/' + u.uid).push({ amount: 300, date: new Date().toLocaleString() });
-                    alert("300 PKR Added!");
-                } else { alert("Wait for 24 hours!"); }
+                    alert("300 PKR Claimed!");
+                } else alert("24 hours wait karein!");
             });
         }
-
         function loadRewardHistory() {
-            const list = document.getElementById('reward-history');
             db.ref('reward_history/' + auth.currentUser.uid).on('value', s => {
+                const list = document.getElementById('reward-history');
                 list.innerHTML = "";
                 s.forEach(c => { list.innerHTML += `<div class="history-item">💰 <b>${c.val().amount} PKR</b><br><small>${c.val().date}</small></div>`; });
             });
         }
 
-        // Tasks Logic
+        // Tasks
         let taskTimer;
         function openTasks() {
             showPage('task-page');
@@ -170,17 +167,17 @@
                         const d = s.val() || {};
                         db.ref('users/' + u.uid).update({ balance: (d.balance || 0) + 50, videosWatched: (d.videosWatched || 0) + 1 });
                     });
-                    alert("50 PKR Reward!"); closeTasks();
+                    alert("50 PKR Added!"); closeTasks();
                 }
             }, 1000);
         }
         function closeTasks() { clearInterval(taskTimer); document.getElementById('task-video').src = ""; closePage('task-page'); }
 
-        // Salary & Withdraw
+        // History
         function showSalary() {
             showPage('salary-page');
-            const list = document.getElementById('salary-list');
             db.ref('withdrawals').orderByChild('uid').equalTo(auth.currentUser.uid).on('value', s => {
+                const list = document.getElementById('salary-list');
                 list.innerHTML = "";
                 s.forEach(c => {
                     const d = c.val();
@@ -189,6 +186,7 @@
             });
         }
 
+        // Withdraw
         function submitWithdraw() {
             const u = auth.currentUser;
             const amt = parseInt(document.getElementById('wAmt').value);
@@ -196,16 +194,40 @@
                 const d = s.val() || {};
                 if (d.balance >= amt && amt >= 500) {
                     db.ref('users/' + u.uid).update({ balance: d.balance - amt, withdrawn: (d.withdrawn || 0) + amt });
-                    db.ref('withdrawals').push({ uid: u.uid, amount: amt, method: document.getElementById('wMethod').value, account: document.getElementById('wAcc').value, status: "Pending", date: new Date().toLocaleDateString() });
-                    alert("Submitted!"); hideWithdraw();
-                } else { alert("Insufficient Balance or min 500"); }
+                    db.ref('withdrawals').push({ uid: u.uid, email: u.email, amount: amt, method: document.getElementById('wMethod').value, account: document.getElementById('wAcc').value, status: "Pending", date: new Date().toLocaleString() });
+                    alert("Request Sent!"); hideWithdraw();
+                } else alert("Low balance or min 500!");
             });
         }
 
+        // Admin Panel Logic
+        function openAdminPanel() {
+            showPage('admin-page');
+            const adminList = document.getElementById('admin-withdraw-list');
+            db.ref('withdrawals').on('value', s => {
+                adminList.innerHTML = "";
+                s.forEach(c => {
+                    const d = c.val();
+                    const id = c.key;
+                    adminList.innerHTML += `<div class="history-item" style="border-left:5px solid ${d.status=='Pending'?'#f39c12':'#28a745'}">
+                        <b>User: ${d.email}</b><br>
+                        Amount: ${d.amount} PKR (${d.method})<br>
+                        Acc: ${d.account}<br>
+                        Status: ${d.status}<br><br>
+                        ${d.status == 'Pending' ? `<button onclick="approve('${id}')" style="background:green;color:white;border:none;padding:5px 10px;border-radius:5px;">Approve</button>` : '✓ Done'}
+                    </div>`;
+                });
+            });
+        }
+        function approve(id) { if(confirm("Pay kar diya?")) db.ref('withdrawals/'+id).update({status: "Success"}); }
+
+        // Auth State
         auth.onAuthStateChanged(user => {
             if (user) {
                 document.getElementById('auth-section').classList.add('hidden');
                 document.getElementById('main-dashboard').classList.remove('hidden');
+                if (user.email === ADMIN_EMAIL) document.getElementById('admin-btn').classList.remove('hidden');
+                
                 db.ref('users/' + user.uid).on('value', s => {
                     const d = s.val() || {};
                     document.getElementById('userBalance').innerText = (d.balance || 0) + " PKR";
