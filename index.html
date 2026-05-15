@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jh Seller - Premium App</title>
+    <title>EarnMoney - Premium App</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -41,12 +41,28 @@
         
         #video-box { width: 90%; margin: 20px auto; aspect-ratio: 16/9; background: #000; border-radius: 20px; overflow: hidden; }
         .timer-ui { width: 100px; height: 100px; border: 6px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: bold; margin: 25px auto; color: var(--primary); }
+
+        /* Custom Alert Modal Styling */
+        .custom-alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .custom-alert-box { background: white; width: 100%; max-width: 380px; border-radius: 24px; padding: 25px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); animation: popUp 0.3s ease; }
+        .custom-alert-title { font-size: 18px; font-weight: 800; color: #1e293b; margin: 0 0 10px 0; }
+        .custom-alert-msg { font-size: 15px; color: #64748b; line-height: 1.5; margin: 0 0 20px 0; font-weight: 500; }
+        .custom-alert-btn { background: var(--primary); color: white; border: none; width: 100%; padding: 14px; border-radius: 16px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        @keyframes popUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
 
+    <div id="custom-alert" class="custom-alert-overlay hidden">
+        <div class="custom-alert-box">
+            <h4 class="custom-alert-title" id="alert-title">earnmoney.com</h4>
+            <p class="custom-alert-msg" id="alert-message">Alert message goes here.</p>
+            <button class="custom-alert-btn" onclick="closeAlert()">OK</button>
+        </div>
+    </div>
+
     <div id="auth-section" class="card" style="margin-top: 50px;">
-        <h1 style="color: var(--primary); margin-bottom: 5px;">Jh Seller</h1>
+        <h1 style="color: var(--primary); margin-bottom: 5px;">EarnMoney</h1>
         <p style="color: #888; margin-bottom: 30px;">Login to your account</p>
         <div id="login-form">
             <input type="email" id="email" placeholder="Email Address">
@@ -280,6 +296,16 @@
         let timeLeft = 30;
         let tempSelectedPlan = null;
 
+        // Custom App Alert Trigger
+        function appAlert(msg, title = "earnmoney.com") {
+            document.getElementById('alert-title').innerText = title;
+            document.getElementById('alert-message').innerText = msg;
+            document.getElementById('custom-alert').classList.remove('hidden');
+        }
+        function closeAlert() {
+            document.getElementById('custom-alert').classList.add('hidden');
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const refCodeFromUrl = urlParams.get('ref');
@@ -290,7 +316,7 @@
         });
 
         function showPage(id) { 
-            if(id == 'admin-page' && auth.currentUser.email !== ADMIN) return alert("Access Denied!");
+            if(id == 'admin-page' && auth.currentUser.email !== ADMIN) return appAlert("Access Denied!");
             document.getElementById(id).classList.remove('hidden'); 
             if(id=='admin-page') loadAdminData(); 
             if(id=='team-page') fetchTeamData();
@@ -320,8 +346,8 @@
                 
                 document.getElementById('team-ref-display').innerText = userRefCode;
                 
-                const currentDomainUrl = window.location.origin + window.location.pathname;
-                document.getElementById('team-link-display').value = `${currentDomainUrl}?ref=${userRefCode}`;
+                // Referral Link explicitly setup for earnmoney.com format
+                document.getElementById('team-link-display').value = `https://earnmoney.com?ref=${userRefCode}`;
 
                 db.ref('users').orderByChild('refBy').equalTo(userRefCode).once('value', s => {
                     tList.innerHTML = "";
@@ -353,9 +379,9 @@
             copyText.select();
             copyText.setSelectionRange(0, 99999);
             navigator.clipboard.writeText(copyText.value).then(() => {
-                alert("Referral Link copied successfully!");
+                appAlert("Referral Link copied successfully!");
             }).catch(() => {
-                alert("Failed to copy. Please copy manually.");
+                appAlert("Failed to copy. Please copy manually.");
             });
         }
 
@@ -365,7 +391,7 @@
 
             db.ref('users/' + u.uid).once('value', s => {
                 const d = s.val() || {};
-                if(d.lastRewardDate === today) return alert("You have already claimed your attendance reward today!");
+                if(d.lastRewardDate === today) return appAlert("You have already claimed your attendance reward today!");
 
                 db.ref('users/' + u.uid).update({
                     balance: parseFloat(((d.balance || 0) + 400).toFixed(2)),
@@ -373,7 +399,7 @@
                 });
 
                 db.ref('history/' + u.uid).push({ type: "Daily Reward Claim", amount: 400, date: new Date().toLocaleString() });
-                alert("Success! 400 PKR added to balance.");
+                appAlert("Success! 400 PKR added to balance.");
                 closePage('rewards-page');
             });
         }
@@ -391,7 +417,7 @@
 
         function submitPaymentProof() {
             const fileInput = document.getElementById('proof-file');
-            if(fileInput.files.length === 0) return alert("Please select or capture a payment screenshot!");
+            if(fileInput.files.length === 0) return appAlert("Please select or capture a payment screenshot!");
             
             const u = auth.currentUser;
             const reader = new FileReader();
@@ -414,17 +440,17 @@
             const account = document.getElementById('w-account').value.trim();
             const amount = parseInt(document.getElementById('w-amount').value);
 
-            if(!account || !amount) return alert("Please fill all details!");
-            if(amount < 500) return alert("Minimum withdrawal is 500 PKR!");
+            if(!account || !amount) return appAlert("Please fill all details!");
+            if(amount < 500) return appAlert("Minimum withdrawal is 500 PKR!");
 
             db.ref('users/' + u.uid).once('value', s => {
                 const currentBalance = s.val().balance || 0;
-                if(amount > currentBalance) return alert("Insufficient balance!");
+                if(amount > currentBalance) return appAlert("Insufficient balance!");
 
                 db.ref('users/' + u.uid).update({ balance: currentBalance - amount, totalWithdrawn: (s.val().totalWithdrawn || 0) + amount });
                 db.ref('withdrawals').push({ uid: u.uid, email: u.email, method: method, account: account, amount: amount, status: "Pending", date: new Date().toLocaleString() });
                 db.ref('history/' + u.uid).push({ type: `Withdrawal (${method})`, amount: `-${amount}`, date: new Date().toLocaleString() });
-                alert("Withdrawal request submitted!");
+                appAlert("Withdrawal request submitted!");
                 closePage('withdraw-page');
             });
         }
@@ -483,11 +509,11 @@
                         });
                     }
                 });
-                alert("Plan Activated & Referral Reward processed successfully!");
+                appAlert("Plan Activated & Referral Reward processed successfully!");
             });
         }
 
-        function approveWithdrawal(key) { db.ref('withdrawals/' + key).update({ status: "Success" }); alert("Withdrawal Request Approved!"); }
+        function approveWithdrawal(key) { db.ref('withdrawals/' + key).update({ status: "Success" }); appAlert("Withdrawal Request Approved!"); }
 
         function openTasks() {
             const u = auth.currentUser;
@@ -497,7 +523,7 @@
                 let done = (d.lastDate === today) ? (d.tasksDone || 0) : 0;
                 let maxAllowed = d.allowedTasks || 0;
 
-                if (done >= maxAllowed) return alert(`Daily limit (${maxAllowed} videos) reached!`);
+                if (done >= maxAllowed) return appAlert(`Daily limit (${maxAllowed} videos) reached!`);
                 
                 showPage('task-page');
                 timeLeft = 30;
@@ -527,20 +553,20 @@
                 return d;
             });
             db.ref('history/' + u.uid).push({ type: "Video Reward", amount: cleanPayout, date: new Date().toLocaleString() });
-            alert(`Task complete! ${cleanPayout} PKR Added.`);
+            appAlert(`Task complete! ${cleanPayout} PKR Added.`);
             closeTasks();
         }
 
         function closeTasks() { clearInterval(clock); document.getElementById('task-frame').src = ""; closePage('task-page'); }
 
-        function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value).catch(e => alert(e.message)); }
+        function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value).catch(e => appAlert(e.message)); }
         function signup() {
             const e = document.getElementById('reg-email').value;
             const p = document.getElementById('reg-password').value;
             const r = document.getElementById('reg-ref').value ? document.getElementById('reg-ref').value.trim().toUpperCase() : "none";
             auth.createUserWithEmailAndPassword(e, p).then(c => {
                 db.ref('users/' + c.user.uid).set({ email: e, balance: 0, totalWithdrawn: 0, status: "NoPlan", planId: 0, allowedTasks: 0, tasksDone: 0, myRef: c.user.uid.substring(0,6).toUpperCase(), refBy: r });
-            }).catch(e => alert(e.message));
+            }).catch(e => appAlert(e.message));
         }
 
         auth.onAuthStateChanged(user => {
@@ -568,6 +594,7 @@
                             showPage('paywall-section');
                             document.getElementById('plan-selection-view').classList.add('hidden');
                             document.getElementById('payment-upload-view').classList.add('hidden');
+                            document.getElementById('pending-view').remove('hidden');
                             document.getElementById('pending-view').classList.remove('hidden');
                         } else if(userStatus === "Active") {
                             if(document.getElementById('paywall-section').classList.contains('hidden')) {
