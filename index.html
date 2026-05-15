@@ -19,6 +19,7 @@
         input, select { width: 90%; padding: 15px; margin: 12px 0; border: 1.5px solid #eee; border-radius: 15px; font-size: 16px; outline: none; }
         .btn-orange { background: var(--primary); color: white; border: none; width: 100%; padding: 18px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 17px; box-shadow: 0 5px 15px rgba(243,156,18,0.3); }
         .btn-green { background: #27ae60; color: white; border: none; width: 100%; padding: 18px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 17px; }
+        .btn-main { background: var(--primary); color: white; border: none; width: 100%; padding: 16px; border-radius: 18px; font-weight: 700; cursor: pointer; font-size: 16px; }
 
         /* Dashboard */
         .balance-card { background: linear-gradient(135deg, var(--dark), #34495e); color: white; padding: 40px 20px; border-radius: 30px; margin: 20px; position: relative; overflow: hidden; }
@@ -70,7 +71,7 @@
             <div class="menu-item" onclick="showRewards()"><span class="icon-bg">🎁</span><span>Rewards</span></div>
             <div class="menu-item" onclick="showSalary()"><span class="icon-bg">📝</span><span>History</span></div>
             <div class="menu-item" onclick="showTeam()"><span class="icon-bg">👥</span><span>Team</span></div>
-            <div class="menu-item" id="admin-btn" class="hidden" onclick="showPage('admin-page')"><span class="icon-bg">🛡️</span><span>Admin</span></div>
+            <div class="menu-item hidden" id="admin-btn" onclick="showPage('admin-page')"><span class="icon-bg">🛡️</span><span>Admin</span></div>
             <div class="menu-item" onclick="logout()"><span class="icon-bg">🚪</span><span>Logout</span></div>
         </div>
     </div>
@@ -134,7 +135,7 @@
         const auth = firebase.auth();
         const db = firebase.database();
         
-        // ADMIN CHANGED TO YOUR EMAIL
+        // ADMIN EMAIL SET TO YOU
         const ADMIN = "samiseyam49@gmail.com"; 
 
         const vids = ["dQw4w9WgXcQ", "3JZ_D3ELwOQ", "V-_O7nl0Ii0", "L_jWHffIx5E", "7wtfhZwyrcc"];
@@ -142,7 +143,15 @@
         let timeLeft = 60;
 
         // UI Logic
-        function showPage(id) { document.getElementById(id).classList.remove('hidden'); if(id=='admin-page') loadAdminData(); }
+        function showPage(id) { 
+            // Extra Security: Prevent unauthorized users from manually opening admin-page via console
+            if(id == 'admin-page' && auth.currentUser.email !== ADMIN) {
+                alert("Access Denied!");
+                return;
+            }
+            document.getElementById(id).classList.remove('hidden'); 
+            if(id=='admin-page') loadAdminData(); 
+        }
         function closePage(id) { document.getElementById(id).classList.add('hidden'); }
         function showSignup() { document.getElementById('login-form').classList.add('hidden'); document.getElementById('signup-form').classList.remove('hidden'); }
         function showLogin() { document.getElementById('signup-form').classList.add('hidden'); document.getElementById('login-form').classList.remove('hidden'); }
@@ -161,13 +170,11 @@
                 const currentBalance = s.val().balance || 0;
                 if(amount > currentBalance) return alert("Insufficient balance!");
 
-                // Deduct balance and update total withdrawn
                 db.ref('users/' + u.uid).update({
                     balance: currentBalance - amount,
                     totalWithdrawn: (s.val().totalWithdrawn || 0) + amount
                 });
 
-                // Push to Global Admin Requests
                 db.ref('withdrawals').push({
                     uid: u.uid,
                     email: u.email,
@@ -178,7 +185,6 @@
                     date: new Date().toLocaleString()
                 });
 
-                // Add to user logs
                 db.ref('history/' + u.uid).push({
                     type: `Withdrawal (${method})`,
                     amount: `-${amount}`,
@@ -192,6 +198,7 @@
 
         // Admin Load & Approval Data
         function loadAdminData() {
+            if(auth.currentUser.email !== ADMIN) return; // Strict security check
             db.ref('withdrawals').on('value', s => {
                 const list = document.getElementById('admin-list');
                 list.innerHTML = "";
@@ -210,6 +217,7 @@
         }
 
         function approveWithdrawal(key) {
+            if(auth.currentUser.email !== ADMIN) return; // Strict security check
             db.ref('withdrawals/' + key).update({ status: "Success" });
             alert("Request Approved!");
         }
@@ -275,7 +283,14 @@
             if(user) {
                 document.getElementById('auth-section').classList.add('hidden');
                 document.getElementById('main-dashboard').classList.remove('hidden');
-                if(user.email === ADMIN) document.getElementById('admin-btn').classList.remove('hidden');
+                
+                // Strict Admin UI Unhiding Check
+                if(user.email === ADMIN) {
+                    document.getElementById('admin-btn').classList.remove('hidden');
+                } else {
+                    document.getElementById('admin-btn').classList.add('hidden');
+                }
+
                 db.ref('users/' + user.uid).on('value', s => {
                     const d = s.val() || {};
                     document.getElementById('userBalance').innerText = (d.balance || 0) + " PKR";
