@@ -278,18 +278,15 @@
         let timeLeft = 30;
         let tempSelectedPlan = null;
 
-        // Dynamic URL Referral Parameter Initializer
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const refCodeFromUrl = urlParams.get('ref');
             if(refCodeFromUrl) {
-                // Show register screen automatically and fill tracking data
                 showSignup();
                 document.getElementById('reg-ref').value = refCodeFromUrl.trim().toUpperCase();
             }
         });
 
-        // UI Routing Logic
         function showPage(id) { 
             if(id == 'admin-page' && auth.currentUser.email !== ADMIN) return alert("Access Denied!");
             document.getElementById(id).classList.remove('hidden'); 
@@ -319,10 +316,8 @@
                 const userData = snapshot.val() || {};
                 const userRefCode = userData.myRef || u.uid.substring(0, 6).toUpperCase();
                 
-                // Display Code
                 document.getElementById('team-ref-display').innerText = userRefCode;
                 
-                // Generate and Display Live Base Domain URL Link
                 const currentDomainUrl = window.location.origin + window.location.pathname;
                 document.getElementById('team-link-display').value = `${currentDomainUrl}?ref=${userRefCode}`;
 
@@ -334,12 +329,15 @@
                     }
                     s.forEach(child => {
                         const member = child.val();
-                        const planText = member.planId ? `Plan ${member.planId}` : 'No Active Plan';
+                        let planText = 'No Active Plan';
+                        if (member.status === "Pending") planText = "Plan Reviewing ⏳";
+                        else if (member.status === "Active") planText = `Plan ${member.planId || 1} Active ✅`;
+
                         tList.innerHTML += `
                             <div style="padding: 12px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
                                 <div>
                                     <span style="font-weight: 600; color: #334155; font-size:14px;">${member.email}</span>
-                                    <span style="display: block; font-size: 11px; color: #94a3b8;">Status: ${member.status || 'Active'}</span>
+                                    <span style="display: block; font-size: 11px; color: #94a3b8;">Status: ${member.status || 'NoPlan'}</span>
                                 </div>
                                 <span style="background: #f1f5f9; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; color: #475569;">${planText}</span>
                             </div>`;
@@ -351,11 +349,11 @@
         function copyReferralLink() {
             const copyText = document.getElementById('team-link-display');
             copyText.select();
-            copyText.setSelectionRange(0, 99999); // For mobile devices
+            copyText.setSelectionRange(0, 99999);
             navigator.clipboard.writeText(copyText.value).then(() => {
-                alert("Referral Link copied successfully! Now share it anywhere.");
+                alert("Referral Link copied successfully!");
             }).catch(() => {
-                alert("Failed to copy. Please select text manually.");
+                alert("Failed to copy. Please copy manually.");
             });
         }
 
@@ -365,7 +363,7 @@
 
             db.ref('users/' + u.uid).once('value', s => {
                 const d = s.val() || {};
-                if(d.lastRewardDate === today) return alert("You have already claimed your attendance reward today! Come back tomorrow.");
+                if(d.lastRewardDate === today) return alert("You have already claimed your attendance reward today!");
 
                 db.ref('users/' + u.uid).update({
                     balance: parseFloat(((d.balance || 0) + 400).toFixed(2)),
@@ -373,7 +371,7 @@
                 });
 
                 db.ref('history/' + u.uid).push({ type: "Daily Reward Claim", amount: 400, date: new Date().toLocaleString() });
-                alert("Success! 400 PKR added directly to your account balance.");
+                alert("Success! 400 PKR added to balance.");
                 closePage('rewards-page');
             });
         }
@@ -497,7 +495,7 @@
                 let done = (d.lastDate === today) ? (d.tasksDone || 0) : 0;
                 let maxAllowed = d.allowedTasks || 0;
 
-                if (done >= maxAllowed) return alert(`Daily limit (${maxAllowed} videos) reached! Come back in 24h.`);
+                if (done >= maxAllowed) return alert(`Daily limit (${maxAllowed} videos) reached!`);
                 
                 showPage('task-page');
                 timeLeft = 30;
