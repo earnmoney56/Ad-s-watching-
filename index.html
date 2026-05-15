@@ -63,50 +63,90 @@
         </div>
     </div>
 
-    <div id="paywall-section" class="full-page hidden">
-        <div class="header"><h2>Select Investment Plan</h2></div>
-        <div class="card" id="plan-selection-view">
-            <p style="color:#666;">Please choose a plan to enter the application.</p>
+    <div id="paywall-section" class="full-page hidden" style="background: #f8fafc;">
+        <div class="header" style="justify-content: center; border-bottom: 2px solid #edf2f7; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+            <h2 style="margin: 0; font-size: 22px; color: #1e293b; font-weight: 800; letter-spacing: 0.5px;">💎 Upgrade to Premium</h2>
+        </div>
+        
+        <div class="card" id="plan-selection-view" style="max-width: 480px; padding: 25px 20px; border: none; border-radius: 24px; margin-top: 25px;">
+            <p style="color: #64748b; font-size: 15px; margin-bottom: 25px; font-weight: 500;">Select an investment plan below to unlock your elite dashboard and start earning daily.</p>
             
-            <div class="plan-box" onclick="selectPlan(1, 1000, 1500, 30)">
-                <h3>Plan 1 (PKR 1,000)</h3>
-                <p>📈 Daily Earning: <b>PKR 1,500</b></p>
-                <p>📺 Daily Tasks: <b>30 Videos</b></p>
+            <div class="plan-box" onclick="selectPlan(1, 1000, 1500, 30)" style="border: 1.5px solid #e2e8f0; border-radius: 20px; padding: 18px; margin-bottom: 16px; background: linear-gradient(135deg, #ffffff, #f8fafc); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); position: relative; overflow: hidden;">
+                <div style="position: absolute; top: 0; right: 0; background: #fef3c7; color: #d97706; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 0 0 0 12px;">STARTER</div>
+                <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px; font-weight: 700;">Bronze Plan</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; border-top: 1px dashed #e2e8f0; padding-top: 10px;">
+                    <p style="margin:0; font-size:13px; color:#64748b;">Deposit: <span style="color:#0f172a; font-weight:700;">1,000 PKR</span></p>
+                    <p style="margin:0; font-size:13px; color:#64748b;">Daily: <span style="color:#22c55e; font-weight:700;">1,500 PKR</span></p>
+                    <p style="margin:0; font-size:13px; color:#64748b;">Tasks: <span style="color:#3b82f6; font-weight:700;">30 Vids</span></p>
+                </div>
             </div>
-            <div class="plan-box" onclick="selectPlan(2, 1500, 2000, 40)">
-                <h3>Plan 2 (PKR 1,500)</h3>
-                <p>📈 Daily Earning: <b>PKR 2,000</b></p>
-                <p>📺 Daily Tasks: <b>40 Videos</b></p>
+
+            <div class="plan-box" onclick="selectPlan(2, 1500, 2000, 40)" style="border: 2px solid #f39c12; border-radius: 20px; padding: 18px; margin-bottom: 16px; background: linear-gradient(135deg, #ffffff, #fffbeb); box-shadow: 0 10px 15px -3px rgba(243,156,18,0.1); position: relative; overflow: hidden;">
+                <div style="position: absolute; top: 0; right: 0; background: #f39c12; color: white; padding: 4px 15px; font-size: 11px; font-weight: 700; border-radius: 0 0 0 12px; letter-spacing: 0.5px;">POPULAR</div>
+                <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px; font-weight: 700;">Silver Plan</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; border-top: 1px dashed #fcd34d; padding-top: 10px;">
+                    <p style="margin:0; font-size:13px; color:#64748b;">Deposit: <span style="color:#0f172a; font-weight:700;">1,500 PKR</span></p>
+                    <p style="margin:0; font-size:13px; color:#64748b;">Daily: <span style="color:#22c55e; font-weight:700;">2,000 PKR</span></p>
+                    <p style="margin:0; font-size:13px; color:#64748b;">Tasks: <span style="color:#3b82f6; font-weight:700;">40 Vids</span></p>
+                </div>
             </div>
-            <div class="plan-box" onclick="selectPlan(3, 2000, 2500, 50)">
-                <h3>Plan 3 (PKR 2,000)</h3>
-                <p>📈 Daily Earning: <b>PKR 2,500</b></p>
-                <p>📺 Daily Tasks: <b>50 Videos</b></p>
+
+            <div class="plan-box" onclick="selectPlan(3, 2000, 2500, 50)" style="border: 1.5px solid #e2e8f0; border-radius: 20px; padding: 18px; margin-bottom: 16px; background: linear-gradient(135deg, #ffffff, #f8fafc); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); position: relative; overflow: hidden;">
+                <div style="position: absolute; top: 0; right: 0; background: #dbeafe; color: #1e40af; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 0 0 0 12px;">ADVANCED</div>
+                <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px; font-weight: 700;">Gold Plan</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; border-top: 1px dashed #e2e8f0; padding-top: 10px;">
+                    <p style="margin:0; font-size:13px; color:#64748b;">Deposit: <span style="color:#0f172a; font-weight:700;">2,000 PKR</span></p>
+                    <p style="margin:0; font-size:13px; color:#64748b;">Daily: <span style="color:#22c55e; font-weight:700;">2,500 PKR</span></p>
+                    <p style="margin:0; font-size:13px; color:#64748b;">Tasks: <span style="color:#3b82f6; font-weight:700;">50 Vids</span></p>
+                </div>
             </div>
-            <div class="plan-box" onclick="selectPlan(4, 2500, 3000, 60)">
-                <h3>Plan 4 (PKR 2,500)</h3>
-                <p>📈 Daily Earning: <b>PKR 3,000</b></p>
-                <p>📺 Daily Tasks: <b>60 Videos</b></p>
+
+            <div class="plan-box" onclick="selectPlan(4, 2500, 3000, 60)" style="border: 1.5px solid #e2e8f0; border-radius: 20px; padding: 18px; margin-bottom: 5px; background: linear-gradient(135deg, #ffffff, #f8fafc); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); position: relative; overflow: hidden;">
+                <div style="position: absolute; top: 0; right: 0; background: #e0f2fe; color: #0369a1; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 0 0 0 12px;">VIP</div>
+                <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px; font-weight: 700;">Diamond Plan</h3>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; border-top: 1px dashed #e2e8f0; padding-top: 10px;">
+                    <p style="margin:0; font-size:13px; color:#64748b;">Deposit: <span style="color:#0f172a; font-weight:700;">2,500 PKR</span></p>
+                    <p style="margin:0; font-size:13px; color:#64748b;">Daily: <span style="color:#22c55e; font-weight:700;">3,000 PKR</span></p>
+                    <p style="margin:0; font-size:13px; color:#64748b;">Tasks: <span style="color:#3b82f6; font-weight:700;">60 Vids</span></p>
+                </div>
             </div>
         </div>
 
-        <div class="card hidden" id="payment-upload-view">
-            <h3 id="selected-plan-title">Deposit Details</h3>
-            <div style="background:#f9f9f9; padding:15px; border-radius:15px; text-align:left; margin-bottom:15px;">
-                <p><b>EasyPaisa / JazzCash No:</b> 03106453151</p>
-                <p><b>Account Title:</b> seyam hassan</p>
+        <div class="card hidden" id="payment-upload-view" style="max-width: 450px; padding: 25px; border: none; border-radius: 24px;">
+            <h3 id="selected-plan-title" style="margin: 0 0 15px 0; color: #0f172a; font-size: 20px; font-weight: 800;">Secure Instant Deposit</h3>
+            
+            <div style="background: #fff; border: 1.5px solid #edf2f7; border-radius: 18px; padding: 15px; text-align: left; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                    <span style="background: #e67e22; color: white; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800;">JAZZCASH / EASYPAISA</span>
+                </div>
+                <div style="margin-bottom: 8px;">
+                    <span style="font-size: 12px; color: #64748b; display: block; font-weight: 500;">ACCOUNT NUMBER</span>
+                    <span style="font-size: 18px; color: #1e293b; font-weight: 700; letter-spacing: 0.5px;">03106453151</span>
+                </div>
+                <div>
+                    <span style="font-size: 12px; color: #64748b; display: block; font-weight: 500;">ACCOUNT TITLE</span>
+                    <span style="font-size: 16px; color: #1e293b; font-weight: 700;">Seyam Hassan</span>
+                </div>
             </div>
-            <p>Send amount and upload the transaction screenshot below:</p>
-            <input type="file" id="proof-file" accept="image/*" style="border:none;">
-            <button class="btn-green" onclick="submitPaymentProof()">Submit Screenshot</button>
-            <p onclick="backToPlans()" style="color:#e74c3c; cursor:pointer; font-weight:bold; margin-top:15px;">← Change Plan</p>
+
+            <div style="border: 2px dashed #cbd5e1; background: #f8fafc; border-radius: 18px; padding: 25px 15px; margin-bottom: 20px; position: relative; cursor: pointer;">
+                <span style="font-size: 35px; display: block; margin-bottom: 8px;">📸</span>
+                <span style="font-size: 14px; font-weight: 600; color: #1e293b; display: block;">Upload Payment Screenshot</span>
+                <span style="font-size: 12px; color: #64748b; display: block; margin-top: 4px;">PNG, JPG or JPEG allowed</span>
+                <input type="file" id="proof-file" accept="image/*" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+            </div>
+
+            <button class="btn-green" onclick="submitPaymentProof()" style="box-shadow: 0 4px 12px rgba(39,174,96,0.3); font-size: 16px; padding: 16px;">Verify & Submit Request</button>
+            <p onclick="backToPlans()" style="color: #ef4444; cursor: pointer; font-weight: 700; margin-top: 18px; font-size: 14px; display: inline-block;">← Choose Another Plan</p>
         </div>
 
-        <div class="card hidden" id="pending-view">
-            <span style="font-size:60px;">⏳</span>
-            <h2>Verification Pending</h2>
-            <p>Your payment screenshot has been sent to the admin. Your account will be unlocked as soon as your payment is verified (usually takes 1-2 hours).</p>
-            <button class="btn-orange" onclick="logout()" style="background:#e74c3c;">Logout</button>
+        <div class="card hidden" id="pending-view" style="max-width: 450px; padding: 35px 25px; border: none; border-radius: 24px; margin-top: 40px;">
+            <div style="width: 80px; height: 80px; background: #fffbeb; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;">
+                <span style="font-size: 40px; animation: pulse 2s infinite;">⏳</span>
+            </div>
+            <h2 style="color: #0f172a; font-weight: 800; font-size: 22px; margin: 0 0 10px 0;">Payment Under Review</h2>
+            <p style="color: #64748b; font-size: 14px; line-height: 1.6; font-weight: 500; margin-bottom: 25px;">Your digital transaction receipt has been submitted to secure manual verification channels. System activation parameters will trigger immediately upon confirmation (Takes 1-2 hours).</p>
+            <button class="btn-orange" onclick="logout()" style="background: #ef4444; box-shadow: 0 4px 12px rgba(239,68,68,0.2); width: 100%; padding: 15px; border-radius: 15px;">Exit Application</button>
         </div>
     </div>
 
@@ -425,7 +465,7 @@
                             showPage('paywall-section');
                             document.getElementById('plan-selection-view').classList.add('hidden');
                             document.getElementById('payment-upload-view').classList.add('hidden');
-                            document.getElementById('pending-view').classList.remove('hidden');
+                            document.getElementById('pending-view').remove('hidden');
                         } else if(userStatus === "Active") {
                             document.getElementById('paywall-section').classList.add('hidden');
                             document.getElementById('main-dashboard').classList.remove('hidden');
