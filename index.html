@@ -64,8 +64,9 @@
     </div>
 
     <div id="paywall-section" class="full-page hidden" style="background: #f8fafc;">
-        <div class="header" style="justify-content: center; border-bottom: 2px solid #edf2f7; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-            <h2 style="margin: 0; font-size: 22px; color: #1e293b; font-weight: 800; letter-spacing: 0.5px;">💎 Upgrade to Premium</h2>
+        <div class="header" style="justify-content: center; border-bottom: 2px solid #edf2f7; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative;">
+            <button id="paywall-back-btn" onclick="closePage('paywall-section')" class="hidden" style="position: absolute; left: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #1e293b;">←</button>
+            <h2 style="margin: 0; font-size: 22px; color: #1e293b; font-weight: 800; letter-spacing: 0.5px;">💎 VIP Membership Levels</h2>
         </div>
         
         <div class="card" id="plan-selection-view" style="max-width: 480px; padding: 25px 20px; border: none; border-radius: 24px; margin-top: 25px;">
@@ -160,6 +161,7 @@
 
         <div class="menu-grid">
             <div class="menu-item" onclick="openTasks()"><span class="icon-bg">🎬</span><span>Tasks</span></div>
+            <div class="menu-item" onclick="openLevelsFromDashboard()"><span class="icon-bg">⚡</span><span>Level</span></div>
             <div class="menu-item" onclick="showPage('wallet-page')"><span class="icon-bg">💳</span><span>Wallet</span></div>
             <div class="menu-item" onclick="showRewards()"><span class="icon-bg">🎁</span><span>Rewards</span></div>
             <div class="menu-item" onclick="showSalary()"><span class="icon-bg">📝</span><span>History</span></div>
@@ -252,6 +254,15 @@
         function showSignup() { document.getElementById('login-form').classList.add('hidden'); document.getElementById('signup-form').classList.remove('hidden'); }
         function showLogin() { document.getElementById('signup-form').classList.add('hidden'); document.getElementById('login-form').classList.remove('hidden'); }
 
+        // Dashboard Level Router Action
+        function openLevelsFromDashboard() {
+            document.getElementById('paywall-back-btn').classList.remove('hidden'); // Show back arrow
+            showPage('paywall-section');
+            document.getElementById('plan-selection-view').classList.remove('hidden');
+            document.getElementById('payment-upload-view').classList.add('hidden');
+            document.getElementById('pending-view').classList.add('hidden');
+        }
+
         // Paywall Logic Flow
         function selectPlan(planId, price, dailyEarn, maxTasks) {
             tempSelectedPlan = { id: planId, cost: price, earning: dailyEarn, totalTasks: maxTasks };
@@ -270,7 +281,6 @@
             
             const u = auth.currentUser;
             
-            // Converting image file to Base64 Text layout string for quick DB storage without bucket configurations
             const reader = new FileReader();
             reader.onload = function(e) {
                 const base64Img = e.target.result;
@@ -291,6 +301,7 @@
                 
                 document.getElementById('payment-upload-view').classList.add('hidden');
                 document.getElementById('pending-view').classList.remove('hidden');
+                document.getElementById('paywall-back-btn').classList.add('hidden'); // Hide back button on pending screen
             };
             reader.readAsDataURL(fileInput.files[0]);
         }
@@ -326,7 +337,6 @@
         function loadAdminData() {
             if(auth.currentUser.email !== ADMIN) return;
             
-            // 1. Load Plan Verification Requests
             db.ref('plan_requests').on('value', s => {
                 const pList = document.getElementById('admin-plan-requests');
                 pList.innerHTML = "";
@@ -344,7 +354,6 @@
                 });
             });
 
-            // 2. Load Withdrawal Requests
             db.ref('withdrawals').on('value', s => {
                 const list = document.getElementById('admin-list');
                 list.innerHTML = "";
@@ -368,7 +377,7 @@
                     status: "Active",
                     planId: d.planId,
                     allowedTasks: d.totalTasks,
-                    rewardPerVideo: (d.earning / d.totalTasks) // Calculative split allocation
+                    rewardPerVideo: (d.earning / d.totalTasks)
                 });
                 db.ref('plan_requests/' + userUid).update({ status: "Approved" });
                 alert("Plan Activated Successfully!");
@@ -449,26 +458,29 @@
                     document.getElementById('main-dashboard').classList.remove('hidden');
                     document.getElementById('paywall-section').classList.add('hidden');
                 } else {
-                    // Gateway validation check for standard users
                     db.ref('users/' + user.uid).on('value', s => {
                         const d = s.val() || {};
                         const userStatus = d.status || "NoPlan";
 
                         if(userStatus === "NoPlan") {
+                            document.getElementById('paywall-back-btn').classList.add('hidden'); // No back button if forced to buy
                             document.getElementById('main-dashboard').classList.add('hidden');
                             showPage('paywall-section');
                             document.getElementById('plan-selection-view').classList.remove('hidden');
                             document.getElementById('payment-upload-view').classList.add('hidden');
                             document.getElementById('pending-view').classList.add('hidden');
                         } else if(userStatus === "Pending") {
+                            document.getElementById('paywall-back-btn').classList.add('hidden');
                             document.getElementById('main-dashboard').classList.add('hidden');
                             showPage('paywall-section');
                             document.getElementById('plan-selection-view').classList.add('hidden');
                             document.getElementById('payment-upload-view').classList.add('hidden');
-                            document.getElementById('pending-view').remove('hidden');
+                            document.getElementById('pending-view').classList.remove('hidden');
                         } else if(userStatus === "Active") {
-                            document.getElementById('paywall-section').classList.add('hidden');
-                            document.getElementById('main-dashboard').classList.remove('hidden');
+                            // If they are inside paywall currently looking to upgrade, don't force kick them out
+                            if(document.getElementById('paywall-section').classList.contains('hidden')) {
+                                document.getElementById('main-dashboard').classList.remove('hidden');
+                            }
                             
                             document.getElementById('user-active-plan').innerText = `PLAN ${d.planId} Active`;
                             document.getElementById('userBalance').innerText = (d.balance || 0) + " PKR";
