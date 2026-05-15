@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jh Seller - Elite App</title>
+    <title>Jh Seller - Premium App</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -21,6 +21,12 @@
         .btn-green { background: #27ae60; color: white; border: none; width: 100%; padding: 18px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 17px; }
         .btn-main { background: var(--primary); color: white; border: none; width: 100%; padding: 16px; border-radius: 18px; font-weight: 700; cursor: pointer; font-size: 16px; }
 
+        /* Plan Cards */
+        .plan-box { background: white; border: 2px solid #eee; padding: 20px; margin: 15px 0; border-radius: 20px; cursor: pointer; text-align: left; transition: 0.3s; }
+        .plan-box:hover { border-color: var(--primary); background: #fffcf6; }
+        .plan-box h3 { margin: 0 0 10px 0; color: var(--dark); }
+        .plan-box p { margin: 5px 0; font-size: 14px; color: #555; }
+
         /* Dashboard */
         .balance-card { background: linear-gradient(135deg, var(--dark), #34495e); color: white; padding: 40px 20px; border-radius: 30px; margin: 20px; position: relative; overflow: hidden; }
         .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 20px; }
@@ -33,7 +39,6 @@
         .header { display: flex; align-items: center; padding: 20px; background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; }
         .history-item { background: white; margin: 12px 20px; padding: 20px; border-radius: 20px; text-align: left; border-left: 8px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.04); }
         
-        /* Video Player */
         #video-box { width: 90%; margin: 20px auto; aspect-ratio: 16/9; background: #000; border-radius: 20px; overflow: hidden; }
         .timer-ui { width: 100px; height: 100px; border: 6px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: bold; margin: 25px auto; color: var(--primary); }
     </style>
@@ -58,8 +63,56 @@
         </div>
     </div>
 
+    <div id="paywall-section" class="full-page hidden">
+        <div class="header"><h2>Select Investment Plan</h2></div>
+        <div class="card" id="plan-selection-view">
+            <p style="color:#666;">Please choose a plan to enter the application.</p>
+            
+            <div class="plan-box" onclick="selectPlan(1, 1000, 1500, 30)">
+                <h3>Plan 1 (PKR 1,000)</h3>
+                <p>📈 Daily Earning: <b>PKR 1,500</b></p>
+                <p>📺 Daily Tasks: <b>30 Videos</b></p>
+            </div>
+            <div class="plan-box" onclick="selectPlan(2, 1500, 2000, 40)">
+                <h3>Plan 2 (PKR 1,500)</h3>
+                <p>📈 Daily Earning: <b>PKR 2,000</b></p>
+                <p>📺 Daily Tasks: <b>40 Videos</b></p>
+            </div>
+            <div class="plan-box" onclick="selectPlan(3, 2000, 2500, 50)">
+                <h3>Plan 3 (PKR 2,000)</h3>
+                <p>📈 Daily Earning: <b>PKR 2,500</b></p>
+                <p>📺 Daily Tasks: <b>50 Videos</b></p>
+            </div>
+            <div class="plan-box" onclick="selectPlan(4, 2500, 3000, 60)">
+                <h3>Plan 4 (PKR 2,500)</h3>
+                <p>📈 Daily Earning: <b>PKR 3,000</b></p>
+                <p>📺 Daily Tasks: <b>60 Videos</b></p>
+            </div>
+        </div>
+
+        <div class="card hidden" id="payment-upload-view">
+            <h3 id="selected-plan-title">Deposit Details</h3>
+            <div style="background:#f9f9f9; padding:15px; border-radius:15px; text-align:left; margin-bottom:15px;">
+                <p><b>EasyPaisa / JazzCash No:</b> 03106453151</p>
+                <p><b>Account Title:</b> seyam hassan</p>
+            </div>
+            <p>Send amount and upload the transaction screenshot below:</p>
+            <input type="file" id="proof-file" accept="image/*" style="border:none;">
+            <button class="btn-green" onclick="submitPaymentProof()">Submit Screenshot</button>
+            <p onclick="backToPlans()" style="color:#e74c3c; cursor:pointer; font-weight:bold; margin-top:15px;">← Change Plan</p>
+        </div>
+
+        <div class="card hidden" id="pending-view">
+            <span style="font-size:60px;">⏳</span>
+            <h2>Verification Pending</h2>
+            <p>Your payment screenshot has been sent to the admin. Your account will be unlocked as soon as your payment is verified (usually takes 1-2 hours).</p>
+            <button class="btn-orange" onclick="logout()" style="background:#e74c3c;">Logout</button>
+        </div>
+    </div>
+
     <div id="main-dashboard" class="hidden">
         <div class="balance-card">
+            <p id="user-active-plan" style="background:rgba(255,255,255,0.2); display:inline-block; padding:5px 15px; border-radius:50px; font-size:12px; margin-bottom:10px;">PLAN: LOADING...</p>
             <p style="opacity: 0.7; font-size: 14px; letter-spacing: 1px;">TOTAL AVAILABLE BALANCE</p>
             <h1 id="userBalance" style="font-size: 45px; margin: 15px 0;">0 PKR</h1>
             <button class="btn-orange" style="background: rgba(255,255,255,0.15); border: 1px solid white;" onclick="showPage('withdraw-page')">Withdraw Funds</button>
@@ -102,12 +155,12 @@
     <div id="task-page" class="full-page hidden">
         <div class="header"><button onclick="closeTasks()" style="background:none; border:none; font-size:28px;">✕</button><h2 style="margin-left:15px;">Daily Tasks</h2></div>
         <div class="card">
-            <h3 id="task-info">Remaining: 30/30</h3>
+            <h3 id="task-info">Remaining: 0/0</h3>
             <div id="video-box">
                 <iframe id="task-frame" width="100%" height="100%" src="" frameborder="0" allow="autoplay"></iframe>
             </div>
             <div class="timer-ui" id="timer-txt">60</div>
-            <p style="color:#777;">Watch for 60 seconds to earn 50 PKR</p>
+            <p style="color:#777;">Watch for 60 seconds to complete the task</p>
         </div>
     </div>
 
@@ -118,7 +171,14 @@
 
     <div id="admin-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('admin-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Admin Panel</h2></div>
-        <div id="admin-list"></div>
+        <div class="card">
+            <h3>Plan Verification Requests</h3>
+            <div id="admin-plan-requests"></div>
+        </div>
+        <div class="card">
+            <h3>Withdrawal Requests</h3>
+            <div id="admin-list"></div>
+        </div>
     </div>
 
     <script>
@@ -135,20 +195,16 @@
         const auth = firebase.auth();
         const db = firebase.database();
         
-        // ADMIN EMAIL SET TO YOU
         const ADMIN = "samiseyam49@gmail.com"; 
 
         const vids = ["dQw4w9WgXcQ", "3JZ_D3ELwOQ", "V-_O7nl0Ii0", "L_jWHffIx5E", "7wtfhZwyrcc"];
         let clock;
         let timeLeft = 60;
+        let tempSelectedPlan = null;
 
-        // UI Logic
+        // UI Routing Logic
         function showPage(id) { 
-            // Extra Security: Prevent unauthorized users from manually opening admin-page via console
-            if(id == 'admin-page' && auth.currentUser.email !== ADMIN) {
-                alert("Access Denied!");
-                return;
-            }
+            if(id == 'admin-page' && auth.currentUser.email !== ADMIN) return alert("Access Denied!");
             document.getElementById(id).classList.remove('hidden'); 
             if(id=='admin-page') loadAdminData(); 
         }
@@ -156,7 +212,50 @@
         function showSignup() { document.getElementById('login-form').classList.add('hidden'); document.getElementById('signup-form').classList.remove('hidden'); }
         function showLogin() { document.getElementById('signup-form').classList.add('hidden'); document.getElementById('login-form').classList.remove('hidden'); }
 
-        // Withdrawal Submission Logic
+        // Paywall Logic Flow
+        function selectPlan(planId, price, dailyEarn, maxTasks) {
+            tempSelectedPlan = { id: planId, cost: price, earning: dailyEarn, totalTasks: maxTasks };
+            document.getElementById('plan-selection-view').classList.add('hidden');
+            document.getElementById('payment-upload-view').classList.remove('hidden');
+            document.getElementById('selected-plan-title').innerText = `Deposit Confirmation (Plan ${planId})`;
+        }
+        function backToPlans() {
+            document.getElementById('payment-upload-view').classList.add('hidden');
+            document.getElementById('plan-selection-view').classList.remove('hidden');
+        }
+
+        function submitPaymentProof() {
+            const fileInput = document.getElementById('proof-file');
+            if(fileInput.files.length === 0) return alert("Please select or capture a payment screenshot!");
+            
+            const u = auth.currentUser;
+            
+            // Converting image file to Base64 Text layout string for quick DB storage without bucket configurations
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Img = e.target.result;
+                
+                db.ref('plan_requests/' + u.uid).set({
+                    uid: u.uid,
+                    email: u.email,
+                    planId: tempSelectedPlan.id,
+                    cost: tempSelectedPlan.cost,
+                    earning: tempSelectedPlan.earning,
+                    totalTasks: tempSelectedPlan.totalTasks,
+                    screenshot: base64Img,
+                    status: "Pending",
+                    date: new Date().toLocaleString()
+                });
+
+                db.ref('users/' + u.uid).update({ status: "Pending" });
+                
+                document.getElementById('payment-upload-view').classList.add('hidden');
+                document.getElementById('pending-view').classList.remove('hidden');
+            };
+            reader.readAsDataURL(fileInput.files[0]);
+        }
+
+        // Withdrawal Logic
         function submitWithdrawal() {
             const u = auth.currentUser;
             const method = document.getElementById('w-method').value;
@@ -175,66 +274,86 @@
                     totalWithdrawn: (s.val().totalWithdrawn || 0) + amount
                 });
 
-                db.ref('withdrawals').push({
-                    uid: u.uid,
-                    email: u.email,
-                    method: method,
-                    account: account,
-                    amount: amount,
-                    status: "Pending",
-                    date: new Date().toLocaleString()
-                });
+                db.ref('withdrawals').push({ uid: u.uid, email: u.email, method: method, account: account, amount: amount, status: "Pending", date: new Date().toLocaleString() });
+                db.ref('history/' + u.uid).push({ type: `Withdrawal (${method})`, amount: `-${amount}`, date: new Date().toLocaleString() });
 
-                db.ref('history/' + u.uid).push({
-                    type: `Withdrawal (${method})`,
-                    amount: `-${amount}`,
-                    date: new Date().toLocaleString()
-                });
-
-                alert("Withdrawal request submitted successfully!");
+                alert("Withdrawal request submitted!");
                 closePage('withdraw-page');
             });
         }
 
-        // Admin Load & Approval Data
+        // Admin Load & Approval Control Data
         function loadAdminData() {
-            if(auth.currentUser.email !== ADMIN) return; // Strict security check
+            if(auth.currentUser.email !== ADMIN) return;
+            
+            // 1. Load Plan Verification Requests
+            db.ref('plan_requests').on('value', s => {
+                const pList = document.getElementById('admin-plan-requests');
+                pList.innerHTML = "";
+                if(!s.exists()) pList.innerHTML = "<p>No subscription requests.</p>";
+                s.forEach(c => {
+                    const d = c.val();
+                    if(d.status === "Pending") {
+                        pList.innerHTML += `<div class="history-item" style="border-left-color:#e67e22;">
+                            <b>User: ${d.email}</b><br>
+                            Requested Plan: ${d.planId} (PKR ${d.cost})<br>
+                            <img src="${d.screenshot}" style="width:100%; max-width:200px; margin:10px 0; border-radius:10px; display:block;" alt="Screenshot">
+                            <button onclick="approvePlan('${d.uid}')" style="background:#2ecc71; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">Approve & Activate</button>
+                        </div>`;
+                    }
+                });
+            });
+
+            // 2. Load Withdrawal Requests
             db.ref('withdrawals').on('value', s => {
                 const list = document.getElementById('admin-list');
                 list.innerHTML = "";
-                if(!s.exists()) { list.innerHTML = "<p>No withdrawal requests found.</p>"; return; }
+                if(!s.exists()) { list.innerHTML = "<p>No withdrawal requests.</p>"; return; }
                 s.forEach(c => {
                     const d = c.val();
                     list.innerHTML += `<div class="history-item" style="border-left-color: ${d.status=='Pending'?'#f1c40f':'#2ecc71'}">
                         <b>User: ${d.email}</b><br>
                         Method: ${d.method} | Number: ${d.account}<br>
                         Amount: <b>${d.amount} PKR</b><br>
-                        <small>${d.date}</small><br>
                         ${d.status=='Pending' ? `<button onclick="approveWithdrawal('${c.key}')" style="background:#2ecc71; color:white; border:none; padding:8px 20px; border-radius:8px; margin-top:8px; cursor:pointer; font-weight:bold;">Approve & Pay</button>` : '<b style="color:#2ecc71;">✅ Approved & Paid</b>'}
                     </div>`;
                 });
             });
         }
 
-        function approveWithdrawal(key) {
-            if(auth.currentUser.email !== ADMIN) return; // Strict security check
-            db.ref('withdrawals/' + key).update({ status: "Success" });
-            alert("Request Approved!");
+        function approvePlan(userUid) {
+            db.ref('plan_requests/' + userUid).once('value', s => {
+                const d = s.val();
+                db.ref('users/' + userUid).update({
+                    status: "Active",
+                    planId: d.planId,
+                    allowedTasks: d.totalTasks,
+                    rewardPerVideo: (d.earning / d.totalTasks) // Calculative split allocation
+                });
+                db.ref('plan_requests/' + userUid).update({ status: "Approved" });
+                alert("Plan Activated Successfully!");
+            });
         }
 
-        // Video Logic
+        function approveWithdrawal(key) {
+            db.ref('withdrawals/' + key).update({ status: "Success" });
+            alert("Withdrawal Request Approved!");
+        }
+
+        // Dynamic System Video Logic
         function openTasks() {
             const u = auth.currentUser;
             db.ref('users/' + u.uid).once('value', s => {
                 const d = s.val();
                 const today = new Date().toLocaleDateString();
                 let done = (d.lastDate === today) ? (d.tasksDone || 0) : 0;
+                let maxAllowed = d.allowedTasks || 0;
 
-                if (done >= 30) return alert("Daily limit (30) reached! Come back in 24h.");
+                if (done >= maxAllowed) return alert(`Daily limit (${maxAllowed} videos) reached according to your plan! Come back in 24h.`);
                 
                 showPage('task-page');
                 timeLeft = 60;
-                document.getElementById('task-info').innerText = `Tasks Done: ${done}/30`;
+                document.getElementById('task-info').innerText = `Tasks Done: ${done}/${maxAllowed}`;
                 const v = vids[Math.floor(Math.random() * vids.length)];
                 document.getElementById('task-frame').src = `https://www.youtube.com/embed/${v}?autoplay=1&controls=0`;
 
@@ -243,63 +362,85 @@
                     document.getElementById('timer-txt').innerText = timeLeft;
                     if(timeLeft <= 0) {
                         clearInterval(clock);
-                        finishTask(done);
+                        finishTask(done, d.rewardPerVideo);
                     }
                 }, 1000);
             });
         }
 
-        function finishTask(count) {
+        function finishTask(count, payoutPerVideo) {
             const u = auth.currentUser;
             const today = new Date().toLocaleDateString();
+            const cleanPayout = parseFloat(payoutPerVideo.toFixed(2));
+
             db.ref('users/' + u.uid).transaction(d => {
                 if(d) {
-                    d.balance = (d.balance || 0) + 50;
+                    d.balance = parseFloat(((d.balance || 0) + cleanPayout).toFixed(2));
                     d.tasksDone = count + 1;
                     d.lastDate = today;
                     d.totalVideos = (d.totalVideos || 0) + 1;
                 }
                 return d;
             });
-            db.ref('history/' + u.uid).push({ type: "Video Reward", amount: 50, date: new Date().toLocaleString() });
-            alert("50 PKR Added!");
+            db.ref('history/' + u.uid).push({ type: "Video Reward", amount: cleanPayout, date: new Date().toLocaleString() });
+            alert(`Task complete! ${cleanPayout} PKR Added.`);
             closeTasks();
         }
 
         function closeTasks() { clearInterval(clock); document.getElementById('task-frame').src = ""; closePage('task-page'); }
 
-        // Auth
+        // Core Auth Engine Routing Guard
         function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value).catch(e => alert(e.message)); }
         function signup() {
             const e = document.getElementById('reg-email').value;
             const p = document.getElementById('reg-password').value;
             const r = document.getElementById('reg-ref').value;
             auth.createUserWithEmailAndPassword(e, p).then(c => {
-                db.ref('users/' + c.user.uid).set({ email: e, balance: 0, totalWithdrawn: 0, myRef: c.user.uid.substring(0,6).toUpperCase(), refBy: r || "none", tasksDone: 0 });
+                db.ref('users/' + c.user.uid).set({ email: e, balance: 0, totalWithdrawn: 0, status: "NoPlan", planId: 0, allowedTasks: 0, tasksDone: 0, myRef: c.user.uid.substring(0,6).toUpperCase(), refBy: r || "none" });
             }).catch(e => alert(e.message));
         }
 
         auth.onAuthStateChanged(user => {
             if(user) {
                 document.getElementById('auth-section').classList.add('hidden');
-                document.getElementById('main-dashboard').classList.remove('hidden');
                 
-                // Strict Admin UI Unhiding Check
                 if(user.email === ADMIN) {
                     document.getElementById('admin-btn').classList.remove('hidden');
+                    document.getElementById('main-dashboard').classList.remove('hidden');
+                    document.getElementById('paywall-section').classList.add('hidden');
                 } else {
-                    document.getElementById('admin-btn').classList.add('hidden');
-                }
+                    // Gateway validation check for standard users
+                    db.ref('users/' + user.uid).on('value', s => {
+                        const d = s.val() || {};
+                        const userStatus = d.status || "NoPlan";
 
-                db.ref('users/' + user.uid).on('value', s => {
-                    const d = s.val() || {};
-                    document.getElementById('userBalance').innerText = (d.balance || 0) + " PKR";
-                    document.getElementById('wal-bal').innerText = (d.balance || 0) + " PKR";
-                    document.getElementById('wal-out').innerText = (d.totalWithdrawn || 0) + " PKR";
-                });
+                        if(userStatus === "NoPlan") {
+                            document.getElementById('main-dashboard').classList.add('hidden');
+                            showPage('paywall-section');
+                            document.getElementById('plan-selection-view').classList.remove('hidden');
+                            document.getElementById('payment-upload-view').classList.add('hidden');
+                            document.getElementById('pending-view').classList.add('hidden');
+                        } else if(userStatus === "Pending") {
+                            document.getElementById('main-dashboard').classList.add('hidden');
+                            showPage('paywall-section');
+                            document.getElementById('plan-selection-view').classList.add('hidden');
+                            document.getElementById('payment-upload-view').classList.add('hidden');
+                            document.getElementById('pending-view').classList.remove('hidden');
+                        } else if(userStatus === "Active") {
+                            document.getElementById('paywall-section').classList.add('hidden');
+                            document.getElementById('main-dashboard').classList.remove('hidden');
+                            
+                            document.getElementById('user-active-plan').innerText = `PLAN ${d.planId} Active`;
+                            document.getElementById('userBalance').innerText = (d.balance || 0) + " PKR";
+                            document.getElementById('wal-bal').innerText = (d.balance || 0) + " PKR";
+                            document.getElementById('wal-out').innerText = (d.totalWithdrawn || 0) + " PKR";
+                        }
+                    });
+                }
             } else {
                 document.getElementById('auth-section').classList.remove('hidden');
                 document.getElementById('main-dashboard').classList.add('hidden');
+                document.getElementById('paywall-section').classList.add('hidden');
             }
         });
 
