@@ -174,7 +174,7 @@
             <h3>Enter Details</h3>
             <select id="w-method"><option value="EasyPaisa">EasyPaisa</option><option value="JazzCash">JazzCash</option></select>
             <input type="text" id="w-account" placeholder="Account Number (e.g. 0300xxxxxxx)">
-            <input type="number" id="w-amount" placeholder="Amount (Minimum 500 PKR)">
+            <input type="number" id="w-amount" placeholder="Amount (Minimum 2000 PKR)">
             <button class="btn-main" onclick="submitWithdrawal()" style="margin-top:15px;">Submit Request</button>
         </div>
     </div>
@@ -310,7 +310,6 @@
                 
                 document.getElementById('team-ref-display').innerText = userRefCode;
                 
-                // Yeh line automatic aapka naya link pick karegi bina hardcode kiye
                 let cleanBaseUrl = window.location.origin + window.location.pathname;
                 document.getElementById('team-link-display').value = `${cleanBaseUrl}?ref=${userRefCode}`;
 
@@ -383,7 +382,7 @@
             const account = document.getElementById('w-account').value.trim();
             const amount = parseInt(document.getElementById('w-amount').value);
             if(!account || !amount) return appAlert("Please fill all details!");
-            if(amount < 500) return appAlert("Minimum withdrawal is 500 PKR!");
+            if(amount < 2000) return appAlert("Minimum withdrawal is 2000 PKR!");
 
             db.ref('users/' + u.uid).once('value', s => {
                 const bal = s.val().balance || 0;
