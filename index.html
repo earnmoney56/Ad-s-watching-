@@ -224,9 +224,18 @@
     <div id="team-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('team-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">My Network Team</h2></div>
         <div class="card" style="margin-top: 20px; text-align: left;">
-            <h3 style="color: var(--primary); margin-top: 0;">My Referral Code</h3>
-            <div style="background: #f8fafc; border: 1.5px dashed #cbd5e1; padding: 15px; border-radius: 15px; text-align: center; font-size: 22px; font-weight: bold; color: var(--dark); letter-spacing: 1px;" id="team-ref-display">LOADING...</div>
-            <p style="font-size: 13px; color: #64748b; line-height: 1.4; margin-top: 10px;">Share this unique tracking code with your team partners. New registers will bind under your downstream network tree parameters automatically.</p>
+            <h3 style="color: var(--primary); margin-top: 0; font-size: 18px;">My Referral Tracking</h3>
+            
+            <label style="font-size: 12px; font-weight: 700; color: #64748b; display: block; margin-bottom: 5px;">REFERRAL CODE</label>
+            <div style="background: #f8fafc; border: 1.5px dashed #cbd5e1; padding: 12px; border-radius: 12px; text-align: center; font-size: 20px; font-weight: bold; color: var(--dark); letter-spacing: 1px; margin-bottom: 15px;" id="team-ref-display">LOADING...</div>
+            
+            <label style="font-size: 12px; font-weight: 700; color: #64748b; display: block; margin-bottom: 5px;">SHAREABLE REFERRAL LINK</label>
+            <div style="display: flex; gap: 8px;">
+                <input type="text" id="team-link-display" readonly style="width: 70%; margin: 0; padding: 12px; font-size: 13px; border-radius: 12px; background: #f8fafc; color: #475569; border: 1.5px solid #e2e8f0;">
+                <button onclick="copyReferralLink()" style="width: 30%; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px;">Copy Link</button>
+            </div>
+            
+            <p style="font-size: 12px; color: #64748b; line-height: 1.4; margin-top: 12px;">Dosto ko is link se join karwayein. Unka account automatic aapke downline tree mein bind ho jaye ga.</p>
         </div>
         <div class="card" style="text-align: left;">
             <h3 style="margin-top: 0; color: var(--dark);">Downline Network Members</h3>
@@ -269,6 +278,17 @@
         let timeLeft = 30;
         let tempSelectedPlan = null;
 
+        // Dynamic URL Referral Parameter Initializer
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const refCodeFromUrl = urlParams.get('ref');
+            if(refCodeFromUrl) {
+                // Show register screen automatically and fill tracking data
+                showSignup();
+                document.getElementById('reg-ref').value = refCodeFromUrl.trim().toUpperCase();
+            }
+        });
+
         // UI Routing Logic
         function showPage(id) { 
             if(id == 'admin-page' && auth.currentUser.email !== ADMIN) return alert("Access Denied!");
@@ -280,7 +300,6 @@
         function showSignup() { document.getElementById('login-form').classList.add('hidden'); document.getElementById('signup-form').classList.remove('hidden'); }
         function showLogin() { document.getElementById('signup-form').classList.add('hidden'); document.getElementById('login-form').classList.remove('hidden'); }
 
-        // Dashboard Level Router Action
         function openLevelsFromDashboard() {
             document.getElementById('paywall-back-btn').classList.remove('hidden'); 
             showPage('paywall-section');
@@ -289,14 +308,8 @@
             document.getElementById('pending-view').classList.add('hidden');
         }
 
-        // Rewards Screen Activation Logic
-        function showRewards() {
-            showPage('rewards-page');
-        }
-
-        function showTeam() {
-            showPage('team-page');
-        }
+        function showRewards() { showPage('rewards-page'); }
+        function showTeam() { showPage('team-page'); }
 
         function fetchTeamData() {
             const u = auth.currentUser;
@@ -305,7 +318,13 @@
             db.ref('users/' + u.uid).once('value', snapshot => {
                 const userData = snapshot.val() || {};
                 const userRefCode = userData.myRef || u.uid.substring(0, 6).toUpperCase();
+                
+                // Display Code
                 document.getElementById('team-ref-display').innerText = userRefCode;
+                
+                // Generate and Display Live Base Domain URL Link
+                const currentDomainUrl = window.location.origin + window.location.pathname;
+                document.getElementById('team-link-display').value = `${currentDomainUrl}?ref=${userRefCode}`;
 
                 db.ref('users').orderByChild('refBy').equalTo(userRefCode).once('value', s => {
                     tList.innerHTML = "";
@@ -329,34 +348,36 @@
             });
         }
 
+        function copyReferralLink() {
+            const copyText = document.getElementById('team-link-display');
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // For mobile devices
+            navigator.clipboard.writeText(copyText.value).then(() => {
+                alert("Referral Link copied successfully! Now share it anywhere.");
+            }).catch(() => {
+                alert("Failed to copy. Please select text manually.");
+            });
+        }
+
         function claimDailyReward() {
             const u = auth.currentUser;
             const today = new Date().toLocaleDateString();
 
             db.ref('users/' + u.uid).once('value', s => {
                 const d = s.val() || {};
-                
-                if(d.lastRewardDate === today) {
-                    return alert("You have already claimed your attendance reward today! Come back tomorrow.");
-                }
+                if(d.lastRewardDate === today) return alert("You have already claimed your attendance reward today! Come back tomorrow.");
 
                 db.ref('users/' + u.uid).update({
                     balance: parseFloat(((d.balance || 0) + 400).toFixed(2)),
                     lastRewardDate: today
                 });
 
-                db.ref('history/' + u.uid).push({
-                    type: "Daily Reward Claim",
-                    amount: 400,
-                    date: new Date().toLocaleString()
-                });
-
+                db.ref('history/' + u.uid).push({ type: "Daily Reward Claim", amount: 400, date: new Date().toLocaleString() });
                 alert("Success! 400 PKR added directly to your account balance.");
                 closePage('rewards-page');
             });
         }
 
-        // Paywall Logic Flow
         function selectPlan(planId, price, dailyEarn, maxTasks) {
             tempSelectedPlan = { id: planId, cost: price, earning: dailyEarn, totalTasks: maxTasks };
             document.getElementById('plan-selection-view').classList.add('hidden');
@@ -376,21 +397,10 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 const base64Img = e.target.result;
-                
                 db.ref('plan_requests/' + u.uid).set({
-                    uid: u.uid,
-                    email: u.email,
-                    planId: tempSelectedPlan.id,
-                    cost: tempSelectedPlan.cost,
-                    earning: tempSelectedPlan.earning,
-                    totalTasks: tempSelectedPlan.totalTasks,
-                    screenshot: base64Img,
-                    status: "Pending",
-                    date: new Date().toLocaleString()
+                    uid: u.uid, email: u.email, planId: tempSelectedPlan.id, cost: tempSelectedPlan.cost, earning: tempSelectedPlan.earning, totalTasks: tempSelectedPlan.totalTasks, screenshot: base64Img, status: "Pending", date: new Date().toLocaleString()
                 });
-
                 db.ref('users/' + u.uid).update({ status: "Pending" });
-                
                 document.getElementById('payment-upload-view').classList.add('hidden');
                 document.getElementById('pending-view').classList.remove('hidden');
                 document.getElementById('paywall-back-btn').classList.add('hidden');
@@ -398,7 +408,6 @@
             reader.readAsDataURL(fileInput.files[0]);
         }
 
-        // Withdrawal Logic
         function submitWithdrawal() {
             const u = auth.currentUser;
             const method = document.getElementById('w-method').value;
@@ -412,23 +421,16 @@
                 const currentBalance = s.val().balance || 0;
                 if(amount > currentBalance) return alert("Insufficient balance!");
 
-                db.ref('users/' + u.uid).update({
-                    balance: currentBalance - amount,
-                    totalWithdrawn: (s.val().totalWithdrawn || 0) + amount
-                });
-
+                db.ref('users/' + u.uid).update({ balance: currentBalance - amount, totalWithdrawn: (s.val().totalWithdrawn || 0) + amount });
                 db.ref('withdrawals').push({ uid: u.uid, email: u.email, method: method, account: account, amount: amount, status: "Pending", date: new Date().toLocaleString() });
                 db.ref('history/' + u.uid).push({ type: `Withdrawal (${method})`, amount: `-${amount}`, date: new Date().toLocaleString() });
-
                 alert("Withdrawal request submitted!");
                 closePage('withdraw-page');
             });
         }
 
-        // Admin Load & Approval Control Data
         function loadAdminData() {
             if(auth.currentUser.email !== ADMIN) return;
-            
             db.ref('plan_requests').on('value', s => {
                 const pList = document.getElementById('admin-plan-requests');
                 pList.innerHTML = "";
@@ -437,9 +439,8 @@
                     const d = c.val();
                     if(d.status === "Pending") {
                         pList.innerHTML += `<div class="history-item" style="border-left-color:#e67e22;">
-                            <b>User: ${d.email}</b><br>
-                            Requested Plan: ${d.planId} (PKR ${d.cost})<br>
-                            <img src="${d.screenshot}" style="width:100%; max-width:200px; margin:10px 0; border-radius:10px; display:block;" alt="Screenshot">
+                            <b>User: ${d.email}</b><br>Requested Plan: ${d.planId} (PKR ${d.cost})<br>
+                            <img src="${d.screenshot}" style="width:100%; max-width:200px; margin:10px 0; border-radius:10px; display:block;">
                             <button onclick="approvePlan('${d.uid}')" style="background:#2ecc71; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">Approve & Activate</button>
                         </div>`;
                     }
@@ -453,9 +454,7 @@
                 s.forEach(c => {
                     const d = c.val();
                     list.innerHTML += `<div class="history-item" style="border-left-color: ${d.status=='Pending'?'#f1c40f':'#2ecc71'}">
-                        <b>User: ${d.email}</b><br>
-                        Method: ${d.method} | Number: ${d.account}<br>
-                        Amount: <b>${d.amount} PKR</b><br>
+                        <b>User: ${d.email}</b><br>Method: ${d.method} | Number: ${d.account}<br>Amount: <b>${d.amount} PKR</b><br>
                         ${d.status=='Pending' ? `<button onclick="approveWithdrawal('${c.key}')" style="background:#2ecc71; color:white; border:none; padding:8px 20px; border-radius:8px; margin-top:8px; cursor:pointer; font-weight:bold;">Approve & Pay</button>` : '<b style="color:#2ecc71;">✅ Approved & Paid</b>'}
                     </div>`;
                 });
@@ -465,57 +464,31 @@
         function approvePlan(userUid) {
             db.ref('plan_requests/' + userUid).once('value', s => {
                 const d = s.val();
-                
-                // Activate target user plan parameters
-                db.ref('users/' + userUid).update({
-                    status: "Active",
-                    planId: d.planId,
-                    allowedTasks: d.totalTasks,
-                    rewardPerVideo: (d.earning / d.totalTasks)
-                });
-                
+                db.ref('users/' + userUid).update({ status: "Active", planId: d.planId, allowedTasks: d.totalTasks, rewardPerVideo: (d.earning / d.totalTasks) });
                 db.ref('plan_requests/' + userUid).update({ status: "Approved" });
 
-                // Core Referral Security Check Triggered On Successful Manual Admin Activation
                 db.ref('users/' + userUid).once('value', userSnap => {
                     const currentU = userSnap.val() || {};
                     const parentRefCode = currentU.refBy;
-
                     if(parentRefCode && parentRefCode !== "none") {
-                        // Scan matching user nodes bound to tracking tree metrics
                         db.ref('users').orderByChild('myRef').equalTo(parentRefCode).once('value', parentSnap => {
                             if(parentSnap.exists()) {
                                 parentSnap.forEach(pChild => {
                                     const pKey = pChild.key;
                                     const pData = pChild.val();
-                                    
-                                    // Inject 800 PKR commission payout directly to verified upstream node
-                                    db.ref('users/' + pKey).update({
-                                        balance: parseFloat(((pData.balance || 0) + 800).toFixed(2))
-                                    });
-
-                                    // Record transactional event to historical audit trails
-                                    db.ref('history/' + pKey).push({
-                                        type: `Referral Bonus (${currentU.email})`,
-                                        amount: 800,
-                                        date: new Date().toLocaleString()
-                                    });
+                                    db.ref('users/' + pKey).update({ balance: parseFloat(((pData.balance || 0) + 800).toFixed(2)) });
+                                    db.ref('history/' + pKey).push({ type: `Referral Bonus (${currentU.email})`, amount: 800, date: new Date().toLocaleString() });
                                 });
                             }
                         });
                     }
                 });
-
                 alert("Plan Activated & Referral Reward processed successfully!");
             });
         }
 
-        function approveWithdrawal(key) {
-            db.ref('withdrawals/' + key).update({ status: "Success" });
-            alert("Withdrawal Request Approved!");
-        }
+        function approveWithdrawal(key) { db.ref('withdrawals/' + key).update({ status: "Success" }); alert("Withdrawal Request Approved!"); }
 
-        // Dynamic System Video Logic
         function openTasks() {
             const u = auth.currentUser;
             db.ref('users/' + u.uid).once('value', s => {
@@ -524,7 +497,7 @@
                 let done = (d.lastDate === today) ? (d.tasksDone || 0) : 0;
                 let maxAllowed = d.allowedTasks || 0;
 
-                if (done >= maxAllowed) return alert(`Daily limit (${maxAllowed} videos) reached according to your plan! Come back in 24h.`);
+                if (done >= maxAllowed) return alert(`Daily limit (${maxAllowed} videos) reached! Come back in 24h.`);
                 
                 showPage('task-page');
                 timeLeft = 30;
@@ -536,10 +509,7 @@
                 clock = setInterval(() => {
                     timeLeft--;
                     document.getElementById('timer-txt').innerText = timeLeft;
-                    if(timeLeft <= 0) {
-                        clearInterval(clock);
-                        finishTask(done, d.rewardPerVideo);
-                    }
+                    if(timeLeft <= 0) { clearInterval(clock); finishTask(done, d.rewardPerVideo); }
                 }, 1000);
             });
         }
@@ -552,9 +522,7 @@
             db.ref('users/' + u.uid).transaction(d => {
                 if(d) {
                     d.balance = parseFloat(((d.balance || 0) + cleanPayout).toFixed(2));
-                    d.tasksDone = count + 1;
-                    d.lastDate = today;
-                    d.totalVideos = (d.totalVideos || 0) + 1;
+                    d.tasksDone = count + 1; d.lastDate = today; d.totalVideos = (d.totalVideos || 0) + 1;
                 }
                 return d;
             });
@@ -565,7 +533,6 @@
 
         function closeTasks() { clearInterval(clock); document.getElementById('task-frame').src = ""; closePage('task-page'); }
 
-        // Core Auth Engine Routing Guard
         function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value).catch(e => alert(e.message)); }
         function signup() {
             const e = document.getElementById('reg-email').value;
@@ -579,7 +546,6 @@
         auth.onAuthStateChanged(user => {
             if(user) {
                 document.getElementById('auth-section').classList.add('hidden');
-                
                 if(user.email === ADMIN) {
                     document.getElementById('admin-btn').classList.remove('hidden');
                     document.getElementById('main-dashboard').classList.remove('hidden');
@@ -607,7 +573,6 @@
                             if(document.getElementById('paywall-section').classList.contains('hidden')) {
                                 document.getElementById('main-dashboard').classList.remove('hidden');
                             }
-                            
                             document.getElementById('user-active-plan').innerText = `PLAN ${d.planId} Active`;
                             document.getElementById('userBalance').innerText = (d.balance || 0) + " PKR";
                             document.getElementById('wal-bal').innerText = (d.balance || 0) + " PKR";
