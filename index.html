@@ -211,6 +211,16 @@
         <div id="history-list"></div>
     </div>
 
+    <div id="rewards-page" class="full-page hidden">
+        <div class="header"><button onclick="closePage('rewards-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Daily Rewards</h2></div>
+        <div class="card" style="margin-top: 40px; padding: 30px 20px;">
+            <div style="font-size: 50px; margin-bottom: 15px;">🎁</div>
+            <h3 style="margin: 0 0 10px 0; font-size: 20px; color: #1e293b;">Daily Attendance Reward</h3>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 25px; line-height: 1.5;">Claim your free daily premium bonus of 400 PKR inside your wallet dashboard instantly.</p>
+            <button class="btn-green" onclick="claimDailyReward()" style="box-shadow: 0 4px 12px rgba(39,174,96,0.2);">Claim 400 PKR Now</button>
+        </div>
+    </div>
+
     <div id="admin-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('admin-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Admin Panel</h2></div>
         <div class="card">
@@ -256,11 +266,43 @@
 
         // Dashboard Level Router Action
         function openLevelsFromDashboard() {
-            document.getElementById('paywall-back-btn').classList.remove('hidden'); // Show back arrow
+            document.getElementById('paywall-back-btn').classList.remove('hidden'); 
             showPage('paywall-section');
             document.getElementById('plan-selection-view').classList.remove('hidden');
             document.getElementById('payment-upload-view').classList.add('hidden');
             document.getElementById('pending-view').classList.add('hidden');
+        }
+
+        // Rewards Screen Activation Logic
+        function showRewards() {
+            showPage('rewards-page');
+        }
+
+        function claimDailyReward() {
+            const u = auth.currentUser;
+            const today = new Date().toLocaleDateString();
+
+            db.ref('users/' + u.uid).once('value', s => {
+                const d = s.val() || {};
+                
+                if(d.lastRewardDate === today) {
+                    return alert("You have already claimed your attendance reward today! Come back tomorrow.");
+                }
+
+                db.ref('users/' + u.uid).update({
+                    balance: parseFloat(((d.balance || 0) + 400).toFixed(2)),
+                    lastRewardDate: today
+                });
+
+                db.ref('history/' + u.uid).push({
+                    type: "Daily Reward Claim",
+                    amount: 400,
+                    date: new Date().toLocaleString()
+                });
+
+                alert("Success! 400 PKR added directly to your account balance.");
+                closePage('rewards-page');
+            });
         }
 
         // Paywall Logic Flow
@@ -280,7 +322,6 @@
             if(fileInput.files.length === 0) return alert("Please select or capture a payment screenshot!");
             
             const u = auth.currentUser;
-            
             const reader = new FileReader();
             reader.onload = function(e) {
                 const base64Img = e.target.result;
@@ -301,7 +342,7 @@
                 
                 document.getElementById('payment-upload-view').classList.add('hidden');
                 document.getElementById('pending-view').classList.remove('hidden');
-                document.getElementById('paywall-back-btn').classList.add('hidden'); // Hide back button on pending screen
+                document.getElementById('paywall-back-btn').classList.add('hidden');
             };
             reader.readAsDataURL(fileInput.files[0]);
         }
@@ -463,7 +504,7 @@
                         const userStatus = d.status || "NoPlan";
 
                         if(userStatus === "NoPlan") {
-                            document.getElementById('paywall-back-btn').classList.add('hidden'); // No back button if forced to buy
+                            document.getElementById('paywall-back-btn').classList.add('hidden'); 
                             document.getElementById('main-dashboard').classList.add('hidden');
                             showPage('paywall-section');
                             document.getElementById('plan-selection-view').classList.remove('hidden');
@@ -477,7 +518,6 @@
                             document.getElementById('payment-upload-view').classList.add('hidden');
                             document.getElementById('pending-view').classList.remove('hidden');
                         } else if(userStatus === "Active") {
-                            // If they are inside paywall currently looking to upgrade, don't force kick them out
                             if(document.getElementById('paywall-section').classList.contains('hidden')) {
                                 document.getElementById('main-dashboard').classList.remove('hidden');
                             }
