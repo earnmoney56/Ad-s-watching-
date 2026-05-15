@@ -201,8 +201,8 @@
             <div id="video-box">
                 <iframe id="task-frame" width="100%" height="100%" src="" frameborder="0" allow="autoplay"></iframe>
             </div>
-            <div class="timer-ui" id="timer-txt">60</div>
-            <p style="color:#777;">Watch for 60 seconds to complete the task</p>
+            <div class="timer-ui" id="timer-txt">30</div>
+            <p style="color:#777;">Watch for 30 seconds to complete the task</p>
         </div>
     </div>
 
@@ -218,6 +218,21 @@
             <h3 style="margin: 0 0 10px 0; font-size: 20px; color: #1e293b;">Daily Attendance Reward</h3>
             <p style="color: #64748b; font-size: 14px; margin-bottom: 25px; line-height: 1.5;">Claim your free daily premium bonus of 400 PKR inside your wallet dashboard instantly.</p>
             <button class="btn-green" onclick="claimDailyReward()" style="box-shadow: 0 4px 12px rgba(39,174,96,0.2);">Claim 400 PKR Now</button>
+        </div>
+    </div>
+
+    <div id="team-page" class="full-page hidden">
+        <div class="header"><button onclick="closePage('team-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">My Network Team</h2></div>
+        <div class="card" style="margin-top: 20px; text-align: left;">
+            <h3 style="color: var(--primary); margin-top: 0;">My Referral Code</h3>
+            <div style="background: #f8fafc; border: 1.5px dashed #cbd5e1; padding: 15px; border-radius: 15px; text-align: center; font-size: 22px; font-weight: bold; color: var(--dark); letter-spacing: 1px;" id="team-ref-display">LOADING...</div>
+            <p style="font-size: 13px; color: #64748b; line-height: 1.4; margin-top: 10px;">Share this unique tracking code with your team partners. New registers will bind under your downstream network tree parameters automatically.</p>
+        </div>
+        <div class="card" style="text-align: left;">
+            <h3 style="margin-top: 0; color: var(--dark);">Downline Network Members</h3>
+            <div id="team-list" style="max-height: 250px; overflow-y: auto;">
+                <p style="color: #94a3b8; text-align: center;">Scanning network directory...</p>
+            </div>
         </div>
     </div>
 
@@ -251,7 +266,7 @@
 
         const vids = ["dQw4w9WgXcQ", "3JZ_D3ELwOQ", "V-_O7nl0Ii0", "L_jWHffIx5E", "7wtfhZwyrcc"];
         let clock;
-        let timeLeft = 60;
+        let timeLeft = 30;
         let tempSelectedPlan = null;
 
         // UI Routing Logic
@@ -259,6 +274,7 @@
             if(id == 'admin-page' && auth.currentUser.email !== ADMIN) return alert("Access Denied!");
             document.getElementById(id).classList.remove('hidden'); 
             if(id=='admin-page') loadAdminData(); 
+            if(id=='team-page') fetchTeamData();
         }
         function closePage(id) { document.getElementById(id).classList.add('hidden'); }
         function showSignup() { document.getElementById('login-form').classList.add('hidden'); document.getElementById('signup-form').classList.remove('hidden'); }
@@ -276,6 +292,41 @@
         // Rewards Screen Activation Logic
         function showRewards() {
             showPage('rewards-page');
+        }
+
+        function showTeam() {
+            showPage('team-page');
+        }
+
+        function fetchTeamData() {
+            const u = auth.currentUser;
+            const tList = document.getElementById('team-list');
+            
+            db.ref('users/' + u.uid).once('value', snapshot => {
+                const userData = snapshot.val() || {};
+                const userRefCode = userData.myRef || u.uid.substring(0, 6).toUpperCase();
+                document.getElementById('team-ref-display').innerText = userRefCode;
+
+                db.ref('users').orderByChild('refBy').equalTo(userRefCode).once('value', s => {
+                    tList.innerHTML = "";
+                    if(!s.exists()) {
+                        tList.innerHTML = `<p style="color: #94a3b8; text-align: center; font-size:14px; padding:10px;">No direct downline team members found yet.</p>`;
+                        return;
+                    }
+                    s.forEach(child => {
+                        const member = child.val();
+                        const planText = member.planId ? `Plan ${member.planId}` : 'No Active Plan';
+                        tList.innerHTML += `
+                            <div style="padding: 12px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <span style="font-weight: 600; color: #334155; font-size:14px;">${member.email}</span>
+                                    <span style="display: block; font-size: 11px; color: #94a3b8;">Status: ${member.status || 'Active'}</span>
+                                </div>
+                                <span style="background: #f1f5f9; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; color: #475569;">${planText}</span>
+                            </div>`;
+                    });
+                });
+            });
         }
 
         function claimDailyReward() {
@@ -442,7 +493,8 @@
                 if (done >= maxAllowed) return alert(`Daily limit (${maxAllowed} videos) reached according to your plan! Come back in 24h.`);
                 
                 showPage('task-page');
-                timeLeft = 60;
+                timeLeft = 30;
+                document.getElementById('timer-txt').innerText = timeLeft;
                 document.getElementById('task-info').innerText = `Tasks Done: ${done}/${maxAllowed}`;
                 const v = vids[Math.floor(Math.random() * vids.length)];
                 document.getElementById('task-frame').src = `https://www.youtube.com/embed/${v}?autoplay=1&controls=0`;
