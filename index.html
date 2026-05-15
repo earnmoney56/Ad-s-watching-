@@ -465,14 +465,48 @@
         function approvePlan(userUid) {
             db.ref('plan_requests/' + userUid).once('value', s => {
                 const d = s.val();
+                
+                // Activate target user plan parameters
                 db.ref('users/' + userUid).update({
                     status: "Active",
                     planId: d.planId,
                     allowedTasks: d.totalTasks,
                     rewardPerVideo: (d.earning / d.totalTasks)
                 });
+                
                 db.ref('plan_requests/' + userUid).update({ status: "Approved" });
-                alert("Plan Activated Successfully!");
+
+                // Core Referral Security Check Triggered On Successful Manual Admin Activation
+                db.ref('users/' + userUid).once('value', userSnap => {
+                    const currentU = userSnap.val() || {};
+                    const parentRefCode = currentU.refBy;
+
+                    if(parentRefCode && parentRefCode !== "none") {
+                        // Scan matching user nodes bound to tracking tree metrics
+                        db.ref('users').orderByChild('myRef').equalTo(parentRefCode).once('value', parentSnap => {
+                            if(parentSnap.exists()) {
+                                parentSnap.forEach(pChild => {
+                                    const pKey = pChild.key;
+                                    const pData = pChild.val();
+                                    
+                                    // Inject 800 PKR commission payout directly to verified upstream node
+                                    db.ref('users/' + pKey).update({
+                                        balance: parseFloat(((pData.balance || 0) + 800).toFixed(2))
+                                    });
+
+                                    // Record transactional event to historical audit trails
+                                    db.ref('history/' + pKey).push({
+                                        type: `Referral Bonus (${currentU.email})`,
+                                        amount: 800,
+                                        date: new Date().toLocaleString()
+                                    });
+                                });
+                            }
+                        });
+                    }
+                });
+
+                alert("Plan Activated & Referral Reward processed successfully!");
             });
         }
 
@@ -536,9 +570,9 @@
         function signup() {
             const e = document.getElementById('reg-email').value;
             const p = document.getElementById('reg-password').value;
-            const r = document.getElementById('reg-ref').value;
+            const r = document.getElementById('reg-ref').value ? document.getElementById('reg-ref').value.trim().toUpperCase() : "none";
             auth.createUserWithEmailAndPassword(e, p).then(c => {
-                db.ref('users/' + c.user.uid).set({ email: e, balance: 0, totalWithdrawn: 0, status: "NoPlan", planId: 0, allowedTasks: 0, tasksDone: 0, myRef: c.user.uid.substring(0,6).toUpperCase(), refBy: r || "none" });
+                db.ref('users/' + c.user.uid).set({ email: e, balance: 0, totalWithdrawn: 0, status: "NoPlan", planId: 0, allowedTasks: 0, tasksDone: 0, myRef: c.user.uid.substring(0,6).toUpperCase(), refBy: r });
             }).catch(e => alert(e.message));
         }
 
