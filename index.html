@@ -42,10 +42,10 @@
         #video-box { width: 90%; margin: 20px auto; aspect-ratio: 16/9; background: #000; border-radius: 20px; overflow: hidden; }
         .timer-ui { width: 100px; height: 100px; border: 6px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: bold; margin: 25px auto; color: var(--primary); }
 
-        /* Custom Alert Modal Styling */
+        /* Custom Alert Popup Styling */
         .custom-alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .custom-alert-box { background: white; width: 100%; max-width: 380px; border-radius: 24px; padding: 25px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); animation: popUp 0.3s ease; }
-        .custom-alert-title { font-size: 18px; font-weight: 800; color: #1e293b; margin: 0 0 10px 0; }
+        .custom-alert-title { font-size: 18px; font-weight: 800; color: #1e293b; margin: 0 0 10px 0; text-transform: lowercase; }
         .custom-alert-msg { font-size: 15px; color: #64748b; line-height: 1.5; margin: 0 0 20px 0; font-weight: 500; }
         .custom-alert-btn { background: var(--primary); color: white; border: none; width: 100%; padding: 14px; border-radius: 16px; font-weight: bold; font-size: 16px; cursor: pointer; }
         @keyframes popUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -56,7 +56,7 @@
     <div id="custom-alert" class="custom-alert-overlay hidden">
         <div class="custom-alert-box">
             <h4 class="custom-alert-title" id="alert-title">earnmoney.com</h4>
-            <p class="custom-alert-msg" id="alert-message">Alert message goes here.</p>
+            <p class="custom-alert-msg" id="alert-message">Notification Message</p>
             <button class="custom-alert-btn" onclick="closeAlert()">OK</button>
         </div>
     </div>
@@ -88,100 +88,72 @@
         <div class="card" id="plan-selection-view" style="max-width: 480px; padding: 25px 20px; border: none; border-radius: 24px; margin-top: 25px;">
             <p style="color: #64748b; font-size: 15px; margin-bottom: 25px; font-weight: 500;">Select an investment plan below to unlock your elite dashboard and start earning daily.</p>
             
-            <div class="plan-box" onclick="selectPlan(1, 1000, 1500, 30)" style="border: 1.5px solid #e2e8f0; border-radius: 20px; padding: 18px; margin-bottom: 16px; background: linear-gradient(135deg, #ffffff, #f8fafc); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); position: relative; overflow: hidden;">
-                <div style="position: absolute; top: 0; right: 0; background: #fef3c7; color: #d97706; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 0 0 0 12px;">STARTER</div>
-                <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px; font-weight: 700;">Bronze Plan</h3>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; border-top: 1px dashed #e2e8f0; padding-top: 10px;">
-                    <p style="margin:0; font-size:13px; color:#64748b;">Deposit: <span style="color:#0f172a; font-weight:700;">1,000 PKR</span></p>
-                    <p style="margin:0; font-size:13px; color:#64748b;">Daily: <span style="color:#22c55e; font-weight:700;">1,500 PKR</span></p>
-                    <p style="margin:0; font-size:13px; color:#64748b;">Tasks: <span style="color:#3b82f6; font-weight:700;">30 Vids</span></p>
-                </div>
+            <div class="plan-box" onclick="selectPlan(1, 1000, 1500, 30)">
+                <div style="float: right; background: #fef3c7; color: #d97706; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 8px;">STARTER</div>
+                <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px;">Bronze Plan</h3>
+                <p style="margin:5px 0; font-size:13px; color:#64748b;">Deposit: <b>1,000 PKR</b> | Daily: <span style="color:#22c55e; font-weight:700;">1,500 PKR</span></p>
             </div>
 
-            <div class="plan-box" onclick="selectPlan(2, 1500, 2000, 40)" style="border: 2px solid #f39c12; border-radius: 20px; padding: 18px; margin-bottom: 16px; background: linear-gradient(135deg, #ffffff, #fffbeb); box-shadow: 0 10px 15px -3px rgba(243,156,18,0.1); position: relative; overflow: hidden;">
-                <div style="position: absolute; top: 0; right: 0; background: #f39c12; color: white; padding: 4px 15px; font-size: 11px; font-weight: 700; border-radius: 0 0 0 12px; letter-spacing: 0.5px;">POPULAR</div>
-                <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px; font-weight: 700;">Silver Plan</h3>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; border-top: 1px dashed #fcd34d; padding-top: 10px;">
-                    <p style="margin:0; font-size:13px; color:#64748b;">Deposit: <span style="color:#0f172a; font-weight:700;">1,500 PKR</span></p>
-                    <p style="margin:0; font-size:13px; color:#64748b;">Daily: <span style="color:#22c55e; font-weight:700;">2,000 PKR</span></p>
-                    <p style="margin:0; font-size:13px; color:#64748b;">Tasks: <span style="color:#3b82f6; font-weight:700;">40 Vids</span></p>
-                </div>
+            <div class="plan-box" onclick="selectPlan(2, 1500, 2000, 40)" style="border-color: #f39c12;">
+                <div style="float: right; background: #f39c12; color: white; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 8px;">POPULAR</div>
+                <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px;">Silver Plan</h3>
+                <p style="margin:5px 0; font-size:13px; color:#64748b;">Deposit: <b>1,500 PKR</b> | Daily: <span style="color:#22c55e; font-weight:700;">2,000 PKR</span></p>
             </div>
 
-            <div class="plan-box" onclick="selectPlan(3, 2000, 2500, 50)" style="border: 1.5px solid #e2e8f0; border-radius: 20px; padding: 18px; margin-bottom: 16px; background: linear-gradient(135deg, #ffffff, #f8fafc); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); position: relative; overflow: hidden;">
-                <div style="position: absolute; top: 0; right: 0; background: #dbeafe; color: #1e40af; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 0 0 0 12px;">ADVANCED</div>
-                <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px; font-weight: 700;">Gold Plan</h3>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; border-top: 1px dashed #e2e8f0; padding-top: 10px;">
-                    <p style="margin:0; font-size:13px; color:#64748b;">Deposit: <span style="color:#0f172a; font-weight:700;">2,000 PKR</span></p>
-                    <p style="margin:0; font-size:13px; color:#64748b;">Daily: <span style="color:#22c55e; font-weight:700;">2,500 PKR</span></p>
-                    <p style="margin:0; font-size:13px; color:#64748b;">Tasks: <span style="color:#3b82f6; font-weight:700;">50 Vids</span></p>
-                </div>
+            <div class="plan-box" onclick="selectPlan(3, 2000, 2500, 50)">
+                <div style="float: right; background: #dbeafe; color: #1e40af; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 8px;">ADVANCED</div>
+                <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px;">Gold Plan</h3>
+                <p style="margin:5px 0; font-size:13px; color:#64748b;">Deposit: <b>2,000 PKR</b> | Daily: <span style="color:#22c55e; font-weight:700;">2,500 PKR</span></p>
             </div>
 
-            <div class="plan-box" onclick="selectPlan(4, 2500, 3000, 60)" style="border: 1.5px solid #e2e8f0; border-radius: 20px; padding: 18px; margin-bottom: 5px; background: linear-gradient(135deg, #ffffff, #f8fafc); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02); position: relative; overflow: hidden;">
-                <div style="position: absolute; top: 0; right: 0; background: #e0f2fe; color: #0369a1; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 0 0 0 12px;">VIP</div>
-                <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px; font-weight: 700;">Diamond Plan</h3>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; border-top: 1px dashed #e2e8f0; padding-top: 10px;">
-                    <p style="margin:0; font-size:13px; color:#64748b;">Deposit: <span style="color:#0f172a; font-weight:700;">2,500 PKR</span></p>
-                    <p style="margin:0; font-size:13px; color:#64748b;">Daily: <span style="color:#22c55e; font-weight:700;">3,000 PKR</span></p>
-                    <p style="margin:0; font-size:13px; color:#64748b;">Tasks: <span style="color:#3b82f6; font-weight:700;">60 Vids</span></p>
-                </div>
+            <div class="plan-box" onclick="selectPlan(4, 2500, 3000, 60)">
+                <div style="float: right; background: #e0f2fe; color: #0369a1; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 8px;">VIP</div>
+                <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px;">Diamond Plan</h3>
+                <p style="margin:5px 0; font-size:13px; color:#64748b;">Deposit: <b>2,500 PKR</b> | Daily: <span style="color:#22c55e; font-weight:700;">3,000 PKR</span></p>
             </div>
         </div>
 
-        <div class="card hidden" id="payment-upload-view" style="max-width: 450px; padding: 25px; border: none; border-radius: 24px;">
-            <h3 id="selected-plan-title" style="margin: 0 0 15px 0; color: #0f172a; font-size: 20px; font-weight: 800;">Secure Instant Deposit</h3>
-            
-            <div style="background: #fff; border: 1.5px solid #edf2f7; border-radius: 18px; padding: 15px; text-align: left; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-                    <span style="background: #e67e22; color: white; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800;">JAZZCASH / EASYPAISA</span>
-                </div>
-                <div style="margin-bottom: 8px;">
-                    <span style="font-size: 12px; color: #64748b; display: block; font-weight: 500;">ACCOUNT NUMBER</span>
-                    <span style="font-size: 18px; color: #1e293b; font-weight: 700; letter-spacing: 0.5px;">03106453151</span>
-                </div>
-                <div>
-                    <span style="font-size: 12px; color: #64748b; display: block; font-weight: 500;">ACCOUNT TITLE</span>
-                    <span style="font-size: 16px; color: #1e293b; font-weight: 700;">Seyam Hassan</span>
-                </div>
+        <div class="card hidden" id="payment-upload-view" style="max-width: 450px; padding: 25px;">
+            <h3 id="selected-plan-title" style="margin: 0 0 15px 0; color: #0f172a; font-size: 20px;">Secure Instant Deposit</h3>
+            <div style="background: #fff; border: 1.5px solid #edf2f7; border-radius: 18px; padding: 15px; text-align: left; margin-bottom: 20px;">
+                <span style="background: #e67e22; color: white; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800;">JAZZCASH / EASYPAISA</span>
+                <p style="margin: 10px 0 5px 0; color: #64748b; font-size: 12px;">ACCOUNT NUMBER</p>
+                <b style="font-size: 18px; color: #1e293b;">03106453151</b>
+                <p style="margin: 10px 0 5px 0; color: #64748b; font-size: 12px;">ACCOUNT TITLE</p>
+                <b style="font-size: 16px; color: #1e293b;">Seyam Hassan</b>
             </div>
-
-            <div style="border: 2px dashed #cbd5e1; background: #f8fafc; border-radius: 18px; padding: 25px 15px; margin-bottom: 20px; position: relative; cursor: pointer;">
-                <span style="font-size: 35px; display: block; margin-bottom: 8px;">📸</span>
-                <span style="font-size: 14px; font-weight: 600; color: #1e293b; display: block;">Upload Payment Screenshot</span>
-                <span style="font-size: 12px; color: #64748b; display: block; margin-top: 4px;">PNG, JPG or JPEG allowed</span>
+            <div style="border: 2px dashed #cbd5e1; background: #f8fafc; border-radius: 18px; padding: 25px 15px; margin-bottom: 20px; position: relative;">
+                <span style="font-size: 35px; display: block;">📸</span>
+                <span style="font-size: 14px; font-weight: 600; display: block;">Upload Payment Screenshot</span>
                 <input type="file" id="proof-file" accept="image/*" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
             </div>
-
-            <button class="btn-green" onclick="submitPaymentProof()" style="box-shadow: 0 4px 12px rgba(39,174,96,0.3); font-size: 16px; padding: 16px;">Verify & Submit Request</button>
-            <p onclick="backToPlans()" style="color: #ef4444; cursor: pointer; font-weight: 700; margin-top: 18px; font-size: 14px; display: inline-block;">← Choose Another Plan</p>
+            <button class="btn-green" onclick="submitPaymentProof()">Verify & Submit Request</button>
+            <p onclick="backToPlans()" style="color: #ef4444; cursor: pointer; font-weight: 700; margin-top: 18px;">← Choose Another Plan</p>
         </div>
 
-        <div class="card hidden" id="pending-view" style="max-width: 450px; padding: 35px 25px; border: none; border-radius: 24px; margin-top: 40px;">
-            <div style="width: 80px; height: 80px; background: #fffbeb; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;">
-                <span style="font-size: 40px; animation: pulse 2s infinite;">⏳</span>
-            </div>
-            <h2 style="color: #0f172a; font-weight: 800; font-size: 22px; margin: 0 0 10px 0;">Payment Under Review</h2>
-            <p style="color: #64748b; font-size: 14px; line-height: 1.6; font-weight: 500; margin-bottom: 25px;">Your digital transaction receipt has been submitted to secure manual verification channels. System activation parameters will trigger immediately upon confirmation (Takes 1-2 hours).</p>
-            <button class="btn-orange" onclick="logout()" style="background: #ef4444; box-shadow: 0 4px 12px rgba(239,68,68,0.2); width: 100%; padding: 15px; border-radius: 15px;">Exit Application</button>
+        <div class="card hidden" id="pending-view" style="max-width: 450px; padding: 35px 25px;">
+            <span style="font-size: 40px; display:block; margin-bottom:15px;">⏳</span>
+            <h2 style="color: #0f172a; font-weight: 800;">Payment Under Review</h2>
+            <p style="color: #64748b; font-size: 14px; line-height: 1.6;">Your digital transaction receipt has been submitted to secure manual verification channels. System activation parameters will trigger immediately upon confirmation (Takes 1-2 hours).</p>
+            <button class="btn-orange" onclick="logout()" style="background: #ef4444; width: 100%; margin-top:20px;">Exit Application</button>
         </div>
     </div>
 
     <div id="main-dashboard" class="hidden">
         <div class="balance-card">
-            <p id="user-active-plan" style="background:rgba(255,255,255,0.2); display:inline-block; padding:5px 15px; border-radius:50px; font-size:12px; margin-bottom:10px;">PLAN: LOADING...</p>
-            <p style="opacity: 0.7; font-size: 14px; letter-spacing: 1px;">TOTAL AVAILABLE BALANCE</p>
-            <h1 id="userBalance" style="font-size: 45px; margin: 15px 0;">0 PKR</h1>
-            <button class="btn-orange" style="background: rgba(255,255,255,0.15); border: 1px solid white;" onclick="showPage('withdraw-page')">Withdraw Funds</button>
+            <p id="user-active-plan" style="background:rgba(255,255,255,0.2); display:inline-block; padding:5px 15px; border-radius:50px; font-size:12px;">PLAN: LOADING...</p>
+            <p style="opacity: 0.7; font-size: 14px; margin: 10px 0 0 0;">TOTAL AVAILABLE BALANCE</p>
+            <h1 id="userBalance" style="font-size: 45px; margin: 10px 0;">0 PKR</h1>
+            <button class="btn-orange" style="background: rgba(255,255,255,0.15); border: 1px solid white; width:auto; padding: 10px 25px;" onclick="showPage('withdraw-page')">Withdraw Funds</button>
         </div>
 
         <div class="menu-grid">
             <div class="menu-item" onclick="openTasks()"><span class="icon-bg">🎬</span><span>Tasks</span></div>
             <div class="menu-item" onclick="openLevelsFromDashboard()"><span class="icon-bg">⚡</span><span>Level</span></div>
             <div class="menu-item" onclick="showPage('wallet-page')"><span class="icon-bg">💳</span><span>Wallet</span></div>
-            <div class="menu-item" onclick="showRewards()"><span class="icon-bg">🎁</span><span>Rewards</span></div>
-            <div class="menu-item" onclick="showSalary()"><span class="icon-bg">📝</span><span>History</span></div>
-            <div class="menu-item" onclick="showTeam()"><span class="icon-bg">👥</span><span>Team</span></div>
+            <div class="menu-item" onclick="showPage('rewards-page')"><span class="icon-bg">🎁</span><span>Rewards</span></div>
+            <div class="menu-item" onclick="showSalary()"><span class="icon-bg"><b>📝</b></span><span>History</span></div>
+            <div class="menu-item" onclick="showPage('team-page')"><span class="icon-bg">👥</span><span>Team</span></div>
             <div class="menu-item hidden" id="admin-btn" onclick="showPage('admin-page')"><span class="icon-bg">🛡️</span><span>Admin</span></div>
             <div class="menu-item" onclick="logout()"><span class="icon-bg">🚪</span><span>Logout</span></div>
         </div>
@@ -189,7 +161,7 @@
 
     <div id="wallet-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('wallet-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">My Wallet</h2></div>
-        <div class="card" style="margin-top:20px; text-align:left;">
+        <div class="card" style="text-align:left;">
             <p>💰 Current Balance: <b id="wal-bal">0 PKR</b></p>
             <p>📤 Total Withdrawn: <b id="wal-out">0 PKR</b></p>
         </div>
@@ -200,10 +172,7 @@
         <div class="header"><button onclick="closePage('withdraw-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Withdraw Money</h2></div>
         <div class="card">
             <h3>Enter Details</h3>
-            <select id="w-method">
-                <option value="EasyPaisa">EasyPaisa</option>
-                <option value="JazzCash">JazzCash</option>
-            </select>
+            <select id="w-method"><option value="EasyPaisa">EasyPaisa</option><option value="JazzCash">JazzCash</option></select>
             <input type="text" id="w-account" placeholder="Account Number (e.g. 0300xxxxxxx)">
             <input type="number" id="w-amount" placeholder="Amount (Minimum 500 PKR)">
             <button class="btn-main" onclick="submitWithdrawal()" style="margin-top:15px;">Submit Request</button>
@@ -230,52 +199,41 @@
     <div id="rewards-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('rewards-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Daily Rewards</h2></div>
         <div class="card" style="margin-top: 40px; padding: 30px 20px;">
-            <div style="font-size: 50px; margin-bottom: 15px;">🎁</div>
-            <h3 style="margin: 0 0 10px 0; font-size: 20px; color: #1e293b;">Daily Attendance Reward</h3>
-            <p style="color: #64748b; font-size: 14px; margin-bottom: 25px; line-height: 1.5;">Claim your free daily premium bonus of 400 PKR inside your wallet dashboard instantly.</p>
-            <button class="btn-green" onclick="claimDailyReward()" style="box-shadow: 0 4px 12px rgba(39,174,96,0.2);">Claim 400 PKR Now</button>
+            <div style="font-size: 50px;">🎁</div>
+            <h3>Daily Attendance Reward</h3>
+            <p style="color: #64748b; font-size: 14px;">Claim your free daily premium bonus of 400 PKR inside your wallet dashboard instantly.</p>
+            <button class="btn-green" onclick="claimDailyReward()">Claim 400 PKR Now</button>
         </div>
     </div>
 
     <div id="team-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('team-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">My Network Team</h2></div>
-        <div class="card" style="margin-top: 20px; text-align: left;">
-            <h3 style="color: var(--primary); margin-top: 0; font-size: 18px;">My Referral Tracking</h3>
+        <div class="card" style="text-align: left;">
+            <h3 style="color: var(--primary); margin-top: 0;">My Referral Tracking</h3>
+            <label style="font-size: 12px; font-weight: 700; color: #64748b;">REFERRAL CODE</label>
+            <div style="background: #f8fafc; border: 1.5px dashed #cbd5e1; padding: 12px; border-radius: 12px; text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;" id="team-ref-display">LOADING...</div>
             
-            <label style="font-size: 12px; font-weight: 700; color: #64748b; display: block; margin-bottom: 5px;">REFERRAL CODE</label>
-            <div style="background: #f8fafc; border: 1.5px dashed #cbd5e1; padding: 12px; border-radius: 12px; text-align: center; font-size: 20px; font-weight: bold; color: var(--dark); letter-spacing: 1px; margin-bottom: 15px;" id="team-ref-display">LOADING...</div>
-            
-            <label style="font-size: 12px; font-weight: 700; color: #64748b; display: block; margin-bottom: 5px;">SHAREABLE REFERRAL LINK</label>
+            <label style="font-size: 12px; font-weight: 700; color: #64748b;">SHAREABLE REFERRAL LINK</label>
             <div style="display: flex; gap: 8px;">
-                <input type="text" id="team-link-display" readonly style="width: 70%; margin: 0; padding: 12px; font-size: 13px; border-radius: 12px; background: #f8fafc; color: #475569; border: 1.5px solid #e2e8f0;">
-                <button onclick="copyReferralLink()" style="width: 30%; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 14px;">Copy Link</button>
+                <input type="text" id="team-link-display" readonly style="width: 70%; margin: 0; padding: 12px; font-size: 13px; border-radius: 12px; background: #f8fafc; border: 1.5px solid #e2e8f0;">
+                <button onclick="copyReferralLink()" style="width: 30%; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer;">Copy</button>
             </div>
-            
-            <p style="font-size: 13px; color: #475569; font-weight: 600; line-height: 1.4; margin-top: 15px; border-left: 3px solid var(--primary); padding-left: 8px;">
-                Invite your friends to join and earn an instant 800 PKR profit bonus!
-            </p>
+            <p style="font-size: 13px; color: #475569; margin-top: 15px; border-left: 3px solid var(--primary); padding-left: 8px;">Invite your friends to join and earn an instant 800 PKR profit bonus!</p>
         </div>
         <div class="card" style="text-align: left;">
-            <h3 style="margin-top: 0; color: var(--dark);">Downline Network Members</h3>
-            <div id="team-list" style="max-height: 250px; overflow-y: auto;">
-                <p style="color: #94a3b8; text-align: center;">Scanning network directory...</p>
-            </div>
+            <h3>Downline Network Members</h3>
+            <div id="team-list"><p style="color: #94a3b8; text-align: center;">Scanning network directory...</p></div>
         </div>
     </div>
 
     <div id="admin-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('admin-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Admin Panel</h2></div>
-        <div class="card">
-            <h3>Plan Verification Requests</h3>
-            <div id="admin-plan-requests"></div>
-        </div>
-        <div class="card">
-            <h3>Withdrawal Requests</h3>
-            <div id="admin-list"></div>
-        </div>
+        <div class="card"><h3>Plan Verification Requests</h3><div id="admin-plan-requests"></div></div>
+        <div class="card"><h3>Withdrawal Requests</h3><div id="admin-list"></div></div>
     </div>
 
     <script>
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyB8r-JkscDuet3gf33WhTgGxTdLMObCmc8",
             authDomain: "jkseller.firebaseapp.com",
@@ -290,21 +248,16 @@
         const db = firebase.database();
         
         const ADMIN = "samiseyam49@gmail.com"; 
-
         const vids = ["dQw4w9WgXcQ", "3JZ_D3ELwOQ", "V-_O7nl0Ii0", "L_jWHffIx5E", "7wtfhZwyrcc"];
-        let clock;
-        let timeLeft = 30;
-        let tempSelectedPlan = null;
+        let clock, timeLeft = 30, tempSelectedPlan = null;
 
-        // Custom App Alert Trigger
+        // Custom Popup Alert Trigger Function
         function appAlert(msg, title = "earnmoney.com") {
             document.getElementById('alert-title').innerText = title;
             document.getElementById('alert-message').innerText = msg;
             document.getElementById('custom-alert').classList.remove('hidden');
         }
-        function closeAlert() {
-            document.getElementById('custom-alert').classList.add('hidden');
-        }
+        function closeAlert() { document.getElementById('custom-alert').classList.add('hidden'); }
 
         window.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -333,9 +286,20 @@
             document.getElementById('pending-view').classList.add('hidden');
         }
 
-        function showRewards() { showPage('rewards-page'); }
-        function showTeam() { showPage('team-page'); }
+        function showSalary() {
+            showPage('salary-page');
+            db.ref('history/' + auth.currentUser.uid).on('value', s => {
+                const list = document.getElementById('history-list');
+                list.innerHTML = "";
+                s.forEach(i => {
+                    const h = i.val();
+                    const color = h.amount.toString().includes('-') ? 'red' : 'green';
+                    list.innerHTML += `<div class="history-item"><b>${h.type}</b><br><span style="color:${color}; font-weight:bold;">${h.amount} PKR</span><br><small>${h.date}</small></div>`;
+                });
+            });
+        }
 
+        // Dynamic URL Link Generation logic
         function fetchTeamData() {
             const u = auth.currentUser;
             const tList = document.getElementById('team-list');
@@ -346,8 +310,9 @@
                 
                 document.getElementById('team-ref-display').innerText = userRefCode;
                 
-                // Referral Link explicitly setup for earnmoney.com format
-                document.getElementById('team-link-display').value = `https://earnmoney.com?ref=${userRefCode}`;
+                // Pure Link (GitHub setup logic handles automatic URL mapping)
+                let cleanBaseUrl = window.location.origin + window.location.pathname;
+                document.getElementById('team-link-display').value = `${cleanBaseUrl}?ref=${userRefCode}`;
 
                 db.ref('users').orderByChild('refBy').equalTo(userRefCode).once('value', s => {
                     tList.innerHTML = "";
@@ -357,18 +322,8 @@
                     }
                     s.forEach(child => {
                         const member = child.val();
-                        let planText = 'No Active Plan';
-                        if (member.status === "Pending") planText = "Plan Reviewing ⏳";
-                        else if (member.status === "Active") planText = `Plan ${member.planId || 1} Active ✅`;
-
-                        tList.innerHTML += `
-                            <div style="padding: 12px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center;">
-                                <div>
-                                    <span style="font-weight: 600; color: #334155; font-size:14px;">${member.email}</span>
-                                    <span style="display: block; font-size: 11px; color: #94a3b8;">Status: ${member.status || 'NoPlan'}</span>
-                                </div>
-                                <span style="background: #f1f5f9; padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; color: #475569;">${planText}</span>
-                            </div>`;
+                        let planText = member.status === "Pending" ? "Reviewing ⏳" : (member.status === "Active" ? `Active ✅` : 'No Plan');
+                        tList.innerHTML += `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;"><span>${member.email}</span><b>${planText}</b></div>`;
                     });
                 });
             });
@@ -377,29 +332,19 @@
         function copyReferralLink() {
             const copyText = document.getElementById('team-link-display');
             copyText.select();
-            copyText.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(copyText.value).then(() => {
-                appAlert("Referral Link copied successfully!");
-            }).catch(() => {
-                appAlert("Failed to copy. Please copy manually.");
-            });
+            navigator.clipboard.writeText(copyText.value).then(() => appAlert("Referral Link copied!"))
+            .catch(() => appAlert("Failed to copy link."));
         }
 
         function claimDailyReward() {
             const u = auth.currentUser;
             const today = new Date().toLocaleDateString();
-
             db.ref('users/' + u.uid).once('value', s => {
                 const d = s.val() || {};
-                if(d.lastRewardDate === today) return appAlert("You have already claimed your attendance reward today!");
-
-                db.ref('users/' + u.uid).update({
-                    balance: parseFloat(((d.balance || 0) + 400).toFixed(2)),
-                    lastRewardDate: today
-                });
-
-                db.ref('history/' + u.uid).push({ type: "Daily Reward Claim", amount: 400, date: new Date().toLocaleString() });
-                appAlert("Success! 400 PKR added to balance.");
+                if(d.lastRewardDate === today) return appAlert("Already claimed today!");
+                db.ref('users/' + u.uid).update({ balance: parseFloat(((d.balance || 0) + 400).toFixed(2)), lastRewardDate: today });
+                db.ref('history/' + u.uid).push({ type: "Daily Reward", amount: 400, date: new Date().toLocaleString() });
+                appAlert("400 PKR Claimed Successfully!");
                 closePage('rewards-page');
             });
         }
@@ -417,14 +362,12 @@
 
         function submitPaymentProof() {
             const fileInput = document.getElementById('proof-file');
-            if(fileInput.files.length === 0) return appAlert("Please select or capture a payment screenshot!");
-            
+            if(fileInput.files.length === 0) return appAlert("Please upload payment screenshot!");
             const u = auth.currentUser;
             const reader = new FileReader();
             reader.onload = function(e) {
-                const base64Img = e.target.result;
                 db.ref('plan_requests/' + u.uid).set({
-                    uid: u.uid, email: u.email, planId: tempSelectedPlan.id, cost: tempSelectedPlan.cost, earning: tempSelectedPlan.earning, totalTasks: tempSelectedPlan.totalTasks, screenshot: base64Img, status: "Pending", date: new Date().toLocaleString()
+                    uid: u.uid, email: u.email, planId: tempSelectedPlan.id, cost: tempSelectedPlan.cost, earning: tempSelectedPlan.earning, totalTasks: tempSelectedPlan.totalTasks, screenshot: e.target.result, status: "Pending", date: new Date().toLocaleString()
                 });
                 db.ref('users/' + u.uid).update({ status: "Pending" });
                 document.getElementById('payment-upload-view').classList.add('hidden');
@@ -439,81 +382,19 @@
             const method = document.getElementById('w-method').value;
             const account = document.getElementById('w-account').value.trim();
             const amount = parseInt(document.getElementById('w-amount').value);
-
             if(!account || !amount) return appAlert("Please fill all details!");
             if(amount < 500) return appAlert("Minimum withdrawal is 500 PKR!");
 
             db.ref('users/' + u.uid).once('value', s => {
-                const currentBalance = s.val().balance || 0;
-                if(amount > currentBalance) return appAlert("Insufficient balance!");
-
-                db.ref('users/' + u.uid).update({ balance: currentBalance - amount, totalWithdrawn: (s.val().totalWithdrawn || 0) + amount });
+                const bal = s.val().balance || 0;
+                if(amount > bal) return appAlert("Insufficient balance!");
+                db.ref('users/' + u.uid).update({ balance: bal - amount, totalWithdrawn: (s.val().totalWithdrawn || 0) + amount });
                 db.ref('withdrawals').push({ uid: u.uid, email: u.email, method: method, account: account, amount: amount, status: "Pending", date: new Date().toLocaleString() });
                 db.ref('history/' + u.uid).push({ type: `Withdrawal (${method})`, amount: `-${amount}`, date: new Date().toLocaleString() });
                 appAlert("Withdrawal request submitted!");
                 closePage('withdraw-page');
             });
         }
-
-        function loadAdminData() {
-            if(auth.currentUser.email !== ADMIN) return;
-            db.ref('plan_requests').on('value', s => {
-                const pList = document.getElementById('admin-plan-requests');
-                pList.innerHTML = "";
-                if(!s.exists()) pList.innerHTML = "<p>No subscription requests.</p>";
-                s.forEach(c => {
-                    const d = c.val();
-                    if(d.status === "Pending") {
-                        pList.innerHTML += `<div class="history-item" style="border-left-color:#e67e22;">
-                            <b>User: ${d.email}</b><br>Requested Plan: ${d.planId} (PKR ${d.cost})<br>
-                            <img src="${d.screenshot}" style="width:100%; max-width:200px; margin:10px 0; border-radius:10px; display:block;">
-                            <button onclick="approvePlan('${d.uid}')" style="background:#2ecc71; color:white; border:none; padding:8px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">Approve & Activate</button>
-                        </div>`;
-                    }
-                });
-            });
-
-            db.ref('withdrawals').on('value', s => {
-                const list = document.getElementById('admin-list');
-                list.innerHTML = "";
-                if(!s.exists()) { list.innerHTML = "<p>No withdrawal requests.</p>"; return; }
-                s.forEach(c => {
-                    const d = c.val();
-                    list.innerHTML += `<div class="history-item" style="border-left-color: ${d.status=='Pending'?'#f1c40f':'#2ecc71'}">
-                        <b>User: ${d.email}</b><br>Method: ${d.method} | Number: ${d.account}<br>Amount: <b>${d.amount} PKR</b><br>
-                        ${d.status=='Pending' ? `<button onclick="approveWithdrawal('${c.key}')" style="background:#2ecc71; color:white; border:none; padding:8px 20px; border-radius:8px; margin-top:8px; cursor:pointer; font-weight:bold;">Approve & Pay</button>` : '<b style="color:#2ecc71;">✅ Approved & Paid</b>'}
-                    </div>`;
-                });
-            });
-        }
-
-        function approvePlan(userUid) {
-            db.ref('plan_requests/' + userUid).once('value', s => {
-                const d = s.val();
-                db.ref('users/' + userUid).update({ status: "Active", planId: d.planId, allowedTasks: d.totalTasks, rewardPerVideo: (d.earning / d.totalTasks) });
-                db.ref('plan_requests/' + userUid).update({ status: "Approved" });
-
-                db.ref('users/' + userUid).once('value', userSnap => {
-                    const currentU = userSnap.val() || {};
-                    const parentRefCode = currentU.refBy;
-                    if(parentRefCode && parentRefCode !== "none") {
-                        db.ref('users').orderByChild('myRef').equalTo(parentRefCode).once('value', parentSnap => {
-                            if(parentSnap.exists()) {
-                                parentSnap.forEach(pChild => {
-                                    const pKey = pChild.key;
-                                    const pData = pChild.val();
-                                    db.ref('users/' + pKey).update({ balance: parseFloat(((pData.balance || 0) + 800).toFixed(2)) });
-                                    db.ref('history/' + pKey).push({ type: `Referral Bonus (${currentU.email})`, amount: 800, date: new Date().toLocaleString() });
-                                });
-                            }
-                        });
-                    }
-                });
-                appAlert("Plan Activated & Referral Reward processed successfully!");
-            });
-        }
-
-        function approveWithdrawal(key) { db.ref('withdrawals/' + key).update({ status: "Success" }); appAlert("Withdrawal Request Approved!"); }
 
         function openTasks() {
             const u = auth.currentUser;
@@ -522,15 +403,13 @@
                 const today = new Date().toLocaleDateString();
                 let done = (d.lastDate === today) ? (d.tasksDone || 0) : 0;
                 let maxAllowed = d.allowedTasks || 0;
-
-                if (done >= maxAllowed) return appAlert(`Daily limit (${maxAllowed} videos) reached!`);
+                if (done >= maxAllowed) return appAlert(`Daily limit reached!`);
                 
                 showPage('task-page');
                 timeLeft = 30;
                 document.getElementById('timer-txt').innerText = timeLeft;
                 document.getElementById('task-info').innerText = `Tasks Done: ${done}/${maxAllowed}`;
-                const v = vids[Math.floor(Math.random() * vids.length)];
-                document.getElementById('task-frame').src = `https://www.youtube.com/embed/${v}?autoplay=1&controls=0`;
+                document.getElementById('task-frame').src = `https://www.youtube.com/embed/${vids[Math.floor(Math.random() * vids.length)]}?autoplay=1&controls=0`;
 
                 clock = setInterval(() => {
                     timeLeft--;
@@ -542,13 +421,11 @@
 
         function finishTask(count, payoutPerVideo) {
             const u = auth.currentUser;
-            const today = new Date().toLocaleDateString();
             const cleanPayout = parseFloat(payoutPerVideo.toFixed(2));
-
             db.ref('users/' + u.uid).transaction(d => {
                 if(d) {
                     d.balance = parseFloat(((d.balance || 0) + cleanPayout).toFixed(2));
-                    d.tasksDone = count + 1; d.lastDate = today; d.totalVideos = (d.totalVideos || 0) + 1;
+                    d.tasksDone = count + 1; d.lastDate = new Date().toLocaleDateString();
                 }
                 return d;
             });
@@ -556,7 +433,6 @@
             appAlert(`Task complete! ${cleanPayout} PKR Added.`);
             closeTasks();
         }
-
         function closeTasks() { clearInterval(clock); document.getElementById('task-frame').src = ""; closePage('task-page'); }
 
         function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value).catch(e => appAlert(e.message)); }
@@ -582,24 +458,18 @@
                         const userStatus = d.status || "NoPlan";
 
                         if(userStatus === "NoPlan") {
-                            document.getElementById('paywall-back-btn').classList.add('hidden'); 
-                            document.getElementById('main-dashboard').classList.add('hidden');
                             showPage('paywall-section');
                             document.getElementById('plan-selection-view').classList.remove('hidden');
                             document.getElementById('payment-upload-view').classList.add('hidden');
                             document.getElementById('pending-view').classList.add('hidden');
                         } else if(userStatus === "Pending") {
-                            document.getElementById('paywall-back-btn').classList.add('hidden');
-                            document.getElementById('main-dashboard').classList.add('hidden');
                             showPage('paywall-section');
                             document.getElementById('plan-selection-view').classList.add('hidden');
                             document.getElementById('payment-upload-view').classList.add('hidden');
-                            document.getElementById('pending-view').remove('hidden');
                             document.getElementById('pending-view').classList.remove('hidden');
                         } else if(userStatus === "Active") {
-                            if(document.getElementById('paywall-section').classList.contains('hidden')) {
-                                document.getElementById('main-dashboard').classList.remove('hidden');
-                            }
+                            document.getElementById('paywall-section').classList.add('hidden');
+                            document.getElementById('main-dashboard').classList.remove('hidden');
                             document.getElementById('user-active-plan').innerText = `PLAN ${d.planId} Active`;
                             document.getElementById('userBalance').innerText = (d.balance || 0) + " PKR";
                             document.getElementById('wal-bal').innerText = (d.balance || 0) + " PKR";
@@ -616,16 +486,24 @@
 
         function logout() { auth.signOut().then(() => location.reload()); }
 
-        function showSalary() {
-            showPage('salary-page');
-            db.ref('history/' + auth.currentUser.uid).on('value', s => {
-                const list = document.getElementById('history-list');
-                list.innerHTML = "";
-                s.forEach(i => {
-                    const h = i.val();
-                    const color = h.amount.toString().includes('-') ? 'red' : 'green';
-                    list.innerHTML += `<div class="history-item"><b>${h.type}</b><br><span style="color:${color}; font-weight:bold;">${h.amount} PKR</span><br><small>${h.date}</small></div>`;
+        function loadAdminData() {
+            db.ref('plan_requests').on('value', s => {
+                const pList = document.getElementById('admin-plan-requests'); pList.innerHTML = "";
+                s.forEach(c => {
+                    const d = c.val();
+                    if(d.status === "Pending") {
+                        pList.innerHTML += `<div class="history-item"><b>User: ${d.email}</b><br>Plan: ${d.planId}<br><img src="${d.screenshot}" style="max-width:150px; display:block; margin:5px 0;"><button onclick="approvePlan('${d.uid}')">Approve</button></div>`;
+                    }
                 });
+            });
+        }
+
+        function approvePlan(userUid) {
+            db.ref('plan_requests/' + userUid).once('value', s => {
+                const d = s.val();
+                db.ref('users/' + userUid).update({ status: "Active", planId: d.planId, allowedTasks: d.totalTasks, rewardPerVideo: (d.earning / d.totalTasks) });
+                db.ref('plan_requests/' + userUid).update({ status: "Approved" });
+                appAlert("Plan Activated!");
             });
         }
     </script>
