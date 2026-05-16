@@ -20,6 +20,11 @@
         .btn-orange { background: var(--primary); color: white; border: none; width: 100%; padding: 18px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 17px; box-shadow: 0 5px 15px rgba(243,156,18,0.3); }
         .btn-green { background: #27ae60; color: white; border: none; width: 100%; padding: 18px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 17px; }
         .btn-main { background: var(--primary); color: white; border: none; width: 100%; padding: 16px; border-radius: 18px; font-weight: 700; cursor: pointer; font-size: 16px; }
+        .btn-red { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-left: 5px; }
+        .btn-admin-approve { background: #27ae60; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        /* Notification Bar */
+        .notification-bar { background: #fdf2f2; border: 1px solid #f8b4b4; color: #9b1c1c; padding: 15px; margin: 15px; border-radius: 18px; text-align: left; font-size: 14px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
 
         /* Plan Cards */
         .plan-box { background: white; border: 2px solid #eee; padding: 20px; margin: 15px 0; border-radius: 20px; cursor: pointer; text-align: left; transition: 0.3s; }
@@ -140,6 +145,15 @@
     </div>
 
     <div id="main-dashboard" class="hidden">
+        
+        <div id="decline-notification" class="notification-bar hidden">
+            <span style="font-size: 20px;">⚠️</span>
+            <div>
+                <strong>Withdrawal Declined:</strong> <span id="decline-reason-text">Reason goes here...</span>
+                <br><small style="opacity:0.8; cursor:pointer; text-decoration:underline;" onclick="dismissDeclineNotice()">Dismiss Notification</small>
+            </div>
+        </div>
+
         <div class="balance-card">
             <p id="user-active-plan" style="background:rgba(255,255,255,0.2); display:inline-block; padding:5px 15px; border-radius:50px; font-size:12px;">PLAN: LOADING...</p>
             <p style="opacity: 0.7; font-size: 14px; margin: 10px 0 0 0;">TOTAL AVAILABLE BALANCE</p>
@@ -299,7 +313,6 @@
             });
         }
 
-        // Automatic Smart Link Handler
         function fetchTeamData() {
             const u = auth.currentUser;
             const tList = document.getElementById('team-list');
@@ -444,6 +457,12 @@
             }).catch(e => appAlert(e.message));
         }
 
+        // Dismiss decline notice manually
+        function dismissDeclineNotice() {
+            db.ref('users/' + auth.currentUser.uid).update({ declineReason: null });
+            document.getElementById('decline-notification').classList.add('hidden');
+        }
+
         auth.onAuthStateChanged(user => {
             if(user) {
                 document.getElementById('auth-section').classList.add('hidden');
@@ -455,6 +474,14 @@
                     db.ref('users/' + user.uid).on('value', s => {
                         const d = s.val() || {};
                         const userStatus = d.status || "NoPlan";
+
+                        // Handle Decline Reason Notification
+                        if(d.declineReason) {
+                            document.getElementById('decline-reason-text').innerText = d.declineReason;
+                            document.getElementById('decline-notification').classList.remove('hidden');
+                        } else {
+                            document.getElementById('decline-notification').classList.add('hidden');
+                        }
 
                         if(userStatus === "NoPlan") {
                             showPage('paywall-section');
@@ -486,12 +513,25 @@
         function logout() { auth.signOut().then(() => location.reload()); }
 
         function loadAdminData() {
+            // Plan Verification Requests Loading
             db.ref('plan_requests').on('value', s => {
                 const pList = document.getElementById('admin-plan-requests'); pList.innerHTML = "";
                 s.forEach(c => {
                     const d = c.val();
                     if(d.status === "Pending") {
-                        pList.innerHTML += `<div class="history-item"><b>User: ${d.email}</b><br>Plan: ${d.planId}<br><img src="${d.screenshot}" style="max-width:150px; display:block; margin:5px 0;"><button onclick="approvePlan('${d.uid}')">Approve</button></div>`;
+                        pList.innerHTML += `<div class="history-item"><b>User: ${d.email}</b><br>Plan: ${d.planId}<br><img src="${d.screenshot}" style="max-width:150px; display:block; margin:5px 0;"><button class="btn-admin-approve" onclick="approvePlan('${d.uid}')">Approve</button></div>`;
+                    }
+                });
+            });
+
+            // Withdrawal Requests Loading with Decline Feature
+            db.ref('withdrawals').on('value', s => {
+                const wList = document.getElementById('admin-list'); wList.innerHTML = "";
+                s.forEach(c => {
+                    const d = c.val();
+                    const reqId = c.key;
+                    if(d.status === "Pending") {
+                        wList.innerHTML += `<div class="history-item"><b>User: ${d.email}</b><br>Method: ${d.method}<br>Account: ${d.account}<br>Amount: <b>${d.amount} PKR</b><br><br><button class="btn-admin-approve" onclick="approveWithdrawal('${reqId}')">Approve</button><button class="btn-red" onclick="rejectWithdrawal('${reqId}', '${d.uid}', ${d.amount})">Reject</button></div>`;
                     }
                 });
             });
@@ -503,6 +543,37 @@
                 db.ref('users/' + userUid).update({ status: "Active", planId: d.planId, allowedTasks: d.totalTasks, rewardPerVideo: (d.earning / d.totalTasks) });
                 db.ref('plan_requests/' + userUid).update({ status: "Approved" });
                 appAlert("Plan Activated!");
+            });
+        }
+
+        function approveWithdrawal(reqId) {
+            db.ref('withdrawals/' + reqId).update({ status: "Approved" });
+            appAlert("Withdrawal Request Approved!");
+        }
+
+        function rejectWithdrawal(reqId, userUid, amount) {
+            const reason = prompt("Enter decline reason (e.g., Wrong EasyPaisa account number):");
+            if (reason === null) return; // Cancel press karne par block karein
+            if (reason.trim() === "") return appAlert("Please provide a rejection reason!");
+
+            // 1. Withdrawal status change karein
+            db.ref('withdrawals/' + reqId).update({ status: "Rejected", adminReason: reason });
+            
+            // 2. User ka balance wapas refund karein aur notification reason set karein
+            db.ref('users/' + userUid).once('value', s => {
+                const d = s.val() || {};
+                const currentBal = d.balance || 0;
+                const totalWithdrawnNow = d.totalWithdrawn || 0;
+                
+                db.ref('users/' + userUid).update({ 
+                    balance: currentBal + amount,
+                    totalWithdrawn: totalWithdrawnNow - amount,
+                    declineReason: reason 
+                });
+
+                // 3. Earning history mein refund record add karein
+                db.ref('history/' + userUid).push({ type: "Withdrawal Rejected (Refund)", amount: amount, date: new Date().toLocaleString() });
+                appAlert("Withdrawal rejected and amount refunded successfully!");
             });
         }
     </script>
