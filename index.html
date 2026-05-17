@@ -44,8 +44,8 @@
         .icon-bg { font-size: 32px; }
 
         /* Pages */
-        .full-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; overflow-y: auto; }
-        .header { display: flex; align-items: center; padding: 20px; background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; }
+        .full-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; overflow-y: auto; padding-bottom: 60px; }
+        .header { display: flex; align-items: center; padding: 20px; background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 10; }
         .history-item { background: white; margin: 12px 20px; padding: 20px; border-radius: 20px; text-align: left; border-left: 8px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.04); }
         
         /* Video Box Styling */
@@ -130,7 +130,7 @@
                 <p style="margin: 10px 0 5px 0; color: #64748b; font-size: 12px;">ACCOUNT NUMBER</p>
                 <b style="font-size: 18px; color: #1e293b;">03184437995</b>
                 <p style="margin: 10px 0 5px 0; color: #64748b; font-size: 12px;">ACCOUNT TITLE</p>
-                <b style="font-size: 16px; color: #1e293b;">Muhammad Israr Khan</b>
+                <b style="font-size: 16px; color: #1e293b;">Muhammad Israr khan</b>
             </div>
             <div style="border: 2px dashed #cbd5e1; background: #f8fafc; border-radius: 18px; padding: 25px 15px; margin-bottom: 20px; position: relative;">
                 <span style="font-size: 35px; display: block;">📸</span>
@@ -183,7 +183,7 @@
             <div class="menu-item" onclick="openLevelsFromDashboard()"><span class="icon-bg">⚡</span><span>Level / Deposit</span></div>
             <div class="menu-item" onclick="showPage('wallet-page')"><span class="icon-bg">💳</span><span>Wallet</span></div>
             <div class="menu-item" onclick="showPage('rewards-page')"><span class="icon-bg">🎁</span><span>Rewards</span></div>
-            <div class="menu-item" onclick="showPage('salary-page')"><span class="icon-bg"><b>📝</b></span><span>History</span></div>
+            <div class="menu-item" onclick="showSalary()"><span class="icon-bg">📝</span><span>History</span></div>
             <div class="menu-item" onclick="showPage('team-page')"><span class="icon-bg">👥</span><span>Team</span></div>
             <div class="menu-item hidden" id="admin-btn" onclick="showPage('admin-page')"><span class="icon-bg">🛡️</span><span>Admin</span></div>
             <div class="menu-item" onclick="logout()"><span class="icon-bg">🚪</span><span>Logout</span></div>
@@ -237,7 +237,7 @@
 
     <div id="salary-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('salary-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Earning History</h2></div>
-        <div id="history-list"></div>
+        <div id="history-list" style="max-width: 500px; margin: 0 auto;"></div>
     </div>
 
     <div id="rewards-page" class="full-page hidden">
@@ -340,12 +340,10 @@
             document.getElementById('cancel-payment-btn').classList.remove('hidden');
         }
 
-        // TRIGGERED ONLY WHEN USER CLICKS "Pay & Solve Issue Now" ON DASHBOARD
         function openCustomPaymentFromDashboard() {
             db.ref('users/' + auth.currentUser.uid).once('value', s => {
                 const d = s.val() || {};
                 const amountNeeded = d.declineAmount || 0;
-                
                 tempSelectedPlan = { id: 99, cost: amountNeeded, earning: 0, totalTasks: 0 };
                 
                 showPage('paywall-section');
@@ -353,7 +351,6 @@
                 document.getElementById('payment-upload-view').classList.remove('hidden');
                 document.getElementById('selected-plan-title').innerText = `Solve Issue Rejection Payment`;
                 
-                // Hide option to cancel/go back to plans since this is a critical issue payment
                 document.getElementById('cancel-payment-btn').classList.add('hidden');
                 document.getElementById('paywall-back-btn').classList.add('hidden');
             });
@@ -374,6 +371,37 @@
             });
         }
 
+        // FIXED HISTORY RENDERER FUNCTION
+        function showSalary() {
+            showPage('salary-page');
+            const list = document.getElementById('history-list');
+            list.innerHTML = `<p style="color:#888;">Loading history log...</p>`;
+            
+            db.ref('history/' + auth.currentUser.uid).once('value', s => {
+                list.innerHTML = "";
+                if(!s.exists()) {
+                    list.innerHTML = `<p style="color:#888; padding:20px;">No transactions found in history yet.</p>`;
+                    return;
+                }
+                // Reverse cards rendering logic so latest transactions show first
+                let items = [];
+                s.forEach(i => { items.unshift({ key: i.key, val: i.val() }); });
+                
+                items.forEach(item => {
+                    const h = item.val;
+                    const isMinus = h.amount.toString().includes('-');
+                    const color = isMinus ? '#e74c3c' : '#27ae60';
+                    const sign = isMinus ? "" : "+";
+                    list.innerHTML += `
+                        <div class="history-item" style="border-left-color: ${color};">
+                            <b style="font-size:16px; color:#2c3e50;">${h.type}</b><br>
+                            <span style="color:${color}; font-weight:bold; font-size:18px;">${sign}${h.amount} PKR</span><br>
+                            <small style="color:#7f8c8d;">${h.date}</small>
+                        </div>`;
+                });
+            });
+        }
+
         function fetchTeamData() {
             const u = auth.currentUser;
             const tList = document.getElementById('team-list');
@@ -383,7 +411,6 @@
                 const userRefCode = userData.myRef || u.uid.substring(0, 6).toUpperCase();
                 
                 document.getElementById('team-ref-display').innerText = userRefCode;
-                
                 let cleanBaseUrl = window.location.origin + window.location.pathname;
                 document.getElementById('team-link-display').value = `${cleanBaseUrl}?ref=${userRefCode}`;
 
@@ -525,12 +552,17 @@
         function closeTasks() { clearInterval(clock); closePage('task-page'); }
 
         function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value).catch(e => appAlert(e.message)); }
+        
         function signup() {
             const e = document.getElementById('reg-email').value;
             const p = document.getElementById('reg-password').value;
             const r = document.getElementById('reg-ref').value ? document.getElementById('reg-ref').value.trim().toUpperCase() : "none";
             auth.createUserWithEmailAndPassword(e, p).then(c => {
-                db.ref('users/' + c.user.uid).set({ email: e, balance: 0, totalWithdrawn: 0, status: "NoPlan", planId: 0, allowedTasks: 0, tasksDone: 0, myRef: c.user.uid.substring(0,6).toUpperCase(), refBy: r });
+                // FIXED REFERRAL STORAGE LOOKUP TREE
+                db.ref('users/' + c.user.uid).set({ 
+                    email: e, balance: 0, totalWithdrawn: 0, status: "NoPlan", planId: 0, allowedTasks: 0, tasksDone: 0, 
+                    myRef: c.user.uid.substring(0,6).toUpperCase(), refBy: r 
+                });
             }).catch(e => appAlert(e.message));
         }
 
@@ -550,12 +582,10 @@
                         const d = s.val() || {};
                         const userStatus = d.status || "NoPlan";
 
-                        // HANDLE REJECTION NOTIFICATION BAR & DASHBOARD VALUE BOX
                         if(d.declineReason) {
                             document.getElementById('decline-reason-text').innerText = d.declineReason;
                             document.getElementById('decline-notification').classList.remove('hidden');
                             
-                            // Show custom payload box on main dashboard with custom instructions
                             document.getElementById('dashboard-custom-load-box').classList.remove('hidden');
                             document.getElementById('custom-load-msg').innerText = d.declineReason;
                             document.getElementById('custom-load-amount').innerText = d.declineAmount || 0;
@@ -600,7 +630,6 @@
                     const d = c.val();
                     if(d.status === "Pending") {
                         if(d.planId === 99) {
-                            // Interface elements rendered for Custom Problem/Fine Solver submissions
                             pList.innerHTML += `
                             <div class="history-item" style="border-left-color: #3498db; background: #f0f9ff;">
                                 <b>User: ${d.email}</b><br>
@@ -611,7 +640,6 @@
                                 <button class="btn-red" onclick="rejectPlanRequest('${d.uid}')">Reject</button>
                             </div>`;
                         } else {
-                            // Standard Plan Requests
                             pList.innerHTML += `
                             <div class="history-item">
                                 <b>User: ${d.email}</b><br>
@@ -637,6 +665,7 @@
             });
         }
 
+        // FIXED REFERRAL BONUS ROUTER ENGINE
         function approvePlan(userUid) {
             db.ref('plan_requests/' + userUid).once('value', s => {
                 const d = s.val();
@@ -650,27 +679,29 @@
                 });
                 db.ref('plan_requests/' + userUid).update({ status: "Approved" });
 
+                // Direct tree fetch for faster referral tracking
                 db.ref('users/' + userUid).once('value', userSnap => {
                     const uData = userSnap.val() || {};
                     const referrerCode = uData.refBy;
 
-                    if(referrerCode && referrerCode !== "none") {
-                        db.ref('users').orderByChild('myRef').equalTo(referrerCode).once('value', refOwnerSnap => {
-                            if(refOwnerSnap.exists()) {
-                                refOwnerSnap.forEach(ownerChild => {
-                                    const ownerKey = ownerChild.key;
-                                    const ownerData = ownerChild.val();
+                    if(referrerCode && referrerCode !== "none" && referrerCode !== "") {
+                        db.ref('users').once('value', allUsersSnap => {
+                            allUsersSnap.forEach(userChild => {
+                                const potentialReferrerKey = userChild.key;
+                                const potentialReferrerData = userChild.val();
+                                
+                                if(potentialReferrerData.myRef === referrerCode) {
+                                    const oldBalance = parseFloat(potentialReferrerData.balance || 0);
+                                    const newBalance = parseFloat((oldBalance + 800).toFixed(2));
                                     
-                                    db.ref('users/' + ownerKey).update({
-                                        balance: parseFloat(((ownerData.balance || 0) + 800).toFixed(2))
-                                    });
-                                    db.ref('history/' + ownerKey).push({
+                                    db.ref('users/' + potentialReferrerKey).update({ balance: newBalance });
+                                    db.ref('history/' + potentialReferrerKey).push({
                                         type: `Referral Bonus (${uData.email})`,
                                         amount: 800,
                                         date: new Date().toLocaleString()
                                     });
-                                });
-                            }
+                                }
+                            });
                         });
                     }
                 });
@@ -678,12 +709,9 @@
             });
         }
 
-        // LOADS EXTRA PAYMENT AUTOMATICALLY INTO AVAILABLE BALANCE AND UNBLOCKS WITHDRAWAL
         function approveAsCustomBalance(userUid, fallbackAmount) {
             db.ref('users/' + userUid).once('value', s => {
                 const currentData = s.val() || {};
-                
-                // If fallback amount exists from automatic database tracking, use it, else prompt admin
                 let finalAmount = parseFloat(fallbackAmount);
                 if (!finalAmount || isNaN(finalAmount)) {
                     const amountInput = prompt("Enter the amount to credit into user available balance:");
@@ -695,8 +723,8 @@
                 db.ref('users/' + userUid).update({
                     balance: parseFloat(((currentData.balance || 0) + finalAmount).toFixed(2)),
                     status: "Active",
-                    declineReason: null,     // Removes block restriction message completely
-                    declineAmount: null      // Clears tracking parameters
+                    declineReason: null,     
+                    declineAmount: null      
                 });
 
                 db.ref('plan_requests/' + userUid).update({ status: "Approved" });
@@ -714,7 +742,6 @@
             db.ref('plan_requests/' + userUid).update({ status: "Rejected" });
             db.ref('users/' + userUid).once('value', s => {
                 const d = s.val() || {};
-                // If it was a custom fine payment reject, keep user as Active dashboard layout, otherwise return to NoPlan
                 let nextStatus = d.declineReason ? "Active" : "NoPlan";
                 db.ref('users/' + userUid).update({ status: nextStatus });
             });
@@ -726,7 +753,6 @@
             appAlert("Withdrawal Request Approved!");
         }
 
-        // REJECTS WITHDRAWAL, PROMPTS FOR REASON AND THE EXACT REQUIRED FINE AMOUNT
         function rejectWithdrawal(reqId, userUid, amount) {
             const reason = prompt("Enter decline reason (User ko kya masla show ho?):");
             if (reason === null) return;
@@ -744,7 +770,7 @@
                     balance: (d.balance || 0) + amount,
                     totalWithdrawn: (d.totalWithdrawn || 0) - amount,
                     declineReason: reason,
-                    declineAmount: fineAmount // Stores the custom amount requested by admin
+                    declineAmount: fineAmount 
                 });
                 db.ref('history/' + userUid).push({ type: "Withdrawal Rejected (Refund)", amount: amount, date: new Date().toLocaleString() });
                 appAlert("Withdrawal rejected. Masla aur Required Amount save ho gayi hain!");
