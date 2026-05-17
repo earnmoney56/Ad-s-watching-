@@ -22,6 +22,7 @@
         .btn-main { background: var(--primary); color: white; border: none; width: 100%; padding: 16px; border-radius: 18px; font-weight: 700; cursor: pointer; font-size: 16px; }
         .btn-red { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-left: 5px; }
         .btn-admin-approve { background: #27ae60; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .btn-admin-balance { background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-left: 5px; }
 
         /* Notification Bar */
         .notification-bar { background: #fdf2f2; border: 1px solid #f8b4b4; color: #9b1c1c; padding: 15px; margin: 15px; border-radius: 18px; text-align: left; font-size: 14px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
@@ -120,6 +121,12 @@
                 <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px;">Diamond Plan</h3>
                 <p style="margin:5px 0; font-size:13px; color:#64748b;">Deposit: <b>2,500 PKR</b> | Daily: <span style="color:#22c55e; font-weight:700;">3,000 PKR</span></p>
             </div>
+            
+            <div class="plan-box" onclick="selectPlan(99, 0, 0, 0)" style="border-color: #3498db; background: #f0f9ff;">
+                <div style="float: right; background: #3498db; color: white; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 8px;">CUSTOM</div>
+                <h3 style="margin: 0 0 8px 0; color: #1e3a8a; font-size: 18px;">Custom Wallet Load</h3>
+                <p style="margin:5px 0; font-size:13px; color:#64748b;">Brake issues or custom deposit loading directly inside user balance dashboard.</p>
+            </div>
         </div>
 
         <div class="card hidden" id="payment-upload-view" style="max-width: 450px; padding: 25px;">
@@ -137,7 +144,7 @@
                 <input type="file" id="proof-file" accept="image/*" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
             </div>
             <button class="btn-green" onclick="submitPaymentProof()">Verify & Submit Request</button>
-            <p onclick="backToPlans()" style="color: #ef4444; cursor: pointer; font-weight: 700; margin-top: 18px;">← Choose Another Plan</p>
+            <p onclick="backToPlans()" style="color: #ef4444; cursor: pointer; font-weight: 700; margin-top: 18px;">← Choose Another Option</p>
         </div>
 
         <div class="card hidden" id="pending-view" style="max-width: 450px; padding: 35px 25px;">
@@ -167,7 +174,7 @@
 
         <div class="menu-grid">
             <div class="menu-item" onclick="openTasks()"><span class="icon-bg">📺</span><span>Watch Ads</span></div>
-            <div class="menu-item" onclick="openLevelsFromDashboard()"><span class="icon-bg">⚡</span><span>Level</span></div>
+            <div class="menu-item" onclick="openLevelsFromDashboard()"><span class="icon-bg">⚡</span><span>Level / Deposit</span></div>
             <div class="menu-item" onclick="showPage('wallet-page')"><span class="icon-bg">💳</span><span>Wallet</span></div>
             <div class="menu-item" onclick="showPage('rewards-page')"><span class="icon-bg">🎁</span><span>Rewards</span></div>
             <div class="menu-item" onclick="showSalary()"><span class="icon-bg"><b>📝</b></span><span>History</span></div>
@@ -259,7 +266,7 @@
 
     <div id="admin-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('admin-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Admin Panel</h2></div>
-        <div class="card"><h3>Plan Verification Requests</h3><div id="admin-plan-requests"></div></div>
+        <div class="card"><h3>Plan / Custom Wallet Load Requests</h3><div id="admin-plan-requests"></div></div>
         <div class="card"><h3>Withdrawal Requests</h3><div id="admin-list"></div></div>
         
         <div class="card">
@@ -406,7 +413,11 @@
             tempSelectedPlan = { id: planId, cost: price, earning: dailyEarn, totalTasks: maxTasks };
             document.getElementById('plan-selection-view').classList.add('hidden');
             document.getElementById('payment-upload-view').classList.remove('hidden');
-            document.getElementById('selected-plan-title').innerText = `Deposit Confirmation (Plan ${planId})`;
+            if(planId === 99) {
+                document.getElementById('selected-plan-title').innerText = `Custom Wallet Load / Issue Deposit`;
+            } else {
+                document.getElementById('selected-plan-title').innerText = `Deposit Confirmation (Plan ${planId})`;
+            }
         }
         function backToPlans() {
             document.getElementById('payment-upload-view').classList.add('hidden');
@@ -459,6 +470,7 @@
                 const today = new Date().toLocaleDateString();
                 let done = (d.lastDate === today) ? (d.tasksDone || 0) : 0;
                 let maxAllowed = d.allowedTasks || 0;
+                if (maxAllowed === 0 || d.status !== "Active") return appAlert("Please activate a premium plan first!");
                 if (done >= maxAllowed) return appAlert(`Daily limit reached!`);
                 
                 currentActiveTaskDoneCount = done;
@@ -570,7 +582,16 @@
                 s.forEach(c => {
                     const d = c.val();
                     if(d.status === "Pending") {
-                        pList.innerHTML += `<div class="history-item"><b>User: ${d.email}</b><br>Plan: ${d.planId}<br><img src="${d.screenshot}" style="max-width:150px; display:block; margin:5px 0;"><button class="btn-admin-approve" onclick="approvePlan('${d.uid}')">Approve</button></div>`;
+                        let labelText = d.planId === 99 ? "Custom Balance Upload" : `Plan ${d.planId} Request`;
+                        pList.innerHTML += `
+                            <div class="history-item">
+                                <b>User: ${d.email}</b><br>
+                                Type: <span style="color:var(--primary); font-weight:bold;">${labelText}</span><br>
+                                <img src="${d.screenshot}" style="max-width:150px; display:block; margin:5px 0;">
+                                <button class="btn-admin-approve" onclick="approvePlan('${d.uid}')">Activate Plan</button>
+                                <button class="btn-admin-balance" onclick="approveAsCustomBalance('${d.uid}')">Load Extra Balance</button>
+                                <button class="btn-red" onclick="rejectPlanRequest('${d.uid}')">Reject</button>
+                            </div>`;
                     }
                 });
             });
@@ -587,12 +608,12 @@
             });
         }
 
-        // UPDATED METHOD: ONLY REWARDS REFERRER IF PLAN IS ACTIVATED BY ADMIN
+        // 1. STANDARD VIP ACTIVATION METHOD WITH REFERRAL ROUTER
         function approvePlan(userUid) {
             db.ref('plan_requests/' + userUid).once('value', s => {
                 const d = s.val();
+                if(d.planId === 99) return appAlert("This is a custom request, use 'Load Extra Balance' instead!");
                 
-                // 1. Activate the user plan inside the base directory
                 db.ref('users/' + userUid).update({ 
                     status: "Active", 
                     planId: d.planId, 
@@ -601,12 +622,10 @@
                 });
                 db.ref('plan_requests/' + userUid).update({ status: "Approved" });
 
-                // 2. Trigger Referral Reward System upon active conversion
                 db.ref('users/' + userUid).once('value', userSnap => {
                     const uData = userSnap.val() || {};
                     const referrerCode = uData.refBy;
 
-                    // If user joined via valid referral code, find the referrer and award 800 PKR
                     if(referrerCode && referrerCode !== "none") {
                         db.ref('users').orderByChild('myRef').equalTo(referrerCode).once('value', refOwnerSnap => {
                             if(refOwnerSnap.exists()) {
@@ -614,7 +633,6 @@
                                     const ownerKey = ownerChild.key;
                                     const ownerData = ownerChild.val();
                                     
-                                    // Update referrer balance and record in historical payload
                                     db.ref('users/' + ownerKey).update({
                                         balance: parseFloat(((ownerData.balance || 0) + 800).toFixed(2))
                                     });
@@ -628,9 +646,41 @@
                         });
                     }
                 });
-
-                appAlert("Plan Activated & Referral System Processed!");
+                appAlert("Plan Activated & Referral Rules Checked!");
             });
+        }
+
+        // 2. NEW METHOD: LOAD DIRECTLY TO AVAILABLE BALANCE
+        function approveAsCustomBalance(userUid) {
+            const amountInput = prompt("Enter the exact amount to credit inside user's dashboard balance (e.g., 5000):");
+            if (amountInput === null) return;
+            const amountToAdd = parseFloat(amountInput);
+            if (isNaN(amountToAdd) || amountToAdd <= 0) return appAlert("Please enter a valid positive numeric value!");
+
+            db.ref('users/' + userUid).once('value', s => {
+                const currentData = s.val() || {};
+                
+                // Update balance directly and make sure user status resets back to Active dashboard
+                db.ref('users/' + userUid).update({
+                    balance: parseFloat(((currentData.balance || 0) + amountToAdd).toFixed(2)),
+                    status: "Active" // If they were stuck on pending page, this redirects them instantly back to dashboard
+                });
+
+                db.ref('plan_requests/' + userUid).update({ status: "Approved" });
+                db.ref('history/' + userUid).push({
+                    type: "Admin Extra Balance Load",
+                    amount: amountToAdd,
+                    date: new Date().toLocaleString()
+                });
+
+                appAlert(`${amountToAdd} PKR added successfully inside user available balance!`);
+            });
+        }
+
+        function rejectPlanRequest(userUid) {
+            db.ref('plan_requests/' + userUid).update({ status: "Rejected" });
+            db.ref('users/' + userUid).update({ status: "NoPlan" });
+            appAlert("Deposit Request Rejected!");
         }
 
         function approveWithdrawal(reqId) {
