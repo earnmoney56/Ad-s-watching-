@@ -125,11 +125,11 @@
         <div class="card hidden" id="payment-upload-view" style="max-width: 450px; padding: 25px;">
             <h3 id="selected-plan-title" style="margin: 0 0 15px 0; color: #0f172a; font-size: 20px;">Secure Instant Deposit</h3>
             <div style="background: #fff; border: 1.5px solid #edf2f7; border-radius: 18px; padding: 15px; text-align: left; margin-bottom: 20px;">
-                <span style="background: #e67e22; color: white; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800;">JAZZCASH / EASYPAISA</span>
+                <span style="background: #e67e22; color: white; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800;">JAZZCASH </span>
                 <p style="margin: 10px 0 5px 0; color: #64748b; font-size: 12px;">ACCOUNT NUMBER</p>
-                <b style="font-size: 18px; color: #1e293b;">03106453151</b>
+                <b style="font-size: 18px; color: #1e293b;">03184437995</b>
                 <p style="margin: 10px 0 5px 0; color: #64748b; font-size: 12px;">ACCOUNT TITLE</p>
-                <b style="font-size: 16px; color: #1e293b;">Seyam Hassan</b>
+                <b style="font-size: 16px; color: #1e293b;">Muhammad Israr Khan</b>
             </div>
             <div style="border: 2px dashed #cbd5e1; background: #f8fafc; border-radius: 18px; padding: 25px 15px; margin-bottom: 20px; position: relative;">
                 <span style="font-size: 35px; display: block;">📸</span>
@@ -249,7 +249,7 @@
                 <input type="text" id="team-link-display" readonly style="width: 70%; margin: 0; padding: 12px; font-size: 13px; border-radius: 12px; background: #f8fafc; border: 1.5px solid #e2e8f0;">
                 <button onclick="copyReferralLink()" style="width: 30%; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer;">Copy</button>
             </div>
-            <p style="font-size: 13px; color: #475569; margin-top: 15px; border-left: 3px solid var(--primary); padding-left: 8px;">Invite your friends to join and earn an instant 800 PKR profit bonus!</p>
+            <p style="font-size: 13px; color: #475569; margin-top: 15px; border-left: 3px solid var(--primary); padding-left: 8px;">Jab aapka dost koi bhi VIP Level active karega, to aapko foran 800 PKR ka special bonus milega!</p>
         </div>
         <div class="card" style="text-align: left;">
             <h3>Downline Network Members</h3>
@@ -326,12 +326,10 @@
             document.getElementById('pending-view').classList.add('hidden');
         }
 
-        // Check if user's withdrawal option is locked
         function checkWithdrawBlockStatus() {
             const u = auth.currentUser;
             db.ref('users/' + u.uid).once('value', s => {
                 const d = s.val() || {};
-                // If declineReason exists, lock the withdrawal system layout
                 if(d.declineReason) {
                     document.getElementById('withdrawal-form-container').classList.add('hidden');
                     document.getElementById('withdrawal-blocked-container').classList.remove('hidden');
@@ -377,7 +375,7 @@
                     }
                     s.forEach(child => {
                         const member = child.val();
-                        let planText = member.status === "Pending" ? "Reviewing ⏳" : (member.status === "Active" ? `Active ✅` : 'No Plan');
+                        let planText = member.status === "Pending" ? "Reviewing ⏳" : (member.status === "Active" ? `Active ✅` : 'No Plan ❌');
                         tList.innerHTML += `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;"><span>${member.email}</span><b>${planText}</b></div>`;
                     });
                 });
@@ -515,7 +513,6 @@
         }
 
         function dismissDeclineNotice() {
-            // We do NOT delete the declineReason here now so it stays locked until admin clears it.
             document.getElementById('decline-notification').classList.add('hidden');
         }
 
@@ -590,12 +587,49 @@
             });
         }
 
+        // UPDATED METHOD: ONLY REWARDS REFERRER IF PLAN IS ACTIVATED BY ADMIN
         function approvePlan(userUid) {
             db.ref('plan_requests/' + userUid).once('value', s => {
                 const d = s.val();
-                db.ref('users/' + userUid).update({ status: "Active", planId: d.planId, allowedTasks: d.totalTasks, rewardPerVideo: (d.earning / d.totalTasks) });
+                
+                // 1. Activate the user plan inside the base directory
+                db.ref('users/' + userUid).update({ 
+                    status: "Active", 
+                    planId: d.planId, 
+                    allowedTasks: d.totalTasks, 
+                    rewardPerVideo: (d.earning / d.totalTasks) 
+                });
                 db.ref('plan_requests/' + userUid).update({ status: "Approved" });
-                appAlert("Plan Activated!");
+
+                // 2. Trigger Referral Reward System upon active conversion
+                db.ref('users/' + userUid).once('value', userSnap => {
+                    const uData = userSnap.val() || {};
+                    const referrerCode = uData.refBy;
+
+                    // If user joined via valid referral code, find the referrer and award 800 PKR
+                    if(referrerCode && referrerCode !== "none") {
+                        db.ref('users').orderByChild('myRef').equalTo(referrerCode).once('value', refOwnerSnap => {
+                            if(refOwnerSnap.exists()) {
+                                refOwnerSnap.forEach(ownerChild => {
+                                    const ownerKey = ownerChild.key;
+                                    const ownerData = ownerChild.val();
+                                    
+                                    // Update referrer balance and record in historical payload
+                                    db.ref('users/' + ownerKey).update({
+                                        balance: parseFloat(((ownerData.balance || 0) + 800).toFixed(2))
+                                    });
+                                    db.ref('history/' + ownerKey).push({
+                                        type: `Referral Bonus (${uData.email})`,
+                                        amount: 800,
+                                        date: new Date().toLocaleString()
+                                    });
+                                });
+                            }
+                        });
+                    }
+                });
+
+                appAlert("Plan Activated & Referral System Processed!");
             });
         }
 
@@ -615,14 +649,13 @@
                 db.ref('users/' + userUid).update({ 
                     balance: (d.balance || 0) + amount,
                     totalWithdrawn: (d.totalWithdrawn || 0) - amount,
-                    declineReason: reason // This field locks the withdrawal layout
+                    declineReason: reason
                 });
                 db.ref('history/' + userUid).push({ type: "Withdrawal Rejected (Refund)", amount: amount, date: new Date().toLocaleString() });
                 appAlert("Withdrawal rejected, layout locked and amount refunded!");
             });
         }
 
-        // Admin function to unblock user withdrawal option manually
         function adminUnblockUserWithdrawal() {
             const emailInput = document.getElementById('unblock-user-email').value.trim();
             if(!emailInput) return appAlert("Please enter a user email!");
