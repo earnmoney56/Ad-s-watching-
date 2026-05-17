@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EarnMoney - Premium App</title>
+    <title>EarnMoney - Premium Ads Watching</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -26,6 +26,9 @@
         /* Notification Bar */
         .notification-bar { background: #fdf2f2; border: 1px solid #f8b4b4; color: #9b1c1c; padding: 15px; margin: 15px; border-radius: 18px; text-align: left; font-size: 14px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
 
+        /* Block Message Styling */
+        .block-box { background: #fff5f5; border: 2px dashed #e53e3e; padding: 20px; border-radius: 20px; color: #c53030; text-align: center; margin-top: 15px; }
+
         /* Plan Cards */
         .plan-box { background: white; border: 2px solid #eee; padding: 20px; margin: 15px 0; border-radius: 20px; cursor: pointer; text-align: left; transition: 0.3s; }
         .plan-box:hover { border-color: var(--primary); background: #fffcf6; }
@@ -44,6 +47,7 @@
         .header { display: flex; align-items: center; padding: 20px; background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; }
         .history-item { background: white; margin: 12px 20px; padding: 20px; border-radius: 20px; text-align: left; border-left: 8px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.04); }
         
+        /* Video Box Styling */
         #video-box { width: 90%; margin: 20px auto; aspect-ratio: 16/9; background: #000; border-radius: 20px; overflow: hidden; }
         .timer-ui { width: 100px; height: 100px; border: 6px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: bold; margin: 25px auto; color: var(--primary); }
 
@@ -121,11 +125,11 @@
         <div class="card hidden" id="payment-upload-view" style="max-width: 450px; padding: 25px;">
             <h3 id="selected-plan-title" style="margin: 0 0 15px 0; color: #0f172a; font-size: 20px;">Secure Instant Deposit</h3>
             <div style="background: #fff; border: 1.5px solid #edf2f7; border-radius: 18px; padding: 15px; text-align: left; margin-bottom: 20px;">
-                <span style="background: #e67e22; color: white; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800;">JAZZCASH </span>
+                <span style="background: #e67e22; color: white; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800;">JAZZCASH / EASYPAISA</span>
                 <p style="margin: 10px 0 5px 0; color: #64748b; font-size: 12px;">ACCOUNT NUMBER</p>
-                <b style="font-size: 18px; color: #1e293b;">03184437995</b>
+                <b style="font-size: 18px; color: #1e293b;">03106453151</b>
                 <p style="margin: 10px 0 5px 0; color: #64748b; font-size: 12px;">ACCOUNT TITLE</p>
-                <b style="font-size: 16px; color: #1e293b;">Muhammad israr khan</b>
+                <b style="font-size: 16px; color: #1e293b;">Seyam Hassan</b>
             </div>
             <div style="border: 2px dashed #cbd5e1; background: #f8fafc; border-radius: 18px; padding: 25px 15px; margin-bottom: 20px; position: relative;">
                 <span style="font-size: 35px; display: block;">📸</span>
@@ -162,7 +166,7 @@
         </div>
 
         <div class="menu-grid">
-            <div class="menu-item" onclick="openTasks()"><span class="icon-bg">🎬</span><span>Tasks</span></div>
+            <div class="menu-item" onclick="openTasks()"><span class="icon-bg">📺</span><span>Watch Ads</span></div>
             <div class="menu-item" onclick="openLevelsFromDashboard()"><span class="icon-bg">⚡</span><span>Level</span></div>
             <div class="menu-item" onclick="showPage('wallet-page')"><span class="icon-bg">💳</span><span>Wallet</span></div>
             <div class="menu-item" onclick="showPage('rewards-page')"><span class="icon-bg">🎁</span><span>Rewards</span></div>
@@ -184,24 +188,37 @@
 
     <div id="withdraw-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('withdraw-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Withdraw Money</h2></div>
-        <div class="card">
+        
+        <div class="card" id="withdrawal-form-container">
             <h3>Enter Details</h3>
             <select id="w-method"><option value="EasyPaisa">EasyPaisa</option><option value="JazzCash">JazzCash</option></select>
             <input type="text" id="w-account" placeholder="Account Number (e.g. 0300xxxxxxx)">
             <input type="number" id="w-amount" placeholder="Amount (Minimum 2000 PKR)">
             <button class="btn-main" onclick="submitWithdrawal()" style="margin-top:15px;">Submit Request</button>
         </div>
+
+        <div class="card hidden" id="withdrawal-blocked-container">
+            <div class="block-box">
+                <span style="font-size: 40px; display: block; margin-bottom: 10px;">🔒</span>
+                <h3 style="margin: 0 0 10px 0;">Withdrawal Options Locked</h3>
+                <p style="font-size: 14px; line-height: 1.5; color: #742a2a; margin-bottom: 15px;">
+                    Aapka pichla withdrawal reject kiya gaya tha. Pehle apna masla hal karwayein, uske baad hi naya withdrawal apply kar sakte hain.
+                </p>
+                <div style="background: white; border: 1px solid #feb2b2; padding: 12px; border-radius: 12px; text-align: left; font-size: 13px;">
+                    <strong style="color: #c53030;">Masla / Reason:</strong>
+                    <div id="block-reason-display-text" style="margin-top: 5px; color: #4a5568; font-style: italic;">No reason provided.</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="task-page" class="full-page hidden">
-        <div class="header"><button onclick="closeTasks()" style="background:none; border:none; font-size:28px;">✕</button><h2 style="margin-left:15px;">Daily Tasks</h2></div>
+        <div class="header"><button onclick="closeTasks()" style="background:none; border:none; font-size:28px;">✕</button><h2 style="margin-left:15px;">Watch Ads</h2></div>
         <div class="card">
             <h3 id="task-info">Remaining: 0/0</h3>
-            <div id="video-box">
-                <iframe id="task-frame" width="100%" height="100%" src="" frameborder="0" allow="autoplay"></iframe>
-            </div>
+            <div id="video-box"></div>
             <div class="timer-ui" id="timer-txt">30</div>
-            <p style="color:#777;">Watch for 30 seconds to complete the task</p>
+            <button class="btn-green" id="claim-btn" onclick="claimReward()" disabled style="opacity:0.5;">Wait 30 Seconds</button>
         </div>
     </div>
 
@@ -244,6 +261,13 @@
         <div class="header"><button onclick="closePage('admin-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Admin Panel</h2></div>
         <div class="card"><h3>Plan Verification Requests</h3><div id="admin-plan-requests"></div></div>
         <div class="card"><h3>Withdrawal Requests</h3><div id="admin-list"></div></div>
+        
+        <div class="card">
+            <h3>Clear User Rejection Status</h3>
+            <p style="font-size: 13px; color: #64748b; text-align: left;">Jab user apna masla hal karwa le, to yahan uska email daal kar uska withdrawal option unblock karein:</p>
+            <input type="email" id="unblock-user-email" placeholder="User Email Address">
+            <button class="btn-green" onclick="adminUnblockUserWithdrawal()">Unblock Withdrawal Now</button>
+        </div>
     </div>
 
     <script>
@@ -262,10 +286,10 @@
         const db = firebase.database();
         
         const ADMIN = "samiseyam49@gmail.com"; 
-        const vids = ["dQw4w9WgXcQ", "3JZ_D3ELwOQ", "V-_O7nl0Ii0", "L_jWHffIx5E", "7wtfhZwyrcc"];
-        let clock, timeLeft = 30, tempSelectedPlan = null;
+        
+        const adsPool = ["_9M-gZJu6g0", "dQw4w9WgXcQ", "tgbNymZ7vqY", "V-_O75Z0PqU"];
+        let clock, timeLeft = 30, tempSelectedPlan = null, currentActiveTaskDoneCount = 0, currentPayoutPerTask = 0;
 
-        // Custom Popup Alert Trigger Function
         function appAlert(msg, title = "earnmoney56.github.io") {
             document.getElementById('alert-title').innerText = title;
             document.getElementById('alert-message').innerText = msg;
@@ -287,7 +311,9 @@
             document.getElementById(id).classList.remove('hidden'); 
             if(id=='admin-page') loadAdminData(); 
             if(id=='team-page') fetchTeamData();
+            if(id=='withdraw-page') checkWithdrawBlockStatus();
         }
+        
         function closePage(id) { document.getElementById(id).classList.add('hidden'); }
         function showSignup() { document.getElementById('login-form').classList.add('hidden'); document.getElementById('signup-form').classList.remove('hidden'); }
         function showLogin() { document.getElementById('signup-form').classList.add('hidden'); document.getElementById('login-form').classList.remove('hidden'); }
@@ -298,6 +324,23 @@
             document.getElementById('plan-selection-view').classList.remove('hidden');
             document.getElementById('payment-upload-view').classList.add('hidden');
             document.getElementById('pending-view').classList.add('hidden');
+        }
+
+        // Check if user's withdrawal option is locked
+        function checkWithdrawBlockStatus() {
+            const u = auth.currentUser;
+            db.ref('users/' + u.uid).once('value', s => {
+                const d = s.val() || {};
+                // If declineReason exists, lock the withdrawal system layout
+                if(d.declineReason) {
+                    document.getElementById('withdrawal-form-container').classList.add('hidden');
+                    document.getElementById('withdrawal-blocked-container').classList.remove('hidden');
+                    document.getElementById('block-reason-display-text').innerText = d.declineReason;
+                } else {
+                    document.getElementById('withdrawal-blocked-container').classList.add('hidden');
+                    document.getElementById('withdrawal-form-container').classList.remove('hidden');
+                }
+            });
         }
 
         function showSalary() {
@@ -398,9 +441,12 @@
             if(amount < 2000) return appAlert("Minimum withdrawal is 2000 PKR!");
 
             db.ref('users/' + u.uid).once('value', s => {
-                const bal = s.val().balance || 0;
+                const d = s.val() || {};
+                if(d.declineReason) return appAlert("Your withdrawal is locked! Solve your issue first.");
+                const bal = d.balance || 0;
                 if(amount > bal) return appAlert("Insufficient balance!");
-                db.ref('users/' + u.uid).update({ balance: bal - amount, totalWithdrawn: (s.val().totalWithdrawn || 0) + amount });
+                
+                db.ref('users/' + u.uid).update({ balance: bal - amount, totalWithdrawn: (d.totalWithdrawn || 0) + amount });
                 db.ref('withdrawals').push({ uid: u.uid, email: u.email, method: method, account: account, amount: amount, status: "Pending", date: new Date().toLocaleString() });
                 db.ref('history/' + u.uid).push({ type: `Withdrawal (${method})`, amount: `-${amount}`, date: new Date().toLocaleString() });
                 appAlert("Withdrawal request submitted!");
@@ -417,35 +463,46 @@
                 let maxAllowed = d.allowedTasks || 0;
                 if (done >= maxAllowed) return appAlert(`Daily limit reached!`);
                 
+                currentActiveTaskDoneCount = done;
+                currentPayoutPerTask = d.rewardPerVideo || 0;
+
                 showPage('task-page');
                 timeLeft = 30;
                 document.getElementById('timer-txt').innerText = timeLeft;
-                document.getElementById('task-info').innerText = `Tasks Done: ${done}/${maxAllowed}`;
-                document.getElementById('task-frame').src = `https://www.youtube.com/embed/${vids[Math.floor(Math.random() * vids.length)]}?autoplay=1&controls=0`;
+                document.getElementById('task-info').innerText = `Ads Done: ${done}/${maxAllowed}`;
+                
+                const randomVideo = adsPool[Math.floor(Math.random() * adsPool.length)];
+                document.getElementById('video-box').innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${randomVideo}?autoplay=1&controls=0&mute=1" frameborder="0" allow="autoplay"></iframe>`;
+                
+                const btn = document.getElementById('claim-btn');
+                btn.disabled = true; btn.style.opacity = "0.5"; btn.innerText = "Wait 30 Seconds";
 
                 clock = setInterval(() => {
                     timeLeft--;
                     document.getElementById('timer-txt').innerText = timeLeft;
-                    if(timeLeft <= 0) { clearInterval(clock); finishTask(done, d.rewardPerVideo); }
+                    if(timeLeft <= 0) {
+                        clearInterval(clock);
+                        btn.disabled = false; btn.style.opacity = "1"; btn.innerText = "Claim Earning Now";
+                    }
                 }, 1000);
             });
         }
 
-        function finishTask(count, payoutPerVideo) {
+        function claimReward() {
             const u = auth.currentUser;
-            const cleanPayout = parseFloat(payoutPerVideo.toFixed(2));
+            const cleanPayout = parseFloat(currentPayoutPerTask.toFixed(2));
             db.ref('users/' + u.uid).transaction(d => {
                 if(d) {
                     d.balance = parseFloat(((d.balance || 0) + cleanPayout).toFixed(2));
-                    d.tasksDone = count + 1; d.lastDate = new Date().toLocaleDateString();
+                    d.tasksDone = currentActiveTaskDoneCount + 1; d.lastDate = new Date().toLocaleDateString();
                 }
                 return d;
             });
-            db.ref('history/' + u.uid).push({ type: "Video Reward", amount: cleanPayout, date: new Date().toLocaleString() });
-            appAlert(`Task complete! ${cleanPayout} PKR Added.`);
+            db.ref('history/' + u.uid).push({ type: "Ad Watch Reward", amount: cleanPayout, date: new Date().toLocaleString() });
+            appAlert(`${cleanPayout} PKR Added to your account!`);
             closeTasks();
         }
-        function closeTasks() { clearInterval(clock); document.getElementById('task-frame').src = ""; closePage('task-page'); }
+        function closeTasks() { clearInterval(clock); closePage('task-page'); }
 
         function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value).catch(e => appAlert(e.message)); }
         function signup() {
@@ -457,9 +514,8 @@
             }).catch(e => appAlert(e.message));
         }
 
-        // Dismiss decline notice manually
         function dismissDeclineNotice() {
-            db.ref('users/' + auth.currentUser.uid).update({ declineReason: null });
+            // We do NOT delete the declineReason here now so it stays locked until admin clears it.
             document.getElementById('decline-notification').classList.add('hidden');
         }
 
@@ -475,7 +531,6 @@
                         const d = s.val() || {};
                         const userStatus = d.status || "NoPlan";
 
-                        // Handle Decline Reason Notification
                         if(d.declineReason) {
                             document.getElementById('decline-reason-text').innerText = d.declineReason;
                             document.getElementById('decline-notification').classList.remove('hidden');
@@ -513,7 +568,6 @@
         function logout() { auth.signOut().then(() => location.reload()); }
 
         function loadAdminData() {
-            // Plan Verification Requests Loading
             db.ref('plan_requests').on('value', s => {
                 const pList = document.getElementById('admin-plan-requests'); pList.innerHTML = "";
                 s.forEach(c => {
@@ -524,7 +578,6 @@
                 });
             });
 
-            // Withdrawal Requests Loading with Decline Feature
             db.ref('withdrawals').on('value', s => {
                 const wList = document.getElementById('admin-list'); wList.innerHTML = "";
                 s.forEach(c => {
@@ -552,28 +605,35 @@
         }
 
         function rejectWithdrawal(reqId, userUid, amount) {
-            const reason = prompt("Enter decline reason (e.g., Wrong EasyPaisa account number):");
-            if (reason === null) return; // Cancel press karne par block karein
+            const reason = prompt("Enter decline reason (Masla likhein):");
+            if (reason === null) return;
             if (reason.trim() === "") return appAlert("Please provide a rejection reason!");
 
-            // 1. Withdrawal status change karein
             db.ref('withdrawals/' + reqId).update({ status: "Rejected", adminReason: reason });
-            
-            // 2. User ka balance wapas refund karein aur notification reason set karein
             db.ref('users/' + userUid).once('value', s => {
                 const d = s.val() || {};
-                const currentBal = d.balance || 0;
-                const totalWithdrawnNow = d.totalWithdrawn || 0;
-                
                 db.ref('users/' + userUid).update({ 
-                    balance: currentBal + amount,
-                    totalWithdrawn: totalWithdrawnNow - amount,
-                    declineReason: reason 
+                    balance: (d.balance || 0) + amount,
+                    totalWithdrawn: (d.totalWithdrawn || 0) - amount,
+                    declineReason: reason // This field locks the withdrawal layout
                 });
-
-                // 3. Earning history mein refund record add karein
                 db.ref('history/' + userUid).push({ type: "Withdrawal Rejected (Refund)", amount: amount, date: new Date().toLocaleString() });
-                appAlert("Withdrawal rejected and amount refunded successfully!");
+                appAlert("Withdrawal rejected, layout locked and amount refunded!");
+            });
+        }
+
+        // Admin function to unblock user withdrawal option manually
+        function adminUnblockUserWithdrawal() {
+            const emailInput = document.getElementById('unblock-user-email').value.trim();
+            if(!emailInput) return appAlert("Please enter a user email!");
+
+            db.ref('users').orderByChild('email').equalTo(emailInput).once('value', s => {
+                if(!s.exists()) return appAlert("User email not found inside database!");
+                s.forEach(child => {
+                    db.ref('users/' + child.key).update({ declineReason: null });
+                });
+                appAlert("User withdrawal section unblocked successfully!");
+                document.getElementById('unblock-user-email').value = "";
             });
         }
     </script>
