@@ -25,7 +25,7 @@
         .btn-admin-balance { background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-left: 5px; }
 
         /* Notification Bar */
-        .notification-bar { background: #fdf2f2; border: 1px solid #f8b4b4; color: #9b1c1c; padding: 15px; margin: 15px; border-radius: 18px; text-align: left; font-size: 14px; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .notification-bar { background: #fff5f5; border: 1px solid #feb2b2; color: #c53030; padding: 15px; margin: 15px; border-radius: 18px; text-align: left; font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
 
         /* Block Message Styling */
         .block-box { background: #fff5f5; border: 2px dashed #e53e3e; padding: 20px; border-radius: 20px; color: #c53030; text-align: center; margin-top: 15px; }
@@ -130,7 +130,7 @@
                 <p style="margin: 10px 0 5px 0; color: #64748b; font-size: 12px;">ACCOUNT NUMBER</p>
                 <b style="font-size: 18px; color: #1e293b;">03184437995</b>
                 <p style="margin: 10px 0 5px 0; color: #64748b; font-size: 12px;">ACCOUNT TITLE</p>
-                <b style="font-size: 16px; color: #1e293b;">Muhammad Israr khan</b>
+                <b style="font-size: 16px; color: #1e293b;">Muhammad israr khan</b>
             </div>
             <div style="border: 2px dashed #cbd5e1; background: #f8fafc; border-radius: 18px; padding: 25px 15px; margin-bottom: 20px; position: relative;">
                 <span style="font-size: 35px; display: block;">📸</span>
@@ -154,7 +154,7 @@
         <div id="decline-notification" class="notification-bar hidden">
             <span style="font-size: 20px;">⚠️</span>
             <div>
-                <strong>Withdrawal Declined:</strong> <span id="decline-reason-text">Reason goes here...</span>
+                <strong>Withdrawal Rejected Waja:</strong> <span id="decline-reason-text">Reason goes here...</span>
                 <br><small style="opacity:0.8; cursor:pointer; text-decoration:underline;" onclick="dismissDeclineNotice()">Dismiss Notification</small>
             </div>
         </div>
@@ -170,10 +170,10 @@
             <div style="float: right; background: #3498db; color: white; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 8px;">REQUIRED ACTION</div>
             <h3 style="margin: 0 0 8px 0; color: #1e3a8a; font-size: 18px;">⚠️ Solve Rejection Problem</h3>
             <p style="margin: 5px 0; font-size: 14px; color: #2c3e50;">
-                Admin Message: <b id="custom-load-msg" style="color: #e74c3c;">-</b>
+                Reason/Waja: <b id="custom-load-msg" style="color: #e74c3c;">-</b>
             </p>
             <p style="margin: 5px 0; font-size: 14px; color: #2c3e50;">
-                Required Fine/Amount: <b style="color: #27ae60; font-size: 16px;"><span id="custom-load-amount">0</span> PKR</b>
+                Required Penalty/Fine: <b style="color: #27ae60; font-size: 16px;"><span id="custom-load-amount">0</span> PKR</b>
             </p>
             <button class="btn-main" onclick="openCustomPaymentFromDashboard()" style="background: #3498db; margin-top: 12px; padding: 12px;">Pay & Solve Issue Now</button>
         </div>
@@ -218,7 +218,7 @@
                     Aapka pichla withdrawal reject kiya gaya tha. Pehle apna masla hal karwayein, uske baad hi naya withdrawal apply kar sakte hain.
                 </p>
                 <div style="background: white; border: 1px solid #feb2b2; padding: 12px; border-radius: 12px; text-align: left; font-size: 13px;">
-                    <strong style="color: #c53030;">Masla / Reason:</strong>
+                    <strong style="color: #c53030;">Rejection Reason (Waja):</strong>
                     <div id="block-reason-display-text" style="margin-top: 5px; color: #4a5568; font-style: italic;">No reason provided.</div>
                 </div>
             </div>
@@ -371,7 +371,6 @@
             });
         }
 
-        // FIXED HISTORY RENDERER FUNCTION
         function showSalary() {
             showPage('salary-page');
             const list = document.getElementById('history-list');
@@ -383,7 +382,6 @@
                     list.innerHTML = `<p style="color:#888; padding:20px;">No transactions found in history yet.</p>`;
                     return;
                 }
-                // Reverse cards rendering logic so latest transactions show first
                 let items = [];
                 s.forEach(i => { items.unshift({ key: i.key, val: i.val() }); });
                 
@@ -396,6 +394,7 @@
                         <div class="history-item" style="border-left-color: ${color};">
                             <b style="font-size:16px; color:#2c3e50;">${h.type}</b><br>
                             <span style="color:${color}; font-weight:bold; font-size:18px;">${sign}${h.amount} PKR</span><br>
+                            ${h.reason ? `<small style="color:#e74c3c; display:block; margin:2px 0;">Waja: ${h.reason}</small>` : ''}
                             <small style="color:#7f8c8d;">${h.date}</small>
                         </div>`;
                 });
@@ -461,13 +460,15 @@
             document.getElementById('plan-selection-view').classList.remove('hidden');
         }
 
+        // UPGRADED MULTI-REQUEST COMPATIBLE SUBMITTER
         function submitPaymentProof() {
             const fileInput = document.getElementById('proof-file');
             if(fileInput.files.length === 0) return appAlert("Please upload payment screenshot!");
             const u = auth.currentUser;
             const reader = new FileReader();
             reader.onload = function(e) {
-                db.ref('plan_requests/' + u.uid).set({
+                // Fixed: Unique Key Push so 10+ multiple requests don't block each other
+                db.ref('plan_requests').push({
                     uid: u.uid, email: u.email, planId: tempSelectedPlan.id, cost: tempSelectedPlan.cost, earning: tempSelectedPlan.earning, totalTasks: tempSelectedPlan.totalTasks, screenshot: e.target.result, status: "Pending", date: new Date().toLocaleString()
                 });
                 db.ref('users/' + u.uid).update({ status: "Pending" });
@@ -558,7 +559,6 @@
             const p = document.getElementById('reg-password').value;
             const r = document.getElementById('reg-ref').value ? document.getElementById('reg-ref').value.trim().toUpperCase() : "none";
             auth.createUserWithEmailAndPassword(e, p).then(c => {
-                // FIXED REFERRAL STORAGE LOOKUP TREE
                 db.ref('users/' + c.user.uid).set({ 
                     email: e, balance: 0, totalWithdrawn: 0, status: "NoPlan", planId: 0, allowedTasks: 0, tasksDone: 0, 
                     myRef: c.user.uid.substring(0,6).toUpperCase(), refBy: r 
@@ -623,11 +623,13 @@
 
         function logout() { auth.signOut().then(() => location.reload()); }
 
+        // MULTI-REQUEST SYSTEM ADMIN PANEL ENGINE
         function loadAdminData() {
             db.ref('plan_requests').on('value', s => {
                 const pList = document.getElementById('admin-plan-requests'); pList.innerHTML = "";
                 s.forEach(c => {
                     const d = c.val();
+                    const reqKey = c.key; // Unique key to approve precise stream node
                     if(d.status === "Pending") {
                         if(d.planId === 99) {
                             pList.innerHTML += `
@@ -636,8 +638,8 @@
                                 Type: <span style="color:#3498db; font-weight:bold;">Custom Rejection Fine Payment</span><br>
                                 Requested Fine Amount: <b>${d.cost} PKR</b><br>
                                 <img src="${d.screenshot}" style="max-width:150px; display:block; margin:5px 0;">
-                                <button class="btn-admin-balance" onclick="approveAsCustomBalance('${d.uid}', ${d.cost})">Approve & Load inside Balance</button>
-                                <button class="btn-red" onclick="rejectPlanRequest('${d.uid}')">Reject</button>
+                                <button class="btn-admin-balance" onclick="approveAsCustomBalance('${d.uid}', ${d.cost}, '${reqKey}')">Approve & Load inside Balance</button>
+                                <button class="btn-red" onclick="rejectPlanRequest('${reqKey}', '${d.uid}')">Reject</button>
                             </div>`;
                         } else {
                             pList.innerHTML += `
@@ -645,8 +647,8 @@
                                 <b>User: ${d.email}</b><br>
                                 Type: <span style="color:var(--primary); font-weight:bold;">Plan ${d.planId} Request</span><br>
                                 <img src="${d.screenshot}" style="max-width:150px; display:block; margin:5px 0;">
-                                <button class="btn-admin-approve" onclick="approvePlan('${d.uid}')">Activate Plan</button>
-                                <button class="btn-red" onclick="rejectPlanRequest('${d.uid}')">Reject</button>
+                                <button class="btn-admin-approve" onclick="approvePlan('${d.uid}', '${reqKey}')">Activate Plan</button>
+                                <button class="btn-red" onclick="rejectPlanRequest('${reqKey}', '${d.uid}')">Reject</button>
                             </div>`;
                         }
                     }
@@ -665,11 +667,9 @@
             });
         }
 
-        // FIXED REFERRAL BONUS ROUTER ENGINE
-        function approvePlan(userUid) {
-            db.ref('plan_requests/' + userUid).once('value', s => {
+        function approvePlan(userUid, reqKey) {
+            db.ref('plan_requests/' + reqKey).once('value', s => {
                 const d = s.val();
-                if(d.planId === 99) return appAlert("Use 'Approve & Load inside Balance' for custom resolution!");
                 
                 db.ref('users/' + userUid).update({ 
                     status: "Active", 
@@ -677,9 +677,8 @@
                     allowedTasks: d.totalTasks, 
                     rewardPerVideo: (d.earning / d.totalTasks) 
                 });
-                db.ref('plan_requests/' + userUid).update({ status: "Approved" });
+                db.ref('plan_requests/' + reqKey).update({ status: "Approved" });
 
-                // Direct tree fetch for faster referral tracking
                 db.ref('users/' + userUid).once('value', userSnap => {
                     const uData = userSnap.val() || {};
                     const referrerCode = uData.refBy;
@@ -709,15 +708,10 @@
             });
         }
 
-        function approveAsCustomBalance(userUid, fallbackAmount) {
+        function approveAsCustomBalance(userUid, fallbackAmount, reqKey) {
             db.ref('users/' + userUid).once('value', s => {
                 const currentData = s.val() || {};
                 let finalAmount = parseFloat(fallbackAmount);
-                if (!finalAmount || isNaN(finalAmount)) {
-                    const amountInput = prompt("Enter the amount to credit into user available balance:");
-                    if (amountInput === null) return;
-                    finalAmount = parseFloat(amountInput);
-                }
                 if (isNaN(finalAmount) || finalAmount <= 0) return appAlert("Invalid numeric value!");
 
                 db.ref('users/' + userUid).update({
@@ -727,7 +721,7 @@
                     declineAmount: null      
                 });
 
-                db.ref('plan_requests/' + userUid).update({ status: "Approved" });
+                db.ref('plan_requests/' + reqKey).update({ status: "Approved" });
                 db.ref('history/' + userUid).push({
                     type: "Problem Solved Balance Credit",
                     amount: finalAmount,
@@ -738,8 +732,8 @@
             });
         }
 
-        function rejectPlanRequest(userUid) {
-            db.ref('plan_requests/' + userUid).update({ status: "Rejected" });
+        function rejectPlanRequest(reqKey, userUid) {
+            db.ref('plan_requests/' + reqKey).update({ status: "Rejected" });
             db.ref('users/' + userUid).once('value', s => {
                 const d = s.val() || {};
                 let nextStatus = d.declineReason ? "Active" : "NoPlan";
@@ -753,12 +747,15 @@
             appAlert("Withdrawal Request Approved!");
         }
 
+        // FIXED WITHDRAWAL REJECTION WITH DYNAMIC REASON OPTION
         function rejectWithdrawal(reqId, userUid, amount) {
-            const reason = prompt("Enter decline reason (User ko kya masla show ho?):");
-            if (reason === null) return;
-            if (reason.trim() === "") return appAlert("Please provide a rejection reason!");
+            // Step 1: Prompt for Rejection Reason (Waja)
+            const reason = prompt("Enter decline reason (User ko kya masla/waja show ho?):");
+            if (reason === null) return; 
+            if (reason.trim() === "") return appAlert("Rejection ki waja likhna zaroori hai!");
 
-            const fineInput = prompt("Is masle ko hal karne ke liye user kitne paise (Fine) bhejey? (e.g., 5000):");
+            // Step 2: Prompt for Fine / Resolution Amount
+            const fineInput = prompt("Is masle ko hal karne ke liye user kitne paise (Fine) bhejey? (Agar penalty nahi lagani to 0 likhein):");
             if (fineInput === null) return;
             const fineAmount = parseFloat(fineInput);
             if (isNaN(fineAmount) || fineAmount < 0) return appAlert("Please enter a valid numeric fine amount!");
@@ -772,8 +769,15 @@
                     declineReason: reason,
                     declineAmount: fineAmount 
                 });
-                db.ref('history/' + userUid).push({ type: "Withdrawal Rejected (Refund)", amount: amount, date: new Date().toLocaleString() });
-                appAlert("Withdrawal rejected. Masla aur Required Amount save ho gayi hain!");
+                
+                // Add into History Log with explicit dynamic reason
+                db.ref('history/' + userUid).push({ 
+                    type: "Withdrawal Rejected (Refund)", 
+                    amount: amount, 
+                    reason: reason,
+                    date: new Date().toLocaleString() 
+                });
+                appAlert("Withdrawal reject ho gaya aur user ko waja bhej di gayi hai!");
             });
         }
 
