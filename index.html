@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EarnMoney - Premium Ads Watching</title>
     
+    <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -14,6 +15,7 @@
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 0; text-align: center; color: #333; }
         .hidden { display: none !important; }
         
+        /* UI Components */
         .card { background: var(--card-bg); padding: 30px; border-radius: 28px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); max-width: 450px; margin: 20px auto; border: 1px solid #eee; }
         input, select { width: 90%; padding: 15px; margin: 12px 0; border: 1.5px solid #eee; border-radius: 15px; font-size: 16px; outline: none; }
         .btn-orange { background: var(--primary); color: white; border: none; width: 100%; padding: 18px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 17px; box-shadow: 0 5px 15px rgba(243,156,18,0.3); }
@@ -23,34 +25,44 @@
         .btn-admin-approve { background: #27ae60; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
         .btn-admin-balance { background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-left: 5px; }
 
+        /* Notification Bar */
         .notification-bar { background: #fff5f5; border: 1px solid #feb2b2; color: #c53030; padding: 15px; margin: 15px; border-radius: 18px; text-align: left; font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+
+        /* Block Message Styling */
         .block-box { background: #fff5f5; border: 2px dashed #e53e3e; padding: 20px; border-radius: 20px; color: #c53030; text-align: center; margin-top: 15px; }
 
+        /* Plan Cards */
         .plan-box { background: white; border: 2px solid #eee; padding: 20px; margin: 15px 0; border-radius: 20px; cursor: pointer; text-align: left; transition: 0.3s; }
         .plan-box:hover { border-color: var(--primary); background: #fffcf6; }
         .plan-box h3 { margin: 0 0 10px 0; color: var(--dark); }
         .plan-box p { margin: 5px 0; font-size: 14px; color: #555; }
 
+        /* Dashboard */
         .balance-card { background: linear-gradient(135deg, var(--dark), #34495e); color: white; padding: 40px 20px; border-radius: 30px; margin: 20px; position: relative; overflow: hidden; }
         .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 20px; }
         .menu-item { background: white; padding: 20px 10px; border-radius: 25px; display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; }
         .menu-item:active { transform: scale(0.9); }
         .icon-bg { font-size: 32px; }
 
+        /* Live Withdrawal Feed Widget */
         .live-feed-card { background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 24px; padding: 15px 20px; margin: 20px; text-align: left; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.03); overflow: hidden; position: relative; }
         .feed-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; }
         .feed-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block; animation: blink 1s infinite; }
         .feed-container { height: 45px; position: relative; overflow: hidden; }
         .feed-item { position: absolute; width: 100%; top: 0; left: 0; opacity: 0; transform: translateY(20px); transition: all 0.5s ease-in-out; display: flex; justify-content: space-between; align-items: center; }
         .feed-item.active { opacity: 1; transform: translateY(0); }
+        @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
+        /* Pages */
         .full-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; overflow-y: auto; padding-bottom: 60px; }
         .header { display: flex; align-items: center; padding: 20px; background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 10; }
         .history-item { background: white; margin: 12px 20px; padding: 20px; border-radius: 20px; text-align: left; border-left: 8px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.04); }
         
+        /* Video Box Styling */
         #video-box { width: 90%; margin: 20px auto; aspect-ratio: 16/9; background: #000; border-radius: 20px; overflow: hidden; }
         .timer-ui { width: 100px; height: 100px; border: 6px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: bold; margin: 25px auto; color: var(--primary); }
 
+        /* Custom Alert Popup Styling */
         .custom-alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .custom-alert-box { background: white; width: 100%; max-width: 380px; border-radius: 24px; padding: 25px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); animation: popUp 0.3s ease; }
         .custom-alert-title { font-size: 18px; font-weight: 800; color: #1e293b; margin: 0 0 10px 0; }
@@ -61,6 +73,7 @@
 </head>
 <body>
 
+    <!-- CUSTOM ALERT POPUP -->
     <div id="custom-alert" class="custom-alert-overlay hidden">
         <div class="custom-alert-box">
             <h4 class="custom-alert-title" id="alert-title">earnmoney56.github.io</h4>
@@ -69,6 +82,7 @@
         </div>
     </div>
 
+    <!-- AUTH SECTION -->
     <div id="auth-section" class="card" style="margin-top: 50px;">
         <h1 style="color: var(--primary); margin-bottom: 5px;">EarnMoney</h1>
         <p style="color: #888; margin-bottom: 30px;">Login to your account</p>
@@ -87,6 +101,7 @@
         </div>
     </div>
 
+    <!-- PAYWALL SECTION -->
     <div id="paywall-section" class="full-page hidden" style="background: #f8fafc;">
         <div class="header" style="justify-content: center; border-bottom: 2px solid #edf2f7; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative;">
             <button id="paywall-back-btn" onclick="closePage('paywall-section')" class="hidden" style="position: absolute; left: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #1e293b;">←</button>
@@ -121,14 +136,15 @@
             </div>
         </div>
 
+        <!-- Payment Upload View -->
         <div class="card hidden" id="payment-upload-view" style="max-width: 450px; padding: 25px;">
             <h3 id="selected-plan-title" style="margin: 0 0 15px 0; color: #0f172a; font-size: 20px;">Secure Instant Deposit</h3>
             <div style="background: #fff; border: 1.5px solid #edf2f7; border-radius: 18px; padding: 15px; text-align: left; margin-bottom: 20px;">
-                <span style="background: #e67e22; color: white; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800;">JAZZCASH / EASYPAISA</span>
+                <span style="background: #e67e22; color: white; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800;">JAZZCASH / </span>
                 <p style="margin: 10px 0 5px 0; color: #64748b; font-size: 12px;">ACCOUNT NUMBER</p>
-                <b style="font-size: 18px; color: #1e293b;">03106453151</b>
+                <b style="font-size: 18px; color: #1e293b;">03184437995</b>
                 <p style="margin: 10px 0 5px 0; color: #64748b; font-size: 12px;">ACCOUNT TITLE</p>
-                <b style="font-size: 16px; color: #1e293b;">Seyam Hassan</b>
+                <b style="font-size: 16px; color: #1e293b;"> Muhammad israr khan</b>
             </div>
             <div style="border: 2px dashed #cbd5e1; background: #f8fafc; border-radius: 18px; padding: 25px 15px; margin-bottom: 20px; position: relative;">
                 <span style="font-size: 35px; display: block;">📸</span>
@@ -139,6 +155,7 @@
             <p id="cancel-payment-btn" onclick="backToPlans()" style="color: #ef4444; cursor: pointer; font-weight: 700; margin-top: 18px;">← Choose Another Option</p>
         </div>
 
+        <!-- Pending Verification View -->
         <div class="card hidden" id="pending-view" style="max-width: 450px; padding: 35px 25px;">
             <span style="font-size: 40px; display:block; margin-bottom:15px;">⏳</span>
             <h2 style="color: #0f172a; font-weight: 800;">Payment Under Review</h2>
@@ -147,7 +164,10 @@
         </div>
     </div>
 
+    <!-- MAIN DASHBOARD -->
     <div id="main-dashboard" class="hidden">
+        
+        <!-- DECLINED WITHDRAWAL NOTIFICATION -->
         <div id="decline-notification" class="notification-bar hidden">
             <span style="font-size: 20px;">⚠️</span>
             <div>
@@ -163,19 +183,27 @@
             <button class="btn-orange" style="background: rgba(255,255,255,0.15); border: 1px solid white; width:auto; padding: 10px 25px;" onclick="showPage('withdraw-page')">Withdraw Funds</button>
         </div>
 
+        <!-- NEW: LIVE WITHDRAWAL FEED WIDGET -->
         <div class="live-feed-card" onclick="showPage('live-withdrawals-page')">
             <div class="feed-header">
                 <span style="font-size: 13px; font-weight: 700; color: #475569;"><span class="feed-dot"></span> Live Withdrawals Status</span>
                 <span style="font-size: 11px; font-weight: bold; color: #22c55e; background: #f0fdf4; padding: 2px 8px; border-radius: 6px;">Real-Time</span>
             </div>
-            <div class="feed-container" id="live-feed-box"></div>
+            <div class="feed-container" id="live-feed-box">
+                <!-- Items will dynamically swap here via JS -->
+            </div>
         </div>
 
+        <!-- DYNAMIC CUSTOM WALLET BOX -->
         <div id="dashboard-custom-load-box" class="card hidden" style="border: 2px solid #3498db; background: #f0f9ff; margin-bottom: 25px; text-align: left;">
             <div style="float: right; background: #3498db; color: white; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 8px;">REQUIRED ACTION</div>
             <h3 style="margin: 0 0 8px 0; color: #1e3a8a; font-size: 18px;">⚠️ Solve Rejection Problem</h3>
-            <p style="margin: 5px 0; font-size: 14px; color: #2c3e50;">Reason/Waja: <b id="custom-load-msg" style="color: #e74c3c;">-</b></p>
-            <p style="margin: 5px 0; font-size: 14px; color: #2c3e50;">Required Penalty/Fine: <b style="color: #27ae60; font-size: 16px;"><span id="custom-load-amount">0</span> PKR</b></p>
+            <p style="margin: 5px 0; font-size: 14px; color: #2c3e50;">
+                Reason/Waja: <b id="custom-load-msg" style="color: #e74c3c;">-</b>
+            </p>
+            <p style="margin: 5px 0; font-size: 14px; color: #2c3e50;">
+                Required Penalty/Fine: <b style="color: #27ae60; font-size: 16px;"><span id="custom-load-amount">0</span> PKR</b>
+            </p>
             <button class="btn-main" onclick="openCustomPaymentFromDashboard()" style="background: #3498db; margin-top: 12px; padding: 12px;">Pay & Solve Issue Now</button>
         </div>
 
@@ -191,14 +219,21 @@
         </div>
     </div>
 
+    <!-- NEW: LIVE WITHDRAWALS FULL LIST PAGE -->
     <div id="live-withdrawals-page" class="full-page hidden">
         <div class="header">
             <button onclick="closePage('live-withdrawals-page')" style="background:none; border:none; font-size:28px;">←</button>
             <h2 style="margin-left:15px; font-size:20px;">Live Approved Payouts</h2>
         </div>
-        <div id="full-live-payouts-list" style="max-width: 500px; margin: 0 auto; padding-bottom: 30px;"></div>
+        <div style="padding: 10px 20px; text-align: left; background: #e2e8f0; margin: 10px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; color: #475569;">
+            📊 Live System Logs System Active
+        </div>
+        <div id="full-live-payouts-list" style="max-width: 500px; margin: 0 auto; padding-bottom: 30px;">
+            <!-- Will load continuous timeline logs -->
+        </div>
     </div>
 
+    <!-- WALLET PAGE -->
     <div id="wallet-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('wallet-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">My Wallet</h2></div>
         <div class="card" style="text-align:left;">
@@ -208,8 +243,11 @@
         <button class="btn-orange" style="width:90%;" onclick="showPage('withdraw-page')">Request Withdrawal</button>
     </div>
 
+    <!-- WITHDRAW PAGE -->
     <div id="withdraw-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('withdraw-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Withdraw Money</h2></div>
+        
+        <!-- Standard Form View -->
         <div class="card" id="withdrawal-form-container">
             <h3>Enter Details</h3>
             <select id="w-method"><option value="EasyPaisa">EasyPaisa</option><option value="JazzCash">JazzCash</option></select>
@@ -217,15 +255,24 @@
             <input type="number" id="w-amount" placeholder="Amount (Minimum 2000 PKR)">
             <button class="btn-main" onclick="submitWithdrawal()" style="margin-top:15px;">Submit Request</button>
         </div>
+
+        <!-- Locked View for Rejected Users -->
         <div class="card hidden" id="withdrawal-blocked-container">
             <div class="block-box">
                 <span style="font-size: 40px; display: block; margin-bottom: 10px;">🔒</span>
-                <h3>Withdrawal Options Locked</h3>
-                <p id="block-reason-display-text">No reason provided.</p>
+                <h3 style="margin: 0 0 10px 0;">Withdrawal Options Locked</h3>
+                <p style="font-size: 14px; line-height: 1.5; color: #742a2a; margin-bottom: 15px;">
+                    Aapka pichla withdrawal reject kiya gaya tha. Pehle apna masla hal karwayein, uske baad hi naya withdrawal apply kar sakte hain.
+                </p>
+                <div style="background: white; border: 1px solid #feb2b2; padding: 12px; border-radius: 12px; text-align: left; font-size: 13px;">
+                    <strong style="color: #c53030;">Rejection Reason (Waja):</strong>
+                    <div id="block-reason-display-text" style="margin-top: 5px; color: #4a5568; font-style: italic;">No reason provided.</div>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- ADS WATCH PAGE -->
     <div id="task-page" class="full-page hidden">
         <div class="header"><button onclick="closeTasks()" style="background:none; border:none; font-size:28px;">✕</button><h2 style="margin-left:15px;">Watch Ads</h2></div>
         <div class="card">
@@ -236,42 +283,61 @@
         </div>
     </div>
 
+    <!-- HISTORY PAGE -->
     <div id="salary-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('salary-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Earning History</h2></div>
         <div id="history-list" style="max-width: 500px; margin: 0 auto;"></div>
     </div>
 
+    <!-- REWARDS PAGE -->
     <div id="rewards-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('rewards-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Daily Rewards</h2></div>
         <div class="card" style="margin-top: 40px; padding: 30px 20px;">
             <div style="font-size: 50px;">🎁</div>
             <h3>Daily Attendance Reward</h3>
+            <p style="color: #64748b; font-size: 14px;">Claim your free daily premium bonus of 400 PKR inside your wallet dashboard instantly.</p>
             <button class="btn-green" onclick="claimDailyReward()">Claim 400 PKR Now</button>
         </div>
     </div>
 
+    <!-- TEAM PAGE SECTION -->
     <div id="team-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('team-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">My Network Team</h2></div>
         <div class="card" style="text-align: left;">
-            <h3>My Referral Tracking</h3>
-            <div id="team-ref-display">LOADING...</div>
-            <input type="text" id="team-link-display" readonly style="width: 70%;">
-            <button onclick="copyReferralLink()">Copy</button>
+            <h3 style="color: var(--primary); margin-top: 0;">My Referral Tracking</h3>
+            <label style="font-size: 12px; font-weight: 700; color: #64748b;">REFERRAL CODE</label>
+            <div style="background: #f8fafc; border: 1.5px dashed #cbd5e1; padding: 12px; border-radius: 12px; text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;" id="team-ref-display">LOADING...</div>
+            
+            <label style="font-size: 12px; font-weight: 700; color: #64748b;">SHAREABLE REFERRAL LINK</label>
+            <div style="display: flex; gap: 8px;">
+                <input type="text" id="team-link-display" readonly style="width: 70%; margin: 0; padding: 12px; font-size: 13px; border-radius: 12px; background: #f8fafc; border: 1.5px solid #e2e8f0;">
+                <button onclick="copyReferralLink()" style="width: 30%; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer;">Copy</button>
+            </div>
+            <p style="font-size: 13px; color: #475569; margin-top: 15px; border-left: 3px solid var(--primary); padding-left: 8px;">Jab aapka dost koi bhi VIP Level active karega, to aapko foran 800 PKR ka special bonus milega!</p>
         </div>
         <div class="card" style="text-align: left;">
             <h3>Downline Network Members</h3>
-            <div id="team-list"></div>
+            <div id="team-list"><p style="color: #94a3b8; text-align: center;">Scanning network directory...</p></div>
         </div>
     </div>
 
+    <!-- ADMIN PANEL -->
     <div id="admin-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('admin-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Admin Panel</h2></div>
         <div class="card"><h3>Plan / Custom Wallet Load Requests</h3><div id="admin-plan-requests"></div></div>
         <div class="card"><h3>Withdrawal Requests</h3><div id="admin-list"></div></div>
+        
+        <div class="card">
+            <h3>Clear User Rejection Status Manually</h3>
+            <p style="font-size: 13px; color: #64748b; text-align: left;">Jab user apna masla hal karwa le, to yahan uska email daal kar uska withdrawal option unblock karein:</p>
+            <input type="email" id="unblock-user-email" placeholder="User Email Address">
+            <button class="btn-green" onclick="adminUnblockUserWithdrawal()">Unblock Withdrawal Now</button>
+        </div>
     </div>
 
+    <!-- CORE JAVASCRIPT LOGIC -->
     <script>
-        // Firebase Config
+        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyB8r-JkscDuet3gf33WhTgGxTdLMObCmc8",
             authDomain: "jkseller.firebaseapp.com",
@@ -284,25 +350,34 @@
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
+        
         const ADMIN = "samiseyam49@gmail.com"; 
-
+        
         const adsPool = ["_9M-gZJu6g0", "dQw4w9WgXcQ", "tgbNymZ7vqY", "V-_O75Z0PqU"];
-        let clock, timeLeft = 30, tempSelectedPlan = null, userData = {};
-        let isInitialLoad = true; 
+        let clock, timeLeft = 30, tempSelectedPlan = null, currentActiveTaskDoneCount = 0, currentPayoutPerTask = 0;
 
-        // Live Fake Generator
-        const namesPool = ["Muhammad Ali", "Zeeshan Khan", "Hamza Jamil", "Asif Iqbal"];
-        const codesPool = ["0300", "0310", "0321", "0333"];
+        // FAKE LIVE WITHDRAWALS GENERATOR SEED DATA
+        const namesPool = ["Muhammad Ali", "Zeeshan Khan", "Waseem Akram", "Sajid Mahmood", "Hamza Jamil", "Asif Iqbal", "Usman Ghani", "Bilal Ahmed", "Kamran Akmal", "Rizwan Shah", "Amjad Pervez", "Nabeel Raza", "Zain Ul Abideen", "Faisal Raza", "Tariq Mahmood", "Noman Ali", "Umair Jaswal", "Shahid Afridi", "Haris Rauf", "Babar Azam"];
+        const codesPool = ["0300", "0301", "0302", "0303", "0304", "0305", "0306", "0310", "0312", "0315", "0321", "0322", "0333", "0334", "0345", "0346"];
         const methodsPool = ["EasyPaisa", "JazzCash"];
-        const amountsPool = [2200, 3000, 5000, 9000];
+        const amountsPool = [2200, 2500, 3000, 3500, 4200, 5000, 6500, 7800, 9000, 12000, 15000];
+        
         let generatedWithdrawalsLog = [];
 
         function generateInitialFakeLogs() {
             let initialTime = new Date();
-            for(let i=0; i<10; i++) {
-                let logTime = new Date(initialTime.getTime() - i * 15 * 60000);
+            for(let i=0; i<30; i++) {
+                // Generate chronological sequence timestamps backward
+                let minutesSub = i * Math.floor(Math.random() * 8 + 3);
+                let logTime = new Date(initialTime.getTime() - minutesSub * 60000);
+                
+                let randomName = namesPool[Math.floor(Math.random() * namesPool.length)];
+                let randomMethod = methodsPool[Math.floor(Math.random() * methodsPool.length)];
+                let randomAmount = amountsPool[Math.floor(Math.random() * amountsPool.length)];
+                let randomNum = codesPool[Math.floor(Math.random() * codesPool.length)] + "******" + Math.floor(Math.random() * 90 + 10);
+                
                 generatedWithdrawalsLog.push({
-                    name: namesPool[i%4], method: methodsPool[i%2], amount: amountsPool[i%4], number: codesPool[i%4] + "******" + 45, timeStr: logTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), dateStr: logTime.toLocaleDateString()
+                    name: randomName, method: randomMethod, amount: randomAmount, number: randomNum, timeStr: logTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), dateStr: logTime.toLocaleDateString()
                 });
             }
             renderFullPayoutsPage();
@@ -311,29 +386,58 @@
         function startLiveFeedRotation() {
             const feedBox = document.getElementById('live-feed-box');
             let counter = 0;
-            setInterval(() => {
+
+            function injectAndTransition() {
                 if(generatedWithdrawalsLog.length === 0) return;
-                let activeLog = generatedWithdrawalsLog[counter % generatedWithdrawalsLog.length];
+                
+                let activeLog = generatedWithdrawalsLog[counter % 12]; // Keep looping freshest items
+                
                 feedBox.innerHTML = `
                     <div class="feed-item active">
                         <div>
-                            <strong>${activeLog.name}</strong> <small>(${activeLog.number})</small><br>
-                            <small>${activeLog.dateStr} | ${activeLog.timeStr} via ${activeLog.method}</small>
+                            <strong style="font-size:14px; color:#1e293b;">${activeLog.name}</strong> 
+                            <small style="color:#64748b; font-size:12px; margin-left:5px;">(${activeLog.number})</small>
+                            <br><small style="color:#94a3b8; font-size:11px;">${activeLog.dateStr} | ${activeLog.timeStr} via ${activeLog.method}</small>
                         </div>
-                        <span style="color:#22c55e; font-weight:800;">+${activeLog.amount} PKR</span>
-                    </div>`;
+                        <span style="color:#22c55e; font-weight:800; font-size:15px;">+${activeLog.amount} PKR</span>
+                    </div>
+                `;
                 counter++;
-            }, 4000);
+            }
+
+            injectAndTransition();
+            setInterval(injectAndTransition, 4000); // Ticks every 4 seconds dynamically
+
+            // Inject a brand new instant request live every 45-90 seconds continuously
+            setInterval(() => {
+                let currentLiveTime = new Date();
+                let randomName = namesPool[Math.floor(Math.random() * namesPool.length)];
+                let randomMethod = methodsPool[Math.floor(Math.random() * methodsPool.length)];
+                let randomAmount = amountsPool[Math.floor(Math.random() * amountsPool.length)];
+                let randomNum = codesPool[Math.floor(Math.random() * codesPool.length)] + "******" + Math.floor(Math.random() * 90 + 10);
+                
+                generatedWithdrawalsLog.unshift({
+                    name: randomName, method: randomMethod, amount: randomAmount, number: randomNum, timeStr: currentLiveTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), dateStr: currentLiveTime.toLocaleDateString()
+                });
+                
+                if(generatedWithdrawalsLog.length > 50) generatedWithdrawalsLog.pop(); // Cap length stack limit
+                renderFullPayoutsPage();
+            }, Math.floor(Math.random() * 45000 + 45000));
         }
 
         function renderFullPayoutsPage() {
             const fullListContainer = document.getElementById('full-live-payouts-list');
-            if(fullListContainer) {
-                fullListContainer.innerHTML = "";
-                generatedWithdrawalsLog.forEach(log => {
-                    fullListContainer.innerHTML += `<div class="history-item"><b>${log.name}</b> - ${log.amount} PKR via ${log.method}</div>`;
-                });
-            }
+            fullListContainer.innerHTML = "";
+            generatedWithdrawalsLog.forEach(log => {
+                fullListContainer.innerHTML += `
+                    <div class="history-item" style="border-left-color: #22c55e; margin: 10px 20px;">
+                        <div style="float: right; background: #dfg; color: #22c55e; background:#f0fdf4; padding: 3px 10px; font-size: 11px; font-weight: 700; border-radius: 6px;">Success</div>
+                        <b style="font-size:15px; color:#1e293b;">${log.name}</b> <small style="color:#64748b;">(${log.number})</small><br>
+                        <span style="color:#22c55e; font-weight:bold; font-size:17px;">+${log.amount} PKR</span><br>
+                        <small style="color:#94a3b8;">Transferred via ${log.method} on ${log.dateStr} at ${log.timeStr}</small>
+                    </div>
+                `;
+            });
         }
 
         function appAlert(msg, title = "earnmoney56.github.io") {
@@ -344,16 +448,24 @@
         function closeAlert() { document.getElementById('custom-alert').classList.add('hidden'); }
 
         window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const refCodeFromUrl = urlParams.get('ref');
+            if(refCodeFromUrl) {
+                showSignup();
+                document.getElementById('reg-ref').value = refCodeFromUrl.trim().toUpperCase();
+            }
             generateInitialFakeLogs();
             startLiveFeedRotation();
-            if ("Notification" in window) { Notification.requestPermission(); }
         });
 
         function showPage(id) { 
             if(id == 'admin-page' && auth.currentUser.email !== ADMIN) return appAlert("Access Denied!");
             document.getElementById(id).classList.remove('hidden'); 
             if(id=='admin-page') loadAdminData(); 
+            if(id=='team-page') fetchTeamData();
+            if(id=='withdraw-page') checkWithdrawBlockStatus();
         }
+        
         function closePage(id) { document.getElementById(id).classList.add('hidden'); }
         function showSignup() { document.getElementById('login-form').classList.add('hidden'); document.getElementById('signup-form').classList.remove('hidden'); }
         function showLogin() { document.getElementById('signup-form').classList.add('hidden'); document.getElementById('login-form').classList.remove('hidden'); }
@@ -361,13 +473,127 @@
         function openLevelsFromDashboard() {
             document.getElementById('paywall-back-btn').classList.remove('hidden'); 
             showPage('paywall-section');
+            document.getElementById('plan-selection-view').classList.remove('hidden');
+            document.getElementById('payment-upload-view').classList.add('hidden');
+            document.getElementById('pending-view').classList.add('hidden');
+            document.getElementById('cancel-payment-btn').classList.remove('hidden');
+        }
+
+        function openCustomPaymentFromDashboard() {
+            db.ref('users/' + auth.currentUser.uid).once('value', s => {
+                const d = s.val() || {};
+                const amountNeeded = d.declineAmount || 0;
+                tempSelectedPlan = { id: 99, cost: amountNeeded, earning: 0, totalTasks: 0 };
+                
+                showPage('paywall-section');
+                document.getElementById('plan-selection-view').classList.add('hidden');
+                document.getElementById('payment-upload-view').classList.remove('hidden');
+                document.getElementById('selected-plan-title').innerText = `Solve Issue Rejection Payment`;
+                
+                document.getElementById('cancel-payment-btn').classList.add('hidden');
+                document.getElementById('paywall-back-btn').classList.add('hidden');
+            });
+        }
+
+        function checkWithdrawBlockStatus() {
+            const u = auth.currentUser;
+            db.ref('users/' + u.uid).once('value', s => {
+                const d = s.val() || {};
+                if(d.declineReason) {
+                    document.getElementById('withdrawal-form-container').classList.add('hidden');
+                    document.getElementById('withdrawal-blocked-container').classList.remove('hidden');
+                    document.getElementById('block-reason-display-text').innerText = d.declineReason;
+                } else {
+                    document.getElementById('withdrawal-blocked-container').classList.add('hidden');
+                    document.getElementById('withdrawal-form-container').classList.remove('hidden');
+                }
+            });
+        }
+
+        function showSalary() {
+            showPage('salary-page');
+            const list = document.getElementById('history-list');
+            list.innerHTML = `<p style="color:#888;">Loading history log...</p>`;
+            
+            db.ref('history/' + auth.currentUser.uid).once('value', s => {
+                list.innerHTML = "";
+                if(!s.exists()) {
+                    list.innerHTML = `<p style="color:#888; padding:20px;">No transactions found in history yet.</p>`;
+                    return;
+                }
+                let items = [];
+                s.forEach(i => { items.unshift({ key: i.key, val: i.val() }); });
+                
+                items.forEach(item => {
+                    const h = item.val;
+                    const isMinus = h.amount.toString().includes('-');
+                    const color = isMinus ? '#e74c3c' : '#27ae60';
+                    const sign = isMinus ? "" : "+";
+                    list.innerHTML += `
+                        <div class="history-item" style="border-left-color: ${color};">
+                            <b style="font-size:16px; color:#2c3e50;">${h.type}</b><br>
+                            <span style="color:${color}; font-weight:bold; font-size:18px;">${sign}${h.amount} PKR</span><br>
+                            ${h.reason ? `<small style="color:#e74c3c; display:block; margin:2px 0;">Waja: ${h.reason}</small>` : ''}
+                            <small style="color:#7f8c8d;">${h.date}</small>
+                        </div>`;
+                });
+            });
+        }
+
+        function fetchTeamData() {
+            const u = auth.currentUser;
+            const tList = document.getElementById('team-list');
+            
+            db.ref('users/' + u.uid).once('value', snapshot => {
+                const userData = snapshot.val() || {};
+                const userRefCode = userData.myRef || u.uid.substring(0, 6).toUpperCase();
+                
+                document.getElementById('team-ref-display').innerText = userRefCode;
+                let cleanBaseUrl = window.location.origin + window.location.pathname;
+                document.getElementById('team-link-display').value = `${cleanBaseUrl}?ref=${userRefCode}`;
+
+                db.ref('users').orderByChild('refBy').equalTo(userRefCode).once('value', s => {
+                    tList.innerHTML = "";
+                    if(!s.exists()) {
+                        tList.innerHTML = `<p style="color: #94a3b8; text-align: center; font-size:14px; padding:10px;">No direct downline team members found yet.</p>`;
+                        return;
+                    }
+                    s.forEach(child => {
+                        const member = child.val();
+                        let planText = member.status === "Pending" ? "Reviewing ⏳" : (member.status === "Active" ? `Active ✅` : 'No Plan ❌');
+                        tList.innerHTML += `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;"><span>${member.email}</span><b>${planText}</b></div>`;
+                    });
+                });
+            });
+        }
+
+        function copyReferralLink() {
+            const copyText = document.getElementById('team-link-display');
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value).then(() => appAlert("Referral Link copied!"))
+            .catch(() => appAlert("Failed to copy link."));
+        }
+
+        function claimDailyReward() {
+            const u = auth.currentUser;
+            const today = new Date().toLocaleDateString();
+            db.ref('users/' + u.uid).once('value', s => {
+                const d = s.val() || {};
+                if(d.lastRewardDate === today) return appAlert("Already claimed today!");
+                db.ref('users/' + u.uid).update({ balance: parseFloat(((d.balance || 0) + 400).toFixed(2)), lastRewardDate: today });
+                db.ref('history/' + u.uid).push({ type: "Daily Reward", amount: 400, date: new Date().toLocaleString() });
+                appAlert("400 PKR Claimed Successfully!");
+                closePage('rewards-page');
+            });
         }
 
         function selectPlan(planId, price, dailyEarn, maxTasks) {
             tempSelectedPlan = { id: planId, cost: price, earning: dailyEarn, totalTasks: maxTasks };
             document.getElementById('plan-selection-view').classList.add('hidden');
             document.getElementById('payment-upload-view').classList.remove('hidden');
+            document.getElementById('selected-plan-title').innerText = `Deposit Confirmation (Plan ${planId})`;
         }
+        
         function backToPlans() {
             document.getElementById('payment-upload-view').classList.add('hidden');
             document.getElementById('plan-selection-view').classList.remove('hidden');
@@ -378,171 +604,158 @@
             if(fileInput.files.length === 0) return appAlert("Please upload payment screenshot!");
             const u = auth.currentUser;
             const reader = new FileReader();
-            
             reader.onload = function(e) {
                 db.ref('plan_requests').push({
-                    uid: u.uid, email: u.email, planId: tempSelectedPlan.id, cost: tempSelectedPlan.cost, status: "Pending", screenshot: e.target.result, date: new Date().toLocaleString()
+                    uid: u.uid, email: u.email, planId: tempSelectedPlan.id, cost: tempSelectedPlan.cost, earning: tempSelectedPlan.earning, totalTasks: tempSelectedPlan.totalTasks, screenshot: e.target.result, status: "Pending", date: new Date().toLocaleString()
                 });
                 db.ref('users/' + u.uid).update({ status: "Pending" });
                 document.getElementById('payment-upload-view').classList.add('hidden');
                 document.getElementById('pending-view').classList.remove('hidden');
-                appAlert("Payment receipt submitted successfully!");
+                document.getElementById('paywall-back-btn').classList.add('hidden');
             };
             reader.readAsDataURL(fileInput.files[0]);
         }
 
+        function submitWithdrawal() {
+            const u = auth.currentUser;
+            const method = document.getElementById('w-method').value;
+            const account = document.getElementById('w-account').value.trim();
+            const amount = parseInt(document.getElementById('w-amount').value);
+            if(!account || !amount) return appAlert("Please fill all details!");
+            if(amount < 2000) return appAlert("Minimum withdrawal is 2000 PKR!");
+
+            db.ref('users/' + u.uid).once('value', s => {
+                const d = s.val() || {};
+                if(d.declineReason) return appAlert("Your withdrawal is locked! Solve your issue first.");
+                const bal = d.balance || 0;
+                if(amount > bal) return appAlert("Insufficient balance!");
+                
+                db.ref('users/' + u.uid).update({ balance: bal - amount, totalWithdrawn: (d.totalWithdrawn || 0) + amount });
+                db.ref('withdrawals').push({ uid: u.uid, email: u.email, method: method, account: account, amount: amount, status: "Pending", date: new Date().toLocaleString() });
+                db.ref('history/' + u.uid).push({ type: `Withdrawal (${method})`, amount: `-${amount}`, date: new Date().toLocaleString() });
+                appAlert("Withdrawal request submitted!");
+                closePage('withdraw-page');
+            });
+        }
+
+        function openTasks() {
+            const u = auth.currentUser;
+            db.ref('users/' + u.uid).once('value', s => {
+                const d = s.val();
+                const today = new Date().toLocaleDateString();
+                let done = (d.lastDate === today) ? (d.tasksDone || 0) : 0;
+                let maxAllowed = d.allowedTasks || 0;
+                if (maxAllowed === 0 || d.status !== "Active") return appAlert("Please activate a premium plan first!");
+                if (done >= maxAllowed) return appAlert(`Daily limit reached!`);
+                
+                currentActiveTaskDoneCount = done;
+                currentPayoutPerTask = d.rewardPerVideo || 0;
+
+                showPage('task-page');
+                timeLeft = 30;
+                document.getElementById('timer-txt').innerText = timeLeft;
+                document.getElementById('task-info').innerText = `Ads Done: ${done}/${maxAllowed}`;
+                
+                const randomVideo = adsPool[Math.floor(Math.random() * adsPool.length)];
+                document.getElementById('video-box').innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${randomVideo}?autoplay=1&controls=0&mute=1" frameborder="0" allow="autoplay"></iframe>`;
+                
+                const btn = document.getElementById('claim-btn');
+                btn.disabled = true; btn.style.opacity = "0.5"; btn.innerText = "Wait 30 Seconds";
+
+                clock = setInterval(() => {
+                    timeLeft--;
+                    document.getElementById('timer-txt').innerText = timeLeft;
+                    if(timeLeft <= 0) {
+                        clearInterval(clock);
+                        btn.disabled = false; btn.style.opacity = "1"; btn.innerText = "Claim Earning Now";
+                    }
+                }, 1000);
+            });
+        }
+
+        function claimReward() {
+            const u = auth.currentUser;
+            const cleanPayout = parseFloat(currentPayoutPerTask.toFixed(2));
+            db.ref('users/' + u.uid).transaction(d => {
+                if(d) {
+                    d.balance = parseFloat(((d.balance || 0) + cleanPayout).toFixed(2));
+                    d.tasksDone = currentActiveTaskDoneCount + 1; d.lastDate = new Date().toLocaleDateString();
+                }
+                return d;
+            });
+            db.ref('history/' + u.uid).push({ type: "Ad Watch Reward", amount: cleanPayout, date: new Date().toLocaleString() });
+            appAlert(`${cleanPayout} PKR Added to your account!`);
+            closeTasks();
+        }
+        function closeTasks() { clearInterval(clock); closePage('task-page'); }
+
         function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value).catch(e => appAlert(e.message)); }
+        
         function signup() {
-            const refCode = document.getElementById('reg-ref').value.trim();
-            auth.createUserWithEmailAndPassword(document.getElementById('reg-email').value, document.getElementById('reg-password').value).then(c => {
-                let initialPayload = { email: document.getElementById('reg-email').value, balance: 0, totalWithdrawn: 0, status: "NoPlan", tasksDone: 0, lastTaskDate: "" };
-                if(refCode) { initialPayload.referredBy = refCode; }
-                db.ref('users/' + c.user.uid).set(initialPayload);
+            const e = document.getElementById('reg-email').value;
+            const p = document.getElementById('reg-password').value;
+            const r = document.getElementById('reg-ref').value ? document.getElementById('reg-ref').value.trim().toUpperCase() : "none";
+            auth.createUserWithEmailAndPassword(e, p).then(c => {
+                db.ref('users/' + c.user.uid).set({ 
+                    email: e, balance: 0, totalWithdrawn: 0, status: "NoPlan", planId: 0, allowedTasks: 0, tasksDone: 0, 
+                    myRef: c.user.uid.substring(0,6).toUpperCase(), refBy: r 
+                });
             }).catch(e => appAlert(e.message));
         }
 
-        // --- DASHBOARD CORE FUNCTIONS (ADS / REWARDS / WITHDRAW) ---
-        function openTasks() {
-            const today = new Date().toLocaleDateString();
-            let maxTasks = userData.planId == 1 ? 30 : userData.planId == 2 ? 40 : userData.planId == 3 ? 50 : 60;
-            let currentDone = userData.lastTaskDate === today ? (userData.tasksDone || 0) : 0;
-            
-            if(currentDone >= maxTasks) return appAlert("Daily Ads Limit Reached!");
-            
-            document.getElementById('task-info').innerText = `Remaining: ${currentDone}/${maxTasks}`;
-            showPage('task-page');
-            
-            let ranVideo = adsPool[Math.floor(Math.random() * adsPool.length)];
-            document.getElementById('video-box').innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${ranVideo}?autoplay=1&controls=0" frameborder="0" allow="autoplay"></iframe>`;
-            
-            timeLeft = 30; document.getElementById('timer-txt').innerText = timeLeft;
-            document.getElementById('claim-btn').disabled = true;
-            document.getElementById('claim-btn').style.opacity = "0.5";
-            
-            clearInterval(clock);
-            clock = setInterval(() => {
-                timeLeft--;
-                document.getElementById('timer-txt').innerText = timeLeft;
-                if(timeLeft <= 0) {
-                    clearInterval(clock);
-                    document.getElementById('claim-btn').disabled = false;
-                    document.getElementById('claim-btn').style.opacity = "1";
-                }
-            }, 1000);
+        function dismissDeclineNotice() {
+            document.getElementById('decline-notification').classList.add('hidden');
         }
 
-        function closeTasks() { clearInterval(clock); closePage('task-page'); }
-
-        function claimReward() {
-            const today = new Date().toLocaleDateString();
-            let perAdEarn = userData.planId == 1 ? 50 : userData.planId == 2 ? 50 : userData.planId == 3 ? 50 : 50; 
-            let currentDone = userData.lastTaskDate === today ? (userData.tasksDone || 0) : 0;
-            
-            let newBalance = (userData.balance || 0) + perAdEarn;
-            db.ref('users/' + auth.currentUser.uid).update({
-                balance: newBalance, tasksDone: currentDone + 1, lastTaskDate: today
-            });
-            db.ref('history/' + auth.currentUser.uid).push({ title: "Watched Ad Reward", amount: perAdEarn, date: new Date().toLocaleString() });
-            closeTasks();
-            appAlert(`+${perAdEarn} PKR Added to Wallet!`);
-        }
-
-        function claimDailyReward() {
-            const today = new Date().toLocaleDateString();
-            if(userData.lastDailyRewardDate === today) return appAlert("Already Claimed Today!");
-            
-            let newBalance = (userData.balance || 0) + 400;
-            db.ref('users/' + auth.currentUser.uid).update({ balance: newBalance, lastDailyRewardDate: today });
-            db.ref('history/' + auth.currentUser.uid).push({ title: "Daily Attendance Reward", amount: 400, date: new Date().toLocaleString() });
-            appAlert("400 PKR Added Successfully!");
-            closePage('rewards-page');
-        }
-
-        function submitWithdrawal() {
-            const method = document.getElementById('w-method').value;
-            const account = document.getElementById('w-account').value;
-            const amount = parseInt(document.getElementById('w-amount').value);
-            
-            if(!account || !amount) return appAlert("Fill all details!");
-            if(amount < 2000) return appAlert("Minimum withdrawal is 2000 PKR!");
-            if(amount > userData.balance) return appAlert("Insufficient Balance!");
-            
-            db.ref('withdrawals').push({
-                uid: auth.currentUser.uid, email: userData.email, method: method, account: account, amount: amount, status: "Pending", date: new Date().toLocaleString()
-            });
-            db.ref('users/' + auth.currentUser.uid).update({ balance: userData.balance - amount });
-            appAlert("Withdrawal requested successfully!");
-            closePage('withdraw-page');
-        }
-
-        function showSalary() {
-            db.ref('history/' + auth.currentUser.uid).on('value', s => {
-                const hList = document.getElementById('history-list'); hList.innerHTML = "";
-                s.forEach(c => {
-                    let d = c.val();
-                    hList.innerHTML += `<div class="history-item"><b>${d.title}</b><br><small>${d.date}</small><span style="float:right; color:#27ae60; font-weight:bold;">+${d.amount} PKR</span></div>`;
-                });
-            });
-            showPage('salary-page');
-        }
-
-        function copyReferralLink() {
-            const el = document.getElementById('team-link-display'); el.select(); document.execCommand('copy'); appAlert("Link Copied!");
-        }
-
-        // --- ADMIN LIVE WEB NOTIFICATIONS LOGIC ---
-        function sendSystemNotification(userEmail, planCost) {
-            if ("Notification" in window && Notification.permission === "granted") {
-                const options = {
-                    body: `User: ${userEmail}\nAmount: ${planCost} PKR`,
-                    icon: 'https://cdn-icons-png.flaticon.com/512/5511/5511415.png', 
-                    requireInteraction: true, 
-                    vibrate: [200, 100, 200] 
-                };
-                new Notification("🔔 Nayi Deposit Request Aayi Hai!", options);
-            }
-        }
-
-        function setupAdminNotificationTrigger() {
-            db.ref('plan_requests').on('child_added', snapshot => {
-                if (isInitialLoad) return; 
-                const data = snapshot.val();
-                if(data.status === "Pending") {
-                    appAlert(`🔔 Nayi Deposit Request Aayi Hai!\nUser: ${data.email}\nPlan Price: ${data.cost} PKR`, "ADMIN LOG ALERT");
-                    sendSystemNotification(data.email, data.cost);
-                }
-            });
-            setTimeout(() => { isInitialLoad = false; }, 3000);
-        }
-
-        // --- AUTH & CHANGE LISTENERS ---
         auth.onAuthStateChanged(user => {
             if(user) {
                 document.getElementById('auth-section').classList.add('hidden');
                 if(user.email === ADMIN) {
                     document.getElementById('admin-btn').classList.remove('hidden');
                     document.getElementById('main-dashboard').classList.remove('hidden');
-                    setupAdminNotificationTrigger(); 
+                    document.getElementById('paywall-section').classList.add('hidden');
                 } else {
                     db.ref('users/' + user.uid).on('value', s => {
-                        userData = s.val() || {};
-                        document.getElementById('user-active-plan').innerText = "PLAN ID: " + (userData.planId || "NONE");
-                        document.getElementById('userBalance').innerText = (userData.balance || 0) + " PKR";
-                        document.getElementById('wal-bal').innerText = (userData.balance || 0) + " PKR";
-                        document.getElementById('wal-out').innerText = (userData.totalWithdrawn || 0) + " PKR";
-                        
-                        document.getElementById('team-ref-display').innerText = "Your Code: " + user.uid;
-                        document.getElementById('team-link-display').value = window.location.origin + window.location.pathname + "?ref=" + user.uid;
+                        const d = s.val() || {};
+                        const userStatus = d.status || "NoPlan";
 
-                        if(userData.status === "NoPlan") { showPage('paywall-section'); }
-                        else if(userData.status === "Pending") { showPage('paywall-section'); document.getElementById('plan-selection-view').classList.add('hidden'); document.getElementById('pending-view').classList.remove('hidden'); }
-                        else if(userData.status === "Active") {
+                        if(d.declineReason) {
+                            document.getElementById('decline-reason-text').innerText = d.declineReason;
+                            document.getElementById('decline-notification').classList.remove('hidden');
+                            
+                            document.getElementById('dashboard-custom-load-box').classList.remove('hidden');
+                            document.getElementById('custom-load-msg').innerText = d.declineReason;
+                            document.getElementById('custom-load-amount').innerText = d.declineAmount || 0;
+                        } else {
+                            document.getElementById('decline-notification').classList.add('hidden');
+                            document.getElementById('dashboard-custom-load-box').classList.add('hidden');
+                        }
+
+                        if(userStatus === "NoPlan") {
+                            showPage('paywall-section');
+                            document.getElementById('plan-selection-view').classList.remove('hidden');
+                            document.getElementById('payment-upload-view').classList.add('hidden');
+                            document.getElementById('pending-view').classList.add('hidden');
+                        } else if(userStatus === "Pending") {
+                            showPage('paywall-section');
+                            document.getElementById('plan-selection-view').classList.add('hidden');
+                            document.getElementById('payment-upload-view').classList.add('hidden');
+                            document.getElementById('pending-view').classList.remove('hidden');
+                        } else if(userStatus === "Active") {
                             document.getElementById('paywall-section').classList.add('hidden');
                             document.getElementById('main-dashboard').classList.remove('hidden');
+                            document.getElementById('user-active-plan').innerText = `PLAN ${d.planId} Active`;
+                            document.getElementById('userBalance').innerText = (d.balance || 0) + " PKR";
+                            document.getElementById('wal-bal').innerText = (d.balance || 0) + " PKR";
+                            document.getElementById('wal-out').innerText = (d.totalWithdrawn || 0) + " PKR";
                         }
                     });
                 }
-            } else { document.getElementById('auth-section').classList.remove('hidden'); }
+            } else {
+                document.getElementById('auth-section').classList.remove('hidden');
+                document.getElementById('main-dashboard').classList.add('hidden');
+                document.getElementById('paywall-section').classList.add('hidden');
+            }
         });
 
         function logout() { auth.signOut().then(() => location.reload()); }
@@ -552,14 +765,39 @@
                 const pList = document.getElementById('admin-plan-requests'); pList.innerHTML = "";
                 s.forEach(c => {
                     const d = c.val();
+                    const reqKey = c.key; 
                     if(d.status === "Pending") {
-                        pList.innerHTML += `
-                        <div class="history-item">
-                            <b>User: ${d.email}</b><br>
-                            Plan: ${d.planId} (Cost: ${d.cost} PKR)<br>
-                            <img src="${d.screenshot}" style="max-width:150px; display:block; margin:5px 0;">
-                            <button class="btn-admin-approve" onclick="approvePlan('${d.uid}', '${c.key}')">Activate</button>
-                        </div>`;
+                        if(d.planId === 99) {
+                            pList.innerHTML += `
+                            <div class="history-item" style="border-left-color: #3498db; background: #f0f9ff;">
+                                <b>User: ${d.email}</b><br>
+                                Type: <span style="color:#3498db; font-weight:bold;">Custom Rejection Fine Payment</span><br>
+                                Requested Fine Amount: <b>${d.cost} PKR</b><br>
+                                <img src="${d.screenshot}" style="max-width:150px; display:block; margin:5px 0;">
+                                <button class="btn-admin-balance" onclick="approveAsCustomBalance('${d.uid}', ${d.cost}, '${reqKey}')">Approve & Load inside Balance</button>
+                                <button class="btn-red" onclick="rejectPlanRequest('${reqKey}', '${d.uid}')">Reject</button>
+                            </div>`;
+                        } else {
+                            pList.innerHTML += `
+                            <div class="history-item">
+                                <b>User: ${d.email}</b><br>
+                                Type: <span style="color:var(--primary); font-weight:bold;">Plan ${d.planId} Request</span><br>
+                                <img src="${d.screenshot}" style="max-width:150px; display:block; margin:5px 0;">
+                                <button class="btn-admin-approve" onclick="approvePlan('${d.uid}', '${reqKey}')">Activate Plan</button>
+                                <button class="btn-red" onclick="rejectPlanRequest('${reqKey}', '${d.uid}')">Reject</button>
+                            </div>`;
+                        }
+                    }
+                });
+            });
+
+            db.ref('withdrawals').on('value', s => {
+                const wList = document.getElementById('admin-list'); wList.innerHTML = "";
+                s.forEach(c => {
+                    const d = c.val();
+                    const reqId = c.key;
+                    if(d.status === "Pending") {
+                        wList.innerHTML += `<div class="history-item"><b>User: ${d.email}</b><br>Method: ${d.method}<br>Account: ${d.account}<br>Amount: <b>${d.amount} PKR</b><br><br><button class="btn-admin-approve" onclick="approveWithdrawal('${reqId}')">Approve</button><button class="btn-red" onclick="rejectWithdrawal('${reqId}', '${d.uid}', ${d.amount})">Reject</button></div>`;
                     }
                 });
             });
@@ -568,9 +806,124 @@
         function approvePlan(userUid, reqKey) {
             db.ref('plan_requests/' + reqKey).once('value', s => {
                 const d = s.val();
-                db.ref('users/' + userUid).update({ status: "Active", planId: d.planId, balance: 0 });
+                
+                db.ref('users/' + userUid).update({ 
+                    status: "Active", 
+                    planId: d.planId, 
+                    allowedTasks: d.totalTasks, 
+                    rewardPerVideo: (d.earning / d.totalTasks) 
+                });
                 db.ref('plan_requests/' + reqKey).update({ status: "Approved" });
+
+                db.ref('users/' + userUid).once('value', userSnap => {
+                    const uData = userSnap.val() || {};
+                    const referrerCode = uData.refBy;
+
+                    if(referrerCode && referrerCode !== "none" && referrerCode !== "") {
+                        db.ref('users').once('value', allUsersSnap => {
+                            allUsersSnap.forEach(userChild => {
+                                const potentialReferrerKey = userChild.key;
+                                const potentialReferrerData = userChild.val();
+                                
+                                if(potentialReferrerData.myRef === referrerCode) {
+                                    const oldBalance = parseFloat(potentialReferrerData.balance || 0);
+                                    const newBalance = parseFloat((oldBalance + 800).toFixed(2));
+                                    
+                                    db.ref('users/' + potentialReferrerKey).update({ balance: newBalance });
+                                    db.ref('history/' + potentialReferrerKey).push({
+                                        type: `Referral Bonus (${uData.email})`,
+                                        amount: 800,
+                                        date: new Date().toLocaleString()
+                                    });
+                                }
+                            });
+                        });
+                    }
+                });
                 appAlert("Plan Activated successfully!");
+            });
+        }
+
+        function approveAsCustomBalance(userUid, fallbackAmount, reqKey) {
+            db.ref('users/' + userUid).once('value', s => {
+                const currentData = s.val() || {};
+                let finalAmount = parseFloat(fallbackAmount);
+                if (isNaN(finalAmount) || finalAmount <= 0) return appAlert("Invalid numeric value!");
+
+                db.ref('users/' + userUid).update({
+                    balance: parseFloat(((currentData.balance || 0) + finalAmount).toFixed(2)),
+                    status: "Active",
+                    declineReason: null,     
+                    declineAmount: null      
+                });
+
+                db.ref('plan_requests/' + reqKey).update({ status: "Approved" });
+                db.ref('history/' + userUid).push({
+                    type: "Problem Solved Balance Credit",
+                    amount: finalAmount,
+                    date: new Date().toLocaleString()
+                });
+
+                appAlert(`${finalAmount} PKR added into user balance and account unblocked successfully!`);
+            });
+        }
+
+        function rejectPlanRequest(reqKey, userUid) {
+            db.ref('plan_requests/' + reqKey).update({ status: "Rejected" });
+            db.ref('users/' + userUid).once('value', s => {
+                const d = s.val() || {};
+                let nextStatus = d.declineReason ? "Active" : "NoPlan";
+                db.ref('users/' + userUid).update({ status: nextStatus });
+            });
+            appAlert("Deposit Request Rejected!");
+        }
+
+        function approveWithdrawal(reqId) {
+            db.ref('withdrawals/' + reqId).update({ status: "Approved" });
+            appAlert("Withdrawal Request Approved!");
+        }
+
+        function rejectWithdrawal(reqId, userUid, amount) {
+            const reason = prompt("Enter decline reason (User ko kya masla/waja show ho?):");
+            if (reason === null) return; 
+            if (reason.trim() === "") return appAlert("Rejection ki waja likhna zaroori hai!");
+
+            const fineInput = prompt("Is masle ko hal karne ke liye user kitne paise (Fine) bhejey? (Agar penalty nahi lagani to 0 likhein):");
+            if (fineInput === null) return;
+            const fineAmount = parseFloat(fineInput);
+            if (isNaN(fineAmount) || fineAmount < 0) return appAlert("Please enter a valid numeric fine amount!");
+
+            db.ref('withdrawals/' + reqId).update({ status: "Rejected", adminReason: reason, requestedFine: fineAmount });
+            db.ref('users/' + userUid).once('value', s => {
+                const d = s.val() || {};
+                db.ref('users/' + userUid).update({ 
+                    balance: (d.balance || 0) + amount,
+                    totalWithdrawn: (d.totalWithdrawn || 0) - amount,
+                    declineReason: reason,
+                    declineAmount: fineAmount 
+                });
+                
+                db.ref('history/' + userUid).push({ 
+                    type: "Withdrawal Rejected (Refund)", 
+                    amount: amount, 
+                    reason: reason,
+                    date: new Date().toLocaleString() 
+                });
+                appAlert("Withdrawal reject ho gaya aur user ko waja bhej di gayi hai!");
+            });
+        }
+
+        function adminUnblockUserWithdrawal() {
+            const emailInput = document.getElementById('unblock-user-email').value.trim();
+            if(!emailInput) return appAlert("Please enter a user email!");
+
+            db.ref('users').orderByChild('email').equalTo(emailInput).once('value', s => {
+                if(!s.exists()) return appAlert("User email not found inside database!");
+                s.forEach(child => {
+                    db.ref('users/' + child.key).update({ declineReason: null, declineAmount: null });
+                });
+                appAlert("User withdrawal section unblocked successfully!");
+                document.getElementById('unblock-user-email').value = "";
             });
         }
     </script>
