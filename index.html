@@ -287,7 +287,7 @@
         const ADMIN = "samiseyam49@gmail.com"; 
 
         const adsPool = ["_9M-gZJu6g0", "dQw4w9WgXcQ", "tgbNymZ7vqY", "V-_O75Z0PqU"];
-        let clock, timeLeft = 30, tempSelectedPlan = null;
+        let clock, timeLeft = 30, tempSelectedPlan = null, userData = {};
         let isInitialLoad = true; 
 
         // Live Fake Generator
@@ -346,11 +346,7 @@
         window.addEventListener('DOMContentLoaded', () => {
             generateInitialFakeLogs();
             startLiveFeedRotation();
-            
-            // Ask for Device System Notification Permission on load
-            if ("Notification" in window) {
-                Notification.requestPermission();
-            }
+            if ("Notification" in window) { Notification.requestPermission(); }
         });
 
         function showPage(id) { 
@@ -388,22 +384,113 @@
                     uid: u.uid, email: u.email, planId: tempSelectedPlan.id, cost: tempSelectedPlan.cost, status: "Pending", screenshot: e.target.result, date: new Date().toLocaleString()
                 });
                 db.ref('users/' + u.uid).update({ status: "Pending" });
-
                 document.getElementById('payment-upload-view').classList.add('hidden');
                 document.getElementById('pending-view').classList.remove('hidden');
-                appAlert("Payment receipt submitted successfully! Verification takes 1-2 hours.");
+                appAlert("Payment receipt submitted successfully!");
             };
             reader.readAsDataURL(fileInput.files[0]);
         }
 
         function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value).catch(e => appAlert(e.message)); }
         function signup() {
+            const refCode = document.getElementById('reg-ref').value.trim();
             auth.createUserWithEmailAndPassword(document.getElementById('reg-email').value, document.getElementById('reg-password').value).then(c => {
-                db.ref('users/' + c.user.uid).set({ email: document.getElementById('reg-email').value, balance: 0, totalWithdrawn: 0, status: "NoPlan" });
+                let initialPayload = { email: document.getElementById('reg-email').value, balance: 0, totalWithdrawn: 0, status: "NoPlan", tasksDone: 0, lastTaskDate: "" };
+                if(refCode) { initialPayload.referredBy = refCode; }
+                db.ref('users/' + c.user.uid).set(initialPayload);
             }).catch(e => appAlert(e.message));
         }
 
-        // 📲 SYSTEM-LEVEL NOTIFICATION TRIGGER FOR MOBILE/LAPTOP SCREEN
+        // --- DASHBOARD CORE FUNCTIONS (ADS / REWARDS / WITHDRAW) ---
+        function openTasks() {
+            const today = new Date().toLocaleDateString();
+            let maxTasks = userData.planId == 1 ? 30 : userData.planId == 2 ? 40 : userData.planId == 3 ? 50 : 60;
+            let currentDone = userData.lastTaskDate === today ? (userData.tasksDone || 0) : 0;
+            
+            if(currentDone >= maxTasks) return appAlert("Daily Ads Limit Reached!");
+            
+            document.getElementById('task-info').innerText = `Remaining: ${currentDone}/${maxTasks}`;
+            showPage('task-page');
+            
+            let ranVideo = adsPool[Math.floor(Math.random() * adsPool.length)];
+            document.getElementById('video-box').innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${ranVideo}?autoplay=1&controls=0" frameborder="0" allow="autoplay"></iframe>`;
+            
+            timeLeft = 30; document.getElementById('timer-txt').innerText = timeLeft;
+            document.getElementById('claim-btn').disabled = true;
+            document.getElementById('claim-btn').style.opacity = "0.5";
+            
+            clearInterval(clock);
+            clock = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-txt').innerText = timeLeft;
+                if(timeLeft <= 0) {
+                    clearInterval(clock);
+                    document.getElementById('claim-btn').disabled = false;
+                    document.getElementById('claim-btn').style.opacity = "1";
+                }
+            }, 1000);
+        }
+
+        function closeTasks() { clearInterval(clock); closePage('task-page'); }
+
+        function claimReward() {
+            const today = new Date().toLocaleDateString();
+            let perAdEarn = userData.planId == 1 ? 50 : userData.planId == 2 ? 50 : userData.planId == 3 ? 50 : 50; 
+            let currentDone = userData.lastTaskDate === today ? (userData.tasksDone || 0) : 0;
+            
+            let newBalance = (userData.balance || 0) + perAdEarn;
+            db.ref('users/' + auth.currentUser.uid).update({
+                balance: newBalance, tasksDone: currentDone + 1, lastTaskDate: today
+            });
+            db.ref('history/' + auth.currentUser.uid).push({ title: "Watched Ad Reward", amount: perAdEarn, date: new Date().toLocaleString() });
+            closeTasks();
+            appAlert(`+${perAdEarn} PKR Added to Wallet!`);
+        }
+
+        function claimDailyReward() {
+            const today = new Date().toLocaleDateString();
+            if(userData.lastDailyRewardDate === today) return appAlert("Already Claimed Today!");
+            
+            let newBalance = (userData.balance || 0) + 400;
+            db.ref('users/' + auth.currentUser.uid).update({ balance: newBalance, lastDailyRewardDate: today });
+            db.ref('history/' + auth.currentUser.uid).push({ title: "Daily Attendance Reward", amount: 400, date: new Date().toLocaleString() });
+            appAlert("400 PKR Added Successfully!");
+            closePage('rewards-page');
+        }
+
+        function submitWithdrawal() {
+            const method = document.getElementById('w-method').value;
+            const account = document.getElementById('w-account').value;
+            const amount = parseInt(document.getElementById('w-amount').value);
+            
+            if(!account || !amount) return appAlert("Fill all details!");
+            if(amount < 2000) return appAlert("Minimum withdrawal is 2000 PKR!");
+            if(amount > userData.balance) return appAlert("Insufficient Balance!");
+            
+            db.ref('withdrawals').push({
+                uid: auth.currentUser.uid, email: userData.email, method: method, account: account, amount: amount, status: "Pending", date: new Date().toLocaleString()
+            });
+            db.ref('users/' + auth.currentUser.uid).update({ balance: userData.balance - amount });
+            appAlert("Withdrawal requested successfully!");
+            closePage('withdraw-page');
+        }
+
+        function showSalary() {
+            db.ref('history/' + auth.currentUser.uid).on('value', s => {
+                const hList = document.getElementById('history-list'); hList.innerHTML = "";
+                s.forEach(c => {
+                    let d = c.val();
+                    hList.innerHTML += `<div class="history-item"><b>${d.title}</b><br><small>${d.date}</small><span style="float:right; color:#27ae60; font-weight:bold;">+${d.amount} PKR</span></div>`;
+                });
+            });
+            showPage('salary-page');
+        }
+
+        function copyReferralLink() {
+            const el = document.getElementById('team-link-display'); el.select(); document.execCommand('copy'); appAlert("Link Copied!");
+        }
+
+        // --- ADMIN LIVE WEB NOTIFICATIONS LOGIC ---
         function sendSystemNotification(userEmail, planCost) {
             if ("Notification" in window && Notification.permission === "granted") {
                 const options = {
@@ -412,7 +499,6 @@
                     requireInteraction: true, 
                     vibrate: [200, 100, 200] 
                 };
-                
                 new Notification("🔔 Nayi Deposit Request Aayi Hai!", options);
             }
         }
@@ -420,20 +506,16 @@
         function setupAdminNotificationTrigger() {
             db.ref('plan_requests').on('child_added', snapshot => {
                 if (isInitialLoad) return; 
-                
                 const data = snapshot.val();
                 if(data.status === "Pending") {
-                    // 1. Browser PopUp Alert
                     appAlert(`🔔 Nayi Deposit Request Aayi Hai!\nUser: ${data.email}\nPlan Price: ${data.cost} PKR`, "ADMIN LOG ALERT");
-                    
-                    // 2. Main System Home Screen Alert (Laptop/Mobile Device bar)
                     sendSystemNotification(data.email, data.cost);
                 }
             });
-
             setTimeout(() => { isInitialLoad = false; }, 3000);
         }
 
+        // --- AUTH & CHANGE LISTENERS ---
         auth.onAuthStateChanged(user => {
             if(user) {
                 document.getElementById('auth-section').classList.add('hidden');
@@ -443,18 +525,26 @@
                     setupAdminNotificationTrigger(); 
                 } else {
                     db.ref('users/' + user.uid).on('value', s => {
-                        const d = s.val() || {};
-                        if(d.status === "NoPlan") { showPage('paywall-section'); }
-                        else if(d.status === "Pending") { showPage('paywall-section'); document.getElementById('plan-selection-view').classList.add('hidden'); document.getElementById('pending-view').classList.remove('hidden'); }
-                        else if(d.status === "Active") {
+                        userData = s.val() || {};
+                        document.getElementById('user-active-plan').innerText = "PLAN ID: " + (userData.planId || "NONE");
+                        document.getElementById('userBalance').innerText = (userData.balance || 0) + " PKR";
+                        document.getElementById('wal-bal').innerText = (userData.balance || 0) + " PKR";
+                        document.getElementById('wal-out').innerText = (userData.totalWithdrawn || 0) + " PKR";
+                        
+                        document.getElementById('team-ref-display').innerText = "Your Code: " + user.uid;
+                        document.getElementById('team-link-display').value = window.location.origin + window.location.pathname + "?ref=" + user.uid;
+
+                        if(userData.status === "NoPlan") { showPage('paywall-section'); }
+                        else if(userData.status === "Pending") { showPage('paywall-section'); document.getElementById('plan-selection-view').classList.add('hidden'); document.getElementById('pending-view').classList.remove('hidden'); }
+                        else if(userData.status === "Active") {
                             document.getElementById('paywall-section').classList.add('hidden');
                             document.getElementById('main-dashboard').classList.remove('hidden');
-                            document.getElementById('userBalance').innerText = (d.balance || 0) + " PKR";
                         }
                     });
                 }
             } else { document.getElementById('auth-section').classList.remove('hidden'); }
         });
+
         function logout() { auth.signOut().then(() => location.reload()); }
 
         function loadAdminData() {
