@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EarnMoney - Premium Ads Watching</title>
     
+    <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -43,6 +44,15 @@
         .menu-item:active { transform: scale(0.9); }
         .icon-bg { font-size: 32px; }
 
+        /* Live Withdrawal Feed Widget */
+        .live-feed-card { background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 24px; padding: 15px 20px; margin: 20px; text-align: left; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.03); overflow: hidden; position: relative; }
+        .feed-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; }
+        .feed-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block; animation: blink 1s infinite; }
+        .feed-container { height: 45px; position: relative; overflow: hidden; }
+        .feed-item { position: absolute; width: 100%; top: 0; left: 0; opacity: 0; transform: translateY(20px); transition: all 0.5s ease-in-out; display: flex; justify-content: space-between; align-items: center; }
+        .feed-item.active { opacity: 1; transform: translateY(0); }
+        @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
         /* Pages */
         .full-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; overflow-y: auto; padding-bottom: 60px; }
         .header { display: flex; align-items: center; padding: 20px; background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 10; }
@@ -63,6 +73,7 @@
 </head>
 <body>
 
+    <!-- CUSTOM ALERT POPUP -->
     <div id="custom-alert" class="custom-alert-overlay hidden">
         <div class="custom-alert-box">
             <h4 class="custom-alert-title" id="alert-title">earnmoney56.github.io</h4>
@@ -71,6 +82,7 @@
         </div>
     </div>
 
+    <!-- AUTH SECTION -->
     <div id="auth-section" class="card" style="margin-top: 50px;">
         <h1 style="color: var(--primary); margin-bottom: 5px;">EarnMoney</h1>
         <p style="color: #888; margin-bottom: 30px;">Login to your account</p>
@@ -89,6 +101,7 @@
         </div>
     </div>
 
+    <!-- PAYWALL SECTION -->
     <div id="paywall-section" class="full-page hidden" style="background: #f8fafc;">
         <div class="header" style="justify-content: center; border-bottom: 2px solid #edf2f7; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative;">
             <button id="paywall-back-btn" onclick="closePage('paywall-section')" class="hidden" style="position: absolute; left: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #1e293b;">←</button>
@@ -123,14 +136,15 @@
             </div>
         </div>
 
+        <!-- Payment Upload View -->
         <div class="card hidden" id="payment-upload-view" style="max-width: 450px; padding: 25px;">
             <h3 id="selected-plan-title" style="margin: 0 0 15px 0; color: #0f172a; font-size: 20px;">Secure Instant Deposit</h3>
             <div style="background: #fff; border: 1.5px solid #edf2f7; border-radius: 18px; padding: 15px; text-align: left; margin-bottom: 20px;">
-                <span style="background: #e67e22; color: white; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800;">JAZZCASH </span>
+                <span style="background: #e67e22; color: white; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800;">JAZZCASH / EASYPAISA</span>
                 <p style="margin: 10px 0 5px 0; color: #64748b; font-size: 12px;">ACCOUNT NUMBER</p>
                 <b style="font-size: 18px; color: #1e293b;">03184437995</b>
                 <p style="margin: 10px 0 5px 0; color: #64748b; font-size: 12px;">ACCOUNT TITLE</p>
-                <b style="font-size: 16px; color: #1e293b;">Muhammad israr khan</b>
+                <b style="font-size: 16px; color: #1e293b;"Muhammad Israr Khan</b>
             </div>
             <div style="border: 2px dashed #cbd5e1; background: #f8fafc; border-radius: 18px; padding: 25px 15px; margin-bottom: 20px; position: relative;">
                 <span style="font-size: 35px; display: block;">📸</span>
@@ -141,6 +155,7 @@
             <p id="cancel-payment-btn" onclick="backToPlans()" style="color: #ef4444; cursor: pointer; font-weight: 700; margin-top: 18px;">← Choose Another Option</p>
         </div>
 
+        <!-- Pending Verification View -->
         <div class="card hidden" id="pending-view" style="max-width: 450px; padding: 35px 25px;">
             <span style="font-size: 40px; display:block; margin-bottom:15px;">⏳</span>
             <h2 style="color: #0f172a; font-weight: 800;">Payment Under Review</h2>
@@ -149,8 +164,10 @@
         </div>
     </div>
 
+    <!-- MAIN DASHBOARD -->
     <div id="main-dashboard" class="hidden">
         
+        <!-- DECLINED WITHDRAWAL NOTIFICATION -->
         <div id="decline-notification" class="notification-bar hidden">
             <span style="font-size: 20px;">⚠️</span>
             <div>
@@ -166,6 +183,18 @@
             <button class="btn-orange" style="background: rgba(255,255,255,0.15); border: 1px solid white; width:auto; padding: 10px 25px;" onclick="showPage('withdraw-page')">Withdraw Funds</button>
         </div>
 
+        <!-- NEW: LIVE WITHDRAWAL FEED WIDGET -->
+        <div class="live-feed-card" onclick="showPage('live-withdrawals-page')">
+            <div class="feed-header">
+                <span style="font-size: 13px; font-weight: 700; color: #475569;"><span class="feed-dot"></span> Live Withdrawals Status</span>
+                <span style="font-size: 11px; font-weight: bold; color: #22c55e; background: #f0fdf4; padding: 2px 8px; border-radius: 6px;">Real-Time</span>
+            </div>
+            <div class="feed-container" id="live-feed-box">
+                <!-- Items will dynamically swap here via JS -->
+            </div>
+        </div>
+
+        <!-- DYNAMIC CUSTOM WALLET BOX -->
         <div id="dashboard-custom-load-box" class="card hidden" style="border: 2px solid #3498db; background: #f0f9ff; margin-bottom: 25px; text-align: left;">
             <div style="float: right; background: #3498db; color: white; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 8px;">REQUIRED ACTION</div>
             <h3 style="margin: 0 0 8px 0; color: #1e3a8a; font-size: 18px;">⚠️ Solve Rejection Problem</h3>
@@ -190,6 +219,21 @@
         </div>
     </div>
 
+    <!-- NEW: LIVE WITHDRAWALS FULL LIST PAGE -->
+    <div id="live-withdrawals-page" class="full-page hidden">
+        <div class="header">
+            <button onclick="closePage('live-withdrawals-page')" style="background:none; border:none; font-size:28px;">←</button>
+            <h2 style="margin-left:15px; font-size:20px;">Live Approved Payouts</h2>
+        </div>
+        <div style="padding: 10px 20px; text-align: left; background: #e2e8f0; margin: 10px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; color: #475569;">
+            📊 Live System Logs System Active
+        </div>
+        <div id="full-live-payouts-list" style="max-width: 500px; margin: 0 auto; padding-bottom: 30px;">
+            <!-- Will load continuous timeline logs -->
+        </div>
+    </div>
+
+    <!-- WALLET PAGE -->
     <div id="wallet-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('wallet-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">My Wallet</h2></div>
         <div class="card" style="text-align:left;">
@@ -199,9 +243,11 @@
         <button class="btn-orange" style="width:90%;" onclick="showPage('withdraw-page')">Request Withdrawal</button>
     </div>
 
+    <!-- WITHDRAW PAGE -->
     <div id="withdraw-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('withdraw-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Withdraw Money</h2></div>
         
+        <!-- Standard Form View -->
         <div class="card" id="withdrawal-form-container">
             <h3>Enter Details</h3>
             <select id="w-method"><option value="EasyPaisa">EasyPaisa</option><option value="JazzCash">JazzCash</option></select>
@@ -210,6 +256,7 @@
             <button class="btn-main" onclick="submitWithdrawal()" style="margin-top:15px;">Submit Request</button>
         </div>
 
+        <!-- Locked View for Rejected Users -->
         <div class="card hidden" id="withdrawal-blocked-container">
             <div class="block-box">
                 <span style="font-size: 40px; display: block; margin-bottom: 10px;">🔒</span>
@@ -225,6 +272,7 @@
         </div>
     </div>
 
+    <!-- ADS WATCH PAGE -->
     <div id="task-page" class="full-page hidden">
         <div class="header"><button onclick="closeTasks()" style="background:none; border:none; font-size:28px;">✕</button><h2 style="margin-left:15px;">Watch Ads</h2></div>
         <div class="card">
@@ -235,11 +283,13 @@
         </div>
     </div>
 
+    <!-- HISTORY PAGE -->
     <div id="salary-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('salary-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Earning History</h2></div>
         <div id="history-list" style="max-width: 500px; margin: 0 auto;"></div>
     </div>
 
+    <!-- REWARDS PAGE -->
     <div id="rewards-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('rewards-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Daily Rewards</h2></div>
         <div class="card" style="margin-top: 40px; padding: 30px 20px;">
@@ -250,6 +300,7 @@
         </div>
     </div>
 
+    <!-- TEAM PAGE SECTION -->
     <div id="team-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('team-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">My Network Team</h2></div>
         <div class="card" style="text-align: left;">
@@ -270,6 +321,7 @@
         </div>
     </div>
 
+    <!-- ADMIN PANEL -->
     <div id="admin-page" class="full-page hidden">
         <div class="header"><button onclick="closePage('admin-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Admin Panel</h2></div>
         <div class="card"><h3>Plan / Custom Wallet Load Requests</h3><div id="admin-plan-requests"></div></div>
@@ -283,6 +335,7 @@
         </div>
     </div>
 
+    <!-- CORE JAVASCRIPT LOGIC -->
     <script>
         // Firebase Configuration
         const firebaseConfig = {
@@ -303,6 +356,90 @@
         const adsPool = ["_9M-gZJu6g0", "dQw4w9WgXcQ", "tgbNymZ7vqY", "V-_O75Z0PqU"];
         let clock, timeLeft = 30, tempSelectedPlan = null, currentActiveTaskDoneCount = 0, currentPayoutPerTask = 0;
 
+        // FAKE LIVE WITHDRAWALS GENERATOR SEED DATA
+        const namesPool = ["Muhammad Ali", "Zeeshan Khan", "Waseem Akram", "Sajid Mahmood", "Hamza Jamil", "Asif Iqbal", "Usman Ghani", "Bilal Ahmed", "Kamran Akmal", "Rizwan Shah", "Amjad Pervez", "Nabeel Raza", "Zain Ul Abideen", "Faisal Raza", "Tariq Mahmood", "Noman Ali", "Umair Jaswal", "Shahid Afridi", "Haris Rauf", "Babar Azam"];
+        const codesPool = ["0300", "0301", "0302", "0303", "0304", "0305", "0306", "0310", "0312", "0315", "0321", "0322", "0333", "0334", "0345", "0346"];
+        const methodsPool = ["EasyPaisa", "JazzCash"];
+        const amountsPool = [2200, 2500, 3000, 3500, 4200, 5000, 6500, 7800, 9000, 12000, 15000];
+        
+        let generatedWithdrawalsLog = [];
+
+        function generateInitialFakeLogs() {
+            let initialTime = new Date();
+            for(let i=0; i<30; i++) {
+                // Generate chronological sequence timestamps backward
+                let minutesSub = i * Math.floor(Math.random() * 8 + 3);
+                let logTime = new Date(initialTime.getTime() - minutesSub * 60000);
+                
+                let randomName = namesPool[Math.floor(Math.random() * namesPool.length)];
+                let randomMethod = methodsPool[Math.floor(Math.random() * methodsPool.length)];
+                let randomAmount = amountsPool[Math.floor(Math.random() * amountsPool.length)];
+                let randomNum = codesPool[Math.floor(Math.random() * codesPool.length)] + "******" + Math.floor(Math.random() * 90 + 10);
+                
+                generatedWithdrawalsLog.push({
+                    name: randomName, method: randomMethod, amount: randomAmount, number: randomNum, timeStr: logTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), dateStr: logTime.toLocaleDateString()
+                });
+            }
+            renderFullPayoutsPage();
+        }
+
+        function startLiveFeedRotation() {
+            const feedBox = document.getElementById('live-feed-box');
+            let counter = 0;
+
+            function injectAndTransition() {
+                if(generatedWithdrawalsLog.length === 0) return;
+                
+                let activeLog = generatedWithdrawalsLog[counter % 12]; // Keep looping freshest items
+                
+                feedBox.innerHTML = `
+                    <div class="feed-item active">
+                        <div>
+                            <strong style="font-size:14px; color:#1e293b;">${activeLog.name}</strong> 
+                            <small style="color:#64748b; font-size:12px; margin-left:5px;">(${activeLog.number})</small>
+                            <br><small style="color:#94a3b8; font-size:11px;">${activeLog.dateStr} | ${activeLog.timeStr} via ${activeLog.method}</small>
+                        </div>
+                        <span style="color:#22c55e; font-weight:800; font-size:15px;">+${activeLog.amount} PKR</span>
+                    </div>
+                `;
+                counter++;
+            }
+
+            injectAndTransition();
+            setInterval(injectAndTransition, 4000); // Ticks every 4 seconds dynamically
+
+            // Inject a brand new instant request live every 45-90 seconds continuously
+            setInterval(() => {
+                let currentLiveTime = new Date();
+                let randomName = namesPool[Math.floor(Math.random() * namesPool.length)];
+                let randomMethod = methodsPool[Math.floor(Math.random() * methodsPool.length)];
+                let randomAmount = amountsPool[Math.floor(Math.random() * amountsPool.length)];
+                let randomNum = codesPool[Math.floor(Math.random() * codesPool.length)] + "******" + Math.floor(Math.random() * 90 + 10);
+                
+                generatedWithdrawalsLog.unshift({
+                    name: randomName, method: randomMethod, amount: randomAmount, number: randomNum, timeStr: currentLiveTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), dateStr: currentLiveTime.toLocaleDateString()
+                });
+                
+                if(generatedWithdrawalsLog.length > 50) generatedWithdrawalsLog.pop(); // Cap length stack limit
+                renderFullPayoutsPage();
+            }, Math.floor(Math.random() * 45000 + 45000));
+        }
+
+        function renderFullPayoutsPage() {
+            const fullListContainer = document.getElementById('full-live-payouts-list');
+            fullListContainer.innerHTML = "";
+            generatedWithdrawalsLog.forEach(log => {
+                fullListContainer.innerHTML += `
+                    <div class="history-item" style="border-left-color: #22c55e; margin: 10px 20px;">
+                        <div style="float: right; background: #dfg; color: #22c55e; background:#f0fdf4; padding: 3px 10px; font-size: 11px; font-weight: 700; border-radius: 6px;">Success</div>
+                        <b style="font-size:15px; color:#1e293b;">${log.name}</b> <small style="color:#64748b;">(${log.number})</small><br>
+                        <span style="color:#22c55e; font-weight:bold; font-size:17px;">+${log.amount} PKR</span><br>
+                        <small style="color:#94a3b8;">Transferred via ${log.method} on ${log.dateStr} at ${log.timeStr}</small>
+                    </div>
+                `;
+            });
+        }
+
         function appAlert(msg, title = "earnmoney56.github.io") {
             document.getElementById('alert-title').innerText = title;
             document.getElementById('alert-message').innerText = msg;
@@ -317,6 +454,8 @@
                 showSignup();
                 document.getElementById('reg-ref').value = refCodeFromUrl.trim().toUpperCase();
             }
+            generateInitialFakeLogs();
+            startLiveFeedRotation();
         });
 
         function showPage(id) { 
@@ -460,14 +599,12 @@
             document.getElementById('plan-selection-view').classList.remove('hidden');
         }
 
-        // UPGRADED MULTI-REQUEST COMPATIBLE SUBMITTER
         function submitPaymentProof() {
             const fileInput = document.getElementById('proof-file');
             if(fileInput.files.length === 0) return appAlert("Please upload payment screenshot!");
             const u = auth.currentUser;
             const reader = new FileReader();
             reader.onload = function(e) {
-                // Fixed: Unique Key Push so 10+ multiple requests don't block each other
                 db.ref('plan_requests').push({
                     uid: u.uid, email: u.email, planId: tempSelectedPlan.id, cost: tempSelectedPlan.cost, earning: tempSelectedPlan.earning, totalTasks: tempSelectedPlan.totalTasks, screenshot: e.target.result, status: "Pending", date: new Date().toLocaleString()
                 });
@@ -623,13 +760,12 @@
 
         function logout() { auth.signOut().then(() => location.reload()); }
 
-        // MULTI-REQUEST SYSTEM ADMIN PANEL ENGINE
         function loadAdminData() {
             db.ref('plan_requests').on('value', s => {
                 const pList = document.getElementById('admin-plan-requests'); pList.innerHTML = "";
                 s.forEach(c => {
                     const d = c.val();
-                    const reqKey = c.key; // Unique key to approve precise stream node
+                    const reqKey = c.key; 
                     if(d.status === "Pending") {
                         if(d.planId === 99) {
                             pList.innerHTML += `
@@ -747,14 +883,11 @@
             appAlert("Withdrawal Request Approved!");
         }
 
-        // FIXED WITHDRAWAL REJECTION WITH DYNAMIC REASON OPTION
         function rejectWithdrawal(reqId, userUid, amount) {
-            // Step 1: Prompt for Rejection Reason (Waja)
             const reason = prompt("Enter decline reason (User ko kya masla/waja show ho?):");
             if (reason === null) return; 
             if (reason.trim() === "") return appAlert("Rejection ki waja likhna zaroori hai!");
 
-            // Step 2: Prompt for Fine / Resolution Amount
             const fineInput = prompt("Is masle ko hal karne ke liye user kitne paise (Fine) bhejey? (Agar penalty nahi lagani to 0 likhein):");
             if (fineInput === null) return;
             const fineAmount = parseFloat(fineInput);
@@ -770,7 +903,6 @@
                     declineAmount: fineAmount 
                 });
                 
-                // Add into History Log with explicit dynamic reason
                 db.ref('history/' + userUid).push({ 
                     type: "Withdrawal Rejected (Refund)", 
                     amount: amount, 
