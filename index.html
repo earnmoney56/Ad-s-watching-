@@ -101,7 +101,7 @@
         }
         .btn-outline:hover { background: rgba(255,255,255,0.05); border-color: var(--text-muted); }
 
-        .btn-green { background: var(--success); color: white; border: none; width: 100%; padding: 16px; border-radius: 16px; font-weight: 700; cursor: pointer; font-size: 16px; }
+        .btn-green { background: var(--success); color: white; border: none; width: 100%; padding: 14px; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 15px; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
         .btn-red { background: #ef4444; color: white; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 700; cursor: pointer; margin-left: 5px; }
         .btn-admin-approve { background: var(--success); color: white; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 700; cursor: pointer; }
         .btn-admin-balance { background: #3b82f6; color: white; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 700; cursor: pointer; margin-left: 5px; }
@@ -210,11 +210,14 @@
         /* Full Screen Window Pages */
         .full-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; overflow-y: auto; padding-bottom: 60px; box-sizing: border-box; }
         .header { display: flex; align-items: center; padding: 20px; background: var(--card-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 10; }
-        .history-item { background: var(--card-bg); margin: 14px 20px; padding: 20px; border-radius: 18px; text-align: left; border-left: 5px solid var(--primary); border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+        .history-item { background: var(--card-bg); margin: 14px 20px; padding: 20px; border-radius: 18px; text-align: left; border-left: 5px solid var(--primary); border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); box-sizing: border-box; }
         
-        /* Video Player Styling */
-        #video-box { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 16px; overflow: hidden; margin: 15px 0; border: 1px solid var(--border-color); }
-        .timer-ui { width: 90px; height: 90px; border: 4px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 700; margin: 25px auto; color: var(--primary); background: rgba(255,159,67,0.05); }
+        /* Video List Node UI styling */
+        .video-row-node { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 20px; margin: 20px auto; padding: 20px; max-width: 440px; text-align: left; box-sizing: border-box; }
+        .video-wrapper-box { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 14px; overflow: hidden; margin: 12px 0; border: 1px solid var(--border-color); position: relative; }
+        .video-cover-layer { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(15,23,42,0.6); display:flex; align-items:center; justify-content:center; color:white; font-size:15px; font-weight:700; cursor:pointer; backdrop-filter: blur(2px); transition: all 0.2s; }
+        .video-cover-layer:hover { background: rgba(15,23,42,0.4); }
+        .video-timer-badge { background: rgba(15,23,42,0.85); border: 1px solid var(--primary); color: var(--primary); font-size: 13px; font-weight: 700; padding: 6px 14px; border-radius: 30px; display: inline-flex; align-items: center; gap: 6px; }
 
         /* Custom Modern Alert Styling */
         .custom-alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.8); backdrop-filter: blur(4px); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
@@ -320,7 +323,7 @@
 
         <!-- Verification Holding Loop -->
         <div class="card hidden" id="pending-view" style="max-width: 440px; padding: 40px 25px;">
-            <span style="font-size: 45px; display:block; margin-bottom:20px; linear-gradient">⏳</span>
+            <span style="font-size: 45px; display:block; margin-bottom:20px;">⏳</span>
             <h3>Audit Check in Progress</h3>
             <p style="color: var(--text-muted); font-size: 14px; line-height: 1.6;">Your financial ledger asset has been logged onto database. Server parameters activate automatically upon validation clearance (Takes 1-2 Hours maximum).</p>
             <button class="btn-outline" onclick="logout()" style="margin-top:25px; border-color: #ef4444; color: #ef4444;">Disconnect Application</button>
@@ -436,15 +439,20 @@
         </div>
     </div>
 
-    <!-- HIGH PROFILE WATCH AD UNIT MATRIX -->
+    <!-- DYNAMIC MULTI-VIDEO WATCH ADS MATRIX TIER (UPDATED IN ROW FORMAT) -->
     <div id="task-page" class="full-page hidden">
-        <div class="header"><button onclick="closeTasks()" style="background:none; border:none; font-size:24px; color:white; cursor:pointer;">✕</button><h2 style="margin-left:15px; font-size:18px;">Computational Ad Stream</h2></div>
-        <div class="card" style="margin-top: 30px;">
-            <h3 id="task-info" style="font-size: 16px; color: var(--text-muted);">Matrix Units Processed: 0/0</h3>
-            <div id="video-box"></div>
-            <div class="timer-ui" id="timer-txt">30</div>
-            <button class="btn-green" id="claim-btn" onclick="claimReward()" disabled style="opacity:0.4; width: 100%;">Sync Stream Data Asset</button>
+        <div class="header">
+            <button onclick="closeTasks()" style="background:none; border:none; font-size:24px; color:white; cursor:pointer;">✕</button>
+            <h2 style="margin-left:15px; font-size:18px;">Computational Ads Hub</h2>
         </div>
+        
+        <div style="margin: 20px auto 0 auto; max-width: 440px; text-align: left; padding: 0 20px;">
+            <h3 id="task-page-headline" style="font-size: 20px; margin-bottom: 4px;">Premium Media Steams</h3>
+            <p id="task-counter-global" style="color: var(--text-muted); font-size:14px; margin: 0;">Completed: 0/0 tasks today</p>
+        </div>
+
+        <!-- Video Rows Dynamic Injection Area -->
+        <div id="video-rows-container" style="padding-bottom: 40px;"></div>
     </div>
 
     <!-- HISTORICAL AUDIT LOGS PAGE -->
@@ -517,8 +525,22 @@
         
         const ADMIN = "samiseyam49@gmail.com"; 
         
-        const adsPool = ["_9M-gZJu6g0", "dQw4w9WgXcQ", "tgbNymZ7vqY", "V-_O75Z0PqU"];
-        let clock, timeLeft = 30, tempSelectedPlan = null, currentActiveTaskDoneCount = 0, currentPayoutPerTask = 0;
+        // 10 Distinct Professional Videos Pool for Rows Allocation
+        const adsPool = [
+            { id: "vid_1", title: "Global Luxury Marketing Stream #01", ytId: "_9M-gZJu6g0" },
+            { id: "vid_2", title: "Fintech Enterprise Protocol Ads #02", ytId: "tgbNymZ7vqY" },
+            { id: "vid_3", title: "Smart Asset Liquidation Node Video #03", ytId: "V-_O75Z0PqU" },
+            { id: "vid_4", title: "Crypto Computational Cloud Network #04", ytId: "dQw4w9WgXcQ" },
+            { id: "vid_5", title: "Premium E-Commerce Automation Loop #05", ytId: "3JZ_D3ELwOQ" },
+            { id: "vid_6", title: "Decentralized Database Sync Ad #06", ytId: "2g811TuSdTg" },
+            { id: "vid_7", title: "AI Generation Interface Matrix #07", ytId: "W6NZfCO5SIk" },
+            { id: "vid_8", title: "High-End Smartwatch Commercial #08", ytId: "9bZkp7q19f0" },
+            { id: "vid_9", title: "Digital Security Architecture Ad #09", ytId: "Exvj6s_2FvI" },
+            { id: "vid_10", title: "Affiliate Global Infrastructure Core #10", ytId: "L_LUpnjgPso" }
+        ];
+
+        let activeClocks = {}; // Tracks internal active timers for rows
+        let tempSelectedPlan = null;
         let hasShownAlertThisSession = false;
 
         // HIGH GRADE PSEUDO REALTIME TRANSACTION STREAM LOGGER DATA
@@ -799,6 +821,7 @@
             });
         }
 
+        // OPEN TASKS: REDESIGNED TO LOAD ALL VIDEOS AT A TIME IN A LONG ROW
         function openTasks() {
             const u = auth.currentUser;
             db.ref('users/' + u.uid).once('value', s => {
@@ -806,49 +829,153 @@
                 const today = new Date().toLocaleDateString();
                 let done = (d.lastDate === today) ? (d.tasksDone || 0) : 0;
                 let maxAllowed = d.allowedTasks || 0;
-                if (maxAllowed === 0 || d.status !== "Active") return appAlert("Please provision a computational premium tier node first.");
-                if (done >= maxAllowed) return appAlert(`Daily node optimization computational limits reached.`);
                 
-                currentActiveTaskDoneCount = done;
-                currentPayoutPerTask = d.rewardPerVideo || 0;
-
-                showPage('task-page');
-                timeLeft = 30;
-                document.getElementById('timer-txt').innerText = timeLeft;
-                document.getElementById('task-info').innerText = `Matrix Streams Completed: ${done}/${maxAllowed}`;
-                
-                const randomVideo = adsPool[Math.floor(Math.random() * adsPool.length)];
-                document.getElementById('video-box').innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${randomVideo}?autoplay=1&controls=0&mute=1" frameborder="0" allow="autoplay"></iframe>`;
-                
-                const btn = document.getElementById('claim-btn');
-                btn.disabled = true; btn.style.opacity = "0.4"; btn.innerText = "Processing Data stream...";
-
-                clock = setInterval(() => {
-                    timeLeft--;
-                    document.getElementById('timer-txt').innerText = timeLeft;
-                    if(timeLeft <= 0) {
-                        clearInterval(clock);
-                        btn.disabled = false; btn.style.opacity = "1"; btn.innerText = "Sync Stream Data Asset";
-                    }
-                }, 1000);
-            });
-        }
-
-        function claimReward() {
-            const u = auth.currentUser;
-            const cleanPayout = parseFloat(currentPayoutPerTask.toFixed(2));
-            db.ref('users/' + u.uid).transaction(d => {
-                if(d) {
-                    d.balance = parseFloat(((d.balance || 0) + cleanPayout).toFixed(2));
-                    d.tasksDone = currentActiveTaskDoneCount + 1; d.lastDate = new Date().toLocaleDateString();
+                if (maxAllowed === 0 || d.status !== "Active") {
+                    return appAlert("Please provision a computational premium tier node first.");
                 }
-                return d;
+                if (done >= maxAllowed) {
+                    return appAlert(`Daily node optimization computational limits reached.`);
+                }
+                
+                // Open full page screen
+                showPage('task-page');
+                document.getElementById('task-counter-global').innerText = `Completed: ${done}/${maxAllowed} tasks today`;
+                
+                const container = document.getElementById('video-rows-container');
+                container.innerHTML = ""; // reset template content
+
+                // Calculate kit parameters based on current user plan details
+                let currentPayoutPerTask = d.rewardPerVideo || 0;
+
+                // Loop through limited video rows until maxAllowed ceiling
+                for (let i = 0; i < maxAllowed; i++) {
+                    let currentAdObj = adsPool[i % adsPool.length];
+                    let isAlreadyDone = (i < done); // Past tasks are hidden or locked
+
+                    if(!isAlreadyDone) {
+                        container.innerHTML += `
+                            <div class="video-row-node" id="node-container-${currentAdObj.id}">
+                                <h4 style="font-size:15px; margin-bottom:4px; color:var(--text-main);">${currentAdObj.title}</h4>
+                                <p style="font-size:12px; color:var(--primary); margin: 0 0 10px 0;">Reward Asset Value: ${currentPayoutPerTask.toFixed(2)} PKR</p>
+                                
+                                <div class="video-wrapper-box" id="wrapper-${currentAdObj.id}">
+                                    <!-- Embedded Frame Player -->
+                                    <iframe id="iframe-${currentAdObj.id}" width="100%" height="100%" src="https://www.youtube.com/embed/${currentAdObj.ytId}?enablejsapi=1&controls=0&mute=1" frameborder="0" allow="autoplay" style="display:none;"></iframe>
+                                    
+                                    <!-- Custom Cover Layer Action -->
+                                    <div class="video-cover-layer" id="cover-${currentAdObj.id}" onclick="startRowVideoTimer('${currentAdObj.id}')">
+                                        <span>▶ Start Stream Allocation</span>
+                                    </div>
+                                </div>
+
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+                                    <div class="video-timer-badge" id="timer-badge-${currentAdObj.id}">
+                                        ⏱️ <span id="timer-val-${currentAdObj.id}">30</span>s remaining
+                                    </div>
+                                    <div id="action-holder-${currentAdObj.id}">
+                                        <span style="font-size:12px; color:var(--text-muted); font-weight:600;">Watch video first</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+                
+                if(container.innerHTML === "") {
+                    container.innerHTML = `<p style="padding:40px; color:var(--text-muted);">All cluster allocation streams are finished for today!</p>`;
+                }
             });
-            db.ref('history/' + u.uid).push({ type: "Computational Matrix Harvest", amount: cleanPayout, date: new Date().toLocaleString() });
-            appAlert(`${cleanPayout} PKR synced into account pool.`, "Asset Refreshed");
-            closeTasks();
         }
-        function closeTasks() { clearInterval(clock); closePage('task-page'); }
+
+        // TRIGGER TIMER SEQUENCE FOR INDIVIDUAL VIDEO ROWS
+        function startRowVideoTimer(adId) {
+            // Check if clock is already working
+            if(activeClocks[adId]) return;
+
+            // Trigger Display Elements Change state
+            document.getElementById(`cover-${adId}`).style.display = "none";
+            const iframe = document.getElementById(`iframe-${adId}`);
+            iframe.style.display = "block";
+            
+            // Auto Append auto play configuration variables onto url channel string link
+            let originalSrc = iframe.src;
+            iframe.src = originalSrc + "&autoplay=1";
+
+            let currentSecondsLeft = 30;
+            activeClocks[adId] = setInterval(() => {
+                currentSecondsLeft--;
+                const txt = document.getElementById(`timer-val-${adId}`);
+                if(txt) txt.innerText = currentSecondsLeft;
+
+                if(currentSecondsLeft <= 0) {
+                    clearInterval(activeClocks[adId]);
+                    
+                    // Update layout values to inject dynamic "Claim point" option button
+                    const badge = document.getElementById(`timer-badge-${adId}`);
+                    if(badge) {
+                        badge.style.borderColor = "var(--success)";
+                        badge.style.color = "var(--success)";
+                        badge.innerHTML = "✓ Verification Clear";
+                    }
+                    
+                    const actionHolder = document.getElementById(`action-holder-${adId}`);
+                    if(actionHolder) {
+                        actionHolder.innerHTML = `<button class="btn-green" style="padding:8px 16px; font-size:13px;" onclick="claimRowVideoReward('${adId}')">Claim Point</button>`;
+                    }
+                }
+            }, 1000);
+        }
+
+        // SYNC SPECIFIC CLAIMED ROW REWARD ONTO DISPATCH ACCOUNT DATABASE
+        function claimRowVideoReward(adId) {
+            const u = auth.currentUser;
+            
+            db.ref('users/' + u.uid).once('value', s => {
+                const d = s.val() || {};
+                let currentPayout = d.rewardPerVideo || 0;
+                let done = d.tasksDone || 0;
+                const today = new Date().toLocaleDateString();
+                
+                let updatedDoneCount = (d.lastDate === today) ? (done + 1) : 1;
+                
+                // Write transaction updates safely onto Cloud Realtime Database Engine
+                db.ref('users/' + u.uid).update({
+                    balance: parseFloat(((d.balance || 0) + currentPayout).toFixed(2)),
+                    tasksDone: updatedDoneCount,
+                    lastDate: today
+                });
+
+                db.ref('history/' + u.uid).push({ 
+                    type: "Computational Matrix Harvest", 
+                    amount: parseFloat(currentPayout.toFixed(2)), 
+                    date: new Date().toLocaleString() 
+                });
+
+                appAlert(`${currentPayout.toFixed(2)} PKR successfully added into your vault!`, "Reward Synchronized");
+                
+                // Remove or clear visual processed element node card container cleanly
+                const cardNode = document.getElementById(`node-container-${adId}`);
+                if(cardNode) cardNode.remove();
+                
+                // Refresh Top counter variables
+                document.getElementById('task-counter-global').innerText = `Completed: ${updatedDoneCount}/${d.allowedTasks} tasks today`;
+                
+                // Check if all elements are cleared out
+                const container = document.getElementById('video-rows-container');
+                if(container && container.children.length === 0) {
+                    container.innerHTML = `<p style="padding:40px; color:var(--text-muted);">All cluster allocation streams are finished for today!</p>`;
+                }
+            });
+        }
+
+        function closeTasks() { 
+            // Clear all active background clocks to avoid loop bleed
+            for (let id in activeClocks) {
+                clearInterval(activeClocks[id]);
+            }
+            activeClocks = {};
+            closePage('task-page'); 
+        }
 
         function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value).catch(e => appAlert(e.message)); }
         
