@@ -3,190 +3,278 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Asset & Task Hub</title>
+    <title>Premium Task & Asset Management</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
+        /* --- PROFESSIONAL UI DESIGN SYSTEM --- */
         :root {
-            --bg-dark: #0f172a;
-            --card-bg: #1e293b;
+            --bg-main: #0b0f19;
+            --surface: #151c2c;
+            --surface-card: #1f293d;
             --primary: #3b82f6;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --primary-hover: #2563eb;
+            --accent: #10b981;
+            --text-heading: #ffffff;
+            --text-body: #94a3b8;
+            --danger: #ef4444;
+            --warning: #f59e0b;
         }
+
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-body);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            line-height: 1.5;
         }
+
         .container {
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
-            padding: 15px;
-        }
-        .hidden { display: none !important; }
-        
-        /* Dashboard & Form Components */
-        .card {
-            background: var(--card-bg);
-            border-radius: 12px;
             padding: 20px;
-            margin-bottom: 20px;
-            border: 1px solid #334155;
-        }
-        input, select, button {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border-radius: 6px;
-            border: 1px solid #475569;
-            background: #0f172a;
-            color: white;
             box-sizing: border-box;
         }
-        button {
-            background: var(--primary);
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-        }
-        button:hover { opacity: 0.9; }
-        .btn-red { background: #ef4444; }
 
-        /* ADMIN DASHBOARD STYLES */
-        .admin-section {
-            background: #1e293b;
-            border-radius: 12px;
-            padding: 20px;
-            margin-top: 30px;
-            border: 2px dashed #3b82f6;
+        .hidden { display: none !important; }
+
+        /* Professional Cards */
+        .premium-card {
+            background: var(--surface);
+            border: 1px solid #243049;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
         }
-        .admin-title {
-            color: #f8fafc;
-            font-size: 22px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #3b82f6;
-            padding-bottom: 8px;
+
+        h2, h3, h4 {
+            color: var(--text-heading);
+            margin-top: 0;
+            font-weight: 600;
         }
-        .admin-card {
-            background: #0f172a;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 12px;
-            border-left: 5px solid #22c55e;
+
+        /* Input Controls */
+        label {
+            display: block;
+            font-size: 13px;
+            color: var(--text-heading);
+            margin-bottom: 6px;
+            font-weight: 500;
         }
-        .admin-card.withdraw { border-left-color: #eab308; }
-        .admin-btn-group {
-            margin-top: 10px;
-            display: flex;
-            gap: 10px;
+
+        input, select {
+            width: 100%;
+            padding: 14px;
+            background: #090d16;
+            border: 1px solid #243049;
+            border-radius: 10px;
+            color: var(--text-heading);
+            font-size: 15px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
         }
-        .btn-approve { background: #22c55e; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; width: auto; }
-        .btn-reject { background: #ef4444; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; width: auto; }
-        .proof-img { max-width: 200px; border-radius: 6px; display: block; margin-top: 8px; cursor: pointer; border: 1px solid #475569; }
-        
-        /* Live Stats Layout */
-        .stats-grid {
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* Action Buttons */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .btn:hover { background: var(--primary-hover); }
+        .btn:active { transform: scale(0.98); }
+        .btn-secondary { background: #243049; color: var(--text-heading); margin-top: 8px; }
+        .btn-secondary:hover { background: #2f3e5d; }
+        .btn-danger { background: var(--danger); }
+        .btn-danger:hover { background: #dc2626; }
+
+        /* Stats Component Grid */
+        .grid-stats {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 15px;
+            gap: 16px;
+            margin-bottom: 20px;
         }
-        .stat-box { background: #0f172a; padding: 15px; border-radius: 8px; text-align: center; }
+
+        .stat-node {
+            background: #090d16;
+            border: 1px solid #1e293b;
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-val {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-top: 4px;
+        }
+
+        /* Internal Real-time Admin Area Styles */
+        .admin-panel {
+            background: #111827;
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 20px;
+        }
+
+        .admin-card {
+            background: #1f2937;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--accent);
+        }
+
+        .admin-card.type-withdraw { border-left-color: var(--warning); }
+        
+        .admin-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 13px;
+            border-radius: 6px;
+            width: auto;
+        }
+
+        .proof-preview {
+            max-width: 100%;
+            height: auto;
+            max-height: 180px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid #374151;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
         
-        <div id="auth-view" class="card">
-            <h2 id="auth-title">Sign In to Platform</h2>
-            <input type="email" id="auth-email" placeholder="Enter Email Address">
-            <input type="password" id="auth-pass" placeholder="Enter Password">
-            <button id="btn-primary-auth" onclick="handleAuth()">Proceed</button>
-            <p style="text-align:center; color:var(--text-muted); cursor:pointer;" onclick="toggleAuthMode()" id="auth-toggle-text">Don't have an account? Sign Up</p>
-        </div>
-
-        <div id="user-dashboard-view" class="card hidden">
-            <h2>Welcome, <span id="user-display-email">User</span></h2>
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <p style="color:var(--text-muted); margin:0;">Available Balance</p>
-                    <h3 style="color:#22c55e; margin:5px 0;" id="user-balance">0 PKR</h3>
-                </div>
-                <div class="stat-box">
-                    <p style="color:var(--text-muted); margin:0;">Account Status</p>
-                    <h3 style="color:#3b82f6; margin:5px 0;" id="user-status">Unverified</h3>
-                </div>
-            </div>
-
-            <div id="task-panel" class="card" style="background:#0f172a; margin: 10px 0;">
-                <h4>Daily Tasks Pipeline</h4>
-                <p id="task-status-text">Please activate a tier plan to unlock daily tasks.</p>
-                <button id="btn-claim-earning" onclick="executeDailyTask()" class="hidden">Complete Today's Task Node</button>
-            </div>
-
-            <button onclick="openPlanVerificationPage()">Upgrade / Activate Tier Plan</button>
-            <button onclick="openWithdrawPage()" style="background:#eab308; color:#0f172a;">Request Balance Liquidation (Withdraw)</button>
-            <button onclick="auth.signOut()" class="btn-red">Secure Logout</button>
-        </div>
-
-        <div id="plan-verification-view" class="card hidden">
-            <h3>Select Asset Tier Plan</h3>
-            <select id="plan-selector" onchange="updatePlanMetaDetails()">
-                <option value="1">Tier 1 Plan - Cost: 2000 PKR | Daily: 150 PKR</option>
-                <option value="2">Tier 2 Plan - Cost: 5000 PKR | Daily: 400 PKR</option>
-                <option value="3">Tier 3 Plan - Cost: 10000 PKR | Daily: 900 PKR</option>
-            </select>
-            <div class="stat-box" style="margin:10px 0;">
-                <p id="plan-meta-details">Cost: 2000 PKR | Tasks: 1 | Validity: 30 Days</p>
-            </div>
+        <div id="auth-view" class="premium-card">
+            <h2 id="auth-title" style="text-align: center; margin-bottom: 24px;">Account Gateway</h2>
+            <label>Email Address</label>
+            <input type="email" id="auth-email" placeholder="name@example.com">
             
-            <h4>Submit Secure Payment Proof</h4>
-            <p style="font-size:13px; color:var(--text-muted);">Kindly transfer the exact amount to your provided gateway and upload the receipt image below.</p>
-            <input type="file" id="proof-file" accept="image/*">
-            <button onclick="submitPaymentProof()">Submit Deposit Verification Claim</button>
-            <button onclick="closeSubViews()" class="btn-red">Back to Dashboard</button>
+            <label>Password</label>
+            <input type="password" id="auth-pass" placeholder="••••••••">
+            
+            <button class="btn" onclick="handleAuth()">Continue</button>
+            <p style="text-align:center; font-size:14px; margin-top:16px; cursor:pointer; color: var(--primary);" onclick="toggleAuthMode()" id="auth-toggle-text">New to platform? Create an account</p>
         </div>
 
-        <div id="withdraw-view" class="card hidden">
-            <h3>Request Balance Liquidation</h3>
-            <label>Payment Router Gateway:</label>
+        <div id="user-dashboard-view" class="premium-card hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin:0; font-size:18px;">Dashboard</h3>
+                <span id="user-display-email" style="font-size: 13px; background: #243049; padding: 4px 10px; border-radius: 20px; color:#fff;">user@mail.com</span>
+            </div>
+
+            <div class="grid-stats">
+                <div class="stat-node">
+                    <div style="font-size:12px; color:var(--text-body);">Liquidity Balance</div>
+                    <div class="stat-val" id="user-balance">0 PKR</div>
+                </div>
+                <div class="stat-node">
+                    <div style="font-size:12px; color:var(--text-body);">Verification State</div>
+                    <div class="stat-val" id="user-status" style="color:var(--primary);">Unverified</div>
+                </div>
+            </div>
+
+            <div id="task-workspace" style="background: #090d16; border-radius:12px; padding:16px; margin-bottom:20px; border:1px solid #1e293b;">
+                <h4 style="margin-bottom:6px; font-size:14px;">Daily Task Core</h4>
+                <p id="task-status-text" style="font-size:13px; margin:0; color:var(--text-body);">Checking allocation status...</p>
+                <button id="btn-claim-earning" onclick="executeDailyTask()" class="btn btn-small hidden" style="margin-top:10px; background:var(--accent);">Execute Task Node</button>
+            </div>
+
+            <button class="btn" onclick="openView('plan-verification-view')">Upgrade / Activate Tier Plan</button>
+            <button class="btn btn-secondary" onclick="openView('withdraw-view')" style="border: 1px solid var(--warning); color: var(--warning);">Request Balance Withdrawal</button>
+            <button class="btn btn-secondary btn-danger" onclick="auth.signOut()" style="margin-top: 16px;">Secure Logout</button>
+        </div>
+
+        <div id="plan-verification-view" class="premium-card hidden">
+            <h3>Activate Asset Tier Plan</h3>
+            <label>Select Preferred Plan</label>
+            <select id="plan-selector" onchange="updatePlanMetaDetails()">
+                <option value="1">Tier 1 Plan — 2,000 PKR (Daily: 150 PKR)</option>
+                <option value="2">Tier 2 Plan — 5,000 PKR (Daily: 400 PKR)</option>
+                <option value="3">Tier 3 Plan — 10,000 PKR (Daily: 900 PKR)</option>
+            </select>
+
+            <div class="stat-node" style="margin-bottom: 20px;">
+                <p id="plan-meta-details" style="margin:0; font-size:14px; color:var(--text-heading);">Cost: 2000 PKR | Daily: 150 PKR</p>
+            </div>
+
+            <label>Upload Secure Payment Screenshot Proof</label>
+            <input type="file" id="proof-file" accept="image/*">
+            
+            <button class="btn" onclick="submitPaymentProof()">Submit Deposit Proof</button>
+            <button class="btn btn-secondary" onclick="backToDashboard()">Back</button>
+        </div>
+
+        <div id="withdraw-view" class="premium-card hidden">
+            <h3>Request Balance Withdrawal</h3>
+            <label>Payment Router Network</label>
             <select id="w-method">
                 <option value="EasyPaisa">EasyPaisa</option>
                 <option value="JazzCash">JazzCash</option>
-                <option value="Nayapay">NayaPay</option>
+                <option value="NayaPay">NayaPay</option>
             </select>
-            <input type="text" id="w-account" placeholder="Enter Destination Account Number">
-            <input type="number" id="w-amount" placeholder="Enter Liquidation Amount (Min: 2000 PKR)">
-            <button onclick="submitWithdrawal()" style="background:#eab308; color:#0f172a;">Confirm Outbound Dispatch</button>
-            <button onclick="closeSubViews()" class="btn-red">Cancel</button>
+
+            <label>Destination Account Number</label>
+            <input type="text" id="w-account" placeholder="e.g. 03001234567">
+
+            <label>Withdrawal Amount (PKR)</label>
+            <input type="number" id="w-amount" placeholder="Minimum: 2000 PKR">
+
+            <button class="btn" onclick="submitWithdrawal()">Confirm Outbound Dispatch</button>
+            <button class="btn btn-secondary" onclick="backToDashboard()">Cancel</button>
         </div>
 
-        <div id="admin-master-view" class="admin-section hidden">
-            <div class="admin-title">🛠️ System Administrative Terminal (Admin Mode)</div>
+        <div id="admin-master-view" class="admin-panel hidden">
+            <div style="font-size: 20px; font-weight:700; color:var(--text-heading); border-bottom: 2px solid var(--primary); padding-bottom:10px; margin-bottom:20px;">🛠️ Administrative System Workspace</div>
             
-            <h3 style="color:#f8fafc; margin-top:15px; font-size:16px;">Plan Activation Claims</h3>
+            <h4 style="color:var(--text-body); font-size:14px; margin-bottom:10px; text-transform: uppercase; letter-spacing: 0.5px;">Pending Deposit Activations</h4>
             <div id="admin-plan-claims">
-                <p style="color:#64748b;">No pending plan verification requests.</p>
+                <p style="color:var(--text-body); font-size:14px;">No pending verification logs found.</p>
             </div>
 
-            <h3 style="color:#f8fafc; margin-top:25px; font-size:16px;">Withdrawal Liquidation Requests</h3>
+            <h4 style="color:var(--text-body); font-size:14px; margin-top:24px; margin-bottom:10px; text-transform: uppercase; letter-spacing: 0.5px;">Pending Withdrawal Requests</h4>
             <div id="admin-withdraw-claims">
-                <p style="color:#64748b;">No pending withdrawal claims.</p>
+                <p style="color:var(--text-body); font-size:14px;">No pending liquidations found.</p>
             </div>
+
+            <button class="btn btn-danger" onclick="auth.signOut()" style="margin-top:20px;">Exit Admin Terminal</button>
         </div>
 
     </div>
 
     <script>
-        // --- 1. FIREBASE ARCHITECTURE INITIALIZATION ---
+        // --- 1. FIREBASE SETUP CONFIGURATION ---
         const firebaseConfig = {
             apiKey: "AIzaSyAsXXXXXXXXXXXX_YOUR_REAL_API_KEY",
             authDomain: "YOUR-PROJECT-ID.firebaseapp.com",
@@ -204,98 +292,100 @@
         const db = firebase.database();
         const auth = firebase.auth();
 
-        // --- 2. ADMINISTRATIVE CREDENTIAL FLAG ---
-        const ADMIN = "samiseyam49@gmail.com"; // UPDATED ADMIN EMAIL ACCESS GIVEN HERE
+        // --- 2. ADMIN PROFILE DEFINITION ---
+        const ADMIN = "samiseyam49@gmail.com"; 
         let isSignUpMode = false;
-        let tempSelectedPlan = { id: 1, cost: 2000, earning: 150, totalTasks: 1 };
+        let tempSelectedPlan = { id: 1, cost: 2000, earning: 150 };
 
-        // --- 3. LIFECYCLE ROUTER EVENTS ---
+        // --- 3. CONTROLLER APP LIFECYCLE ---
         auth.onAuthStateChanged(user => {
             if (user) {
                 document.getElementById('auth-view').classList.add('hidden');
-                document.getElementById('user-dashboard-view').classList.remove('hidden');
-                document.getElementById('user-display-email').innerText = user.email;
                 
-                // Realtime Sync user data structure
-                syncUserCoreData(user.uid);
-
-                // Admin validation gate
                 if (user.email === ADMIN) {
+                    // Isolation Framework: Hide user space completely for clean admin terminal
+                    document.getElementById('user-dashboard-view').classList.add('hidden');
                     document.getElementById('admin-master-view').classList.remove('hidden');
                     loadAdminClaimsEngine(); 
                 } else {
                     document.getElementById('admin-master-view').classList.add('hidden');
+                    document.getElementById('user-dashboard-view').classList.remove('hidden');
+                    document.getElementById('user-display-email').innerText = user.email;
+                    syncUserCoreData(user.uid);
                 }
             } else {
                 document.getElementById('auth-view').classList.remove('hidden');
                 document.getElementById('user-dashboard-view').classList.add('hidden');
                 document.getElementById('admin-master-view').classList.add('hidden');
+                closeSubViews();
             }
         });
 
-        // --- 4. REAL-TIME USER FINANCIAL SYNC ---
+        // --- 4. DATA SYNCHRONIZATION PIPELINE ---
         function syncUserCoreData(uid) {
             db.ref('users/' + uid).on('value', snapshot => {
                 const data = snapshot.val() || {};
                 document.getElementById('user-balance').innerText = (data.balance || 0) + " PKR";
-                document.getElementById('user-status').innerText = data.status || "Unverified / Free Tier";
+                document.getElementById('user-status').innerText = data.status || "Unverified";
                 
-                // Check task conditions matching current active tier plans
                 const taskBtn = document.getElementById('btn-claim-earning');
                 const taskText = document.getElementById('task-status-text');
                 
                 if(data.status === "Active") {
                     const todayStr = new Date().toDateString();
                     if(data.lastTaskDate === todayStr) {
-                        taskText.innerText = "✅ Today's task cycle allocation spent. Next frame opens tomorrow.";
+                        taskText.innerText = "✅ Today's allocation complete. Next cycle opens tomorrow.";
                         taskBtn.classList.add('hidden');
                     } else {
-                        taskText.innerText = `🎁 Tier ${data.planId} asset tasks waiting execution sequence.`;
+                        taskText.innerText = `🎁 Tier ${data.planId} daily task yield payload ready.`;
+                        taskBtn.remove('hidden');
                         taskBtn.classList.remove('hidden');
                     }
                 } else if(data.status === "Pending") {
-                    taskText.innerText = "⏳ System auditing your manual deposit receipt proof. Please wait.";
+                    taskText.innerText = "⏳ Verification proof pending manual administration audit.";
                     taskBtn.classList.add('hidden');
                 } else {
-                    taskText.innerText = "Please activate a tier plan to unlock daily tasks.";
+                    taskText.innerText = "Please activate a tier plan to unlock daily execution tasks.";
                     taskBtn.classList.add('hidden');
                 }
             });
         }
 
-        // --- 5. AUTOMATED DAILY EARNING ENGINE ---
+        // --- 5. AUTOMATED EARNING NODES ---
         function executeDailyTask() {
             const uid = auth.currentUser.uid;
             db.ref('users/' + uid).once('value', snapshot => {
                 const d = snapshot.val() || {};
                 const todayStr = new Date().toDateString();
                 
-                if(d.lastTaskDate === todayStr) return alert("Task already executed today!");
+                if(d.lastTaskDate === todayStr) return;
                 
-                let incomingEarnings = 150; 
-                if(d.planId == 2) incomingEarnings = 400;
-                if(d.planId == 3) incomingEarnings = 900;
+                let yieldAmount = 150; 
+                if(d.planId == 2) yieldAmount = 400;
+                if(d.planId == 3) yieldAmount = 900;
 
                 db.ref('users/' + uid).update({
-                    balance: (d.balance || 0) + incomingEarnings,
+                    balance: (d.balance || 0) + yieldAmount,
                     lastTaskDate: todayStr
                 }).then(() => {
                     db.ref('history/' + uid).push({
-                        type: "Daily Task Yield Complete",
-                        amount: `+${incomingEarnings} PKR`,
+                        type: "Daily Yield Dispatched",
+                        amount: `+${yieldAmount} PKR`,
                         date: new Date().toLocaleString()
                     });
-                    alert(`Success! Asset pipeline updated: +${incomingEarnings} PKR credited.`);
+                    alert(`Task executed! +${yieldAmount} PKR credited successfully.`);
                 });
             });
         }
 
-        // --- 6. USER FINANCIAL SUBMISSIONS ---
-        function openPlanVerificationPage() {
-            document.getElementById('plan-verification-view').classList.remove('hidden');
+        // --- 6. CORE SUBVIEW TRANSITIONS ---
+        function openView(id) {
+            document.getElementById('user-dashboard-view').classList.add('hidden');
+            document.getElementById(id).classList.remove('hidden');
         }
-        function openWithdrawPage() {
-            document.getElementById('withdraw-view').classList.remove('hidden');
+        function backToDashboard() {
+            closeSubViews();
+            document.getElementById('user-dashboard-view').classList.remove('hidden');
         }
         function closeSubViews() {
             document.getElementById('plan-verification-view').classList.add('hidden');
@@ -304,16 +394,16 @@
 
         function updatePlanMetaDetails() {
             const val = document.getElementById('plan-selector').value;
-            if(val == "1") tempSelectedPlan = { id: 1, cost: 2000, earning: 150, totalTasks: 1 };
-            if(val == "2") tempSelectedPlan = { id: 2, cost: 5000, earning: 400, totalTasks: 1 };
-            if(val == "3") tempSelectedPlan = { id: 3, cost: 10000, earning: 900, totalTasks: 1 };
-            
-            document.getElementById('plan-meta-details').innerText = `Cost: ${tempSelectedPlan.cost} PKR | Daily Earning: ${tempSelectedPlan.earning} PKR | Tasks: ${tempSelectedPlan.totalTasks}`;
+            if(val == "1") tempSelectedPlan = { id: 1, cost: 2000, earning: 150 };
+            if(val == "2") tempSelectedPlan = { id: 2, cost: 5000, earning: 400 };
+            if(val == "3") tempSelectedPlan = { id: 3, cost: 10000, earning: 900 };
+            document.getElementById('plan-meta-details').innerText = `Cost: ${tempSelectedPlan.cost} PKR | Daily Earning: ${tempSelectedPlan.earning} PKR`;
         }
 
+        // --- 7. DEPOSIT CLAIMS CONTROL ---
         function submitPaymentProof() {
             const fileInput = document.getElementById('proof-file');
-            if(fileInput.files.length === 0) return alert("Please select or capture asset transaction receipt screenshot!");
+            if(fileInput.files.length === 0) return alert("Please execute and attach a transaction screenshot!");
             
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -322,42 +412,41 @@
                     email: auth.currentUser.email,
                     planId: tempSelectedPlan.id,
                     cost: tempSelectedPlan.cost,
-                    earning: tempSelectedPlan.earning,
                     screenshot: e.target.result,
                     status: "Pending",
                     date: new Date().toLocaleString()
                 }).then(() => {
                     db.ref('users/' + auth.currentUser.uid).update({ status: "Pending" });
-                    alert("Deposit verification file uploaded to core network admin ledger!");
-                    closeSubViews();
+                    alert("Deposit proof submitted successfully! Awaiting verification.");
+                    backToDashboard();
                 });
             };
             reader.readAsDataURL(fileInput.files[0]);
         }
 
-        // STRICTOR LIQUIDATION PIPELINE LOCK POLICY
+        // --- 8. STRICTOR WITHDRAW SYSTEM POLICY (SOLID LOCK) ---
         function submitWithdrawal() {
             const method = document.getElementById('w-method').value;
             const account = document.getElementById('w-account').value.trim();
             const amount = parseInt(document.getElementById('w-amount').value);
             
-            if(!account || !amount) return alert("Please fill out targeted structural fields.");
-            if(amount < 2000) return alert("Minimum platform validation ledger threshold is 2,000 PKR.");
+            if(!account || !amount) return alert("Please complete all structural input details.");
+            if(amount < 2000) return alert("Minimum liquidation asset threshold is 2,000 PKR.");
 
             db.ref('users/' + auth.currentUser.uid).once('value', s => {
                 const d = s.val() || {};
                 
-                // CRITICAL STRUCTURAL CONTROL LOCK DETECTOR
+                // STRICTOR LOCK VALIDATOR DETECTOR
                 if(d.withdrawStatus === "Pending") {
-                    return alert("⚠️ Action Denied! Aapki pehli withdrawal request abhi admin ke paas pending hai. Faisle tak aap naya withdraw apply nahi kar sakte!");
+                    return alert("⚠️ Action Denied! Aapki pehli withdrawal request abhi pending hai. Jab tak admin use allowed ya reject nahi karta, aap naya withdraw nahi laga sakte.");
                 }
                 
-                const currentBalance = d.balance || 0;
-                if(amount > currentBalance) return alert("Request exceeds active account asset allocation balance pool.");
+                const activeBalance = d.balance || 0;
+                if(amount > activeBalance) return alert("Insufficient available balance context.");
                 
-                // Complete strict deduction state updates
+                // Deduct balance instantly and activate the pending lock structure flag
                 db.ref('users/' + auth.currentUser.uid).update({ 
-                    balance: currentBalance - amount, 
+                    balance: activeBalance - amount, 
                     totalWithdrawn: (d.totalWithdrawn || 0) + amount,
                     withdrawStatus: "Pending" // LOCK ENGAGED
                 });
@@ -372,49 +461,49 @@
                     date: new Date().toLocaleString()
                 }).then(() => {
                     db.ref('history/' + auth.currentUser.uid).push({ type: `Withdraw Pending (${method})`, amount: `-${amount}`, date: new Date().toLocaleString() });
-                    alert("Liquidation application logged. Final execution locked pending system verification!");
-                    closeSubViews();
+                    alert("Withdrawal requested logged. Awaiting platform authority framework.");
+                    backToDashboard();
                 });
             });
         }
 
-        // --- 7. SECURE REAL-TIME SYSTEM ENGINE FOR ADMINISTRATIVE ACCESS ---
+        // --- 9. PRODUCTION QUALITY REAL-TIME ADMIN MONITOR ---
         function loadAdminClaimsEngine() {
-            // Plan Request Monitor Engine
+            // Plan Log Snapshot Listener
             db.ref('plan_requests').orderByChild('status').equalTo('Pending').on('value', snapshot => {
-                const container = document.getElementById('admin-plan-claims');
-                container.innerHTML = "";
-                if(!snapshot.exists()) { container.innerHTML = "<p style='color:#64748b;padding:5px;'>No pending plan requests.</p>"; return; }
+                const holder = document.getElementById('admin-plan-claims');
+                holder.innerHTML = "";
+                if(!snapshot.exists()) { holder.innerHTML = "<p style='color:#64748b;'>No pending plan requests.</p>"; return; }
                 
                 snapshot.forEach(child => {
                     const req = child.val();
-                    container.insertAdjacentHTML('beforeend', `
+                    holder.insertAdjacentHTML('beforeend', `
                         <div class="admin-card">
-                            <b>User Object Node:</b> ${req.email}<br><b>Tier Intended:</b> Tier ${req.planId} (${req.cost} PKR)<br><b>Timestamp:</b> ${req.date}<br>
-                            <img src="${req.screenshot}" class="proof-img" onclick="window.open(this.src)">
-                            <div class="admin-btn-group">
-                                <button class="btn-approve" onclick="actionPlanClaim('${child.key}', '${req.uid}', true)">Approve & Activate</button>
-                                <button class="btn-reject" onclick="actionPlanClaim('${child.key}', '${req.uid}', false)">Reject Claim</button>
+                            <b>Email:</b> ${req.email}<br><b>Intended:</b> Tier ${req.planId} (${req.cost} PKR)<br>
+                            <img src="${req.screenshot}" class="proof-preview" onclick="window.open(this.src)">
+                            <div class="admin-actions">
+                                <button class="btn btn-small" style="background:var(--accent);" onclick="processPlanNode('${child.key}', '${req.uid}', true)">Approve Activation</button>
+                                <button class="btn btn-small btn-danger" onclick="processPlanNode('${child.key}', '${req.uid}', false)">Reject</button>
                             </div>
                         </div>
                     `);
                 });
             });
 
-            // Withdrawal Requests Engine (With Live Data Mutation)
+            // Withdrawal Log Snapshot Listener
             db.ref('withdrawals').orderByChild('status').equalTo('Pending').on('value', snapshot => {
-                const container = document.getElementById('admin-withdraw-claims');
-                container.innerHTML = "";
-                if(!snapshot.exists()) { container.innerHTML = "<p style='color:#64748b;padding:5px;'>No pending withdrawal claims.</p>"; return; }
+                const holder = document.getElementById('admin-withdraw-claims');
+                holder.innerHTML = "";
+                if(!snapshot.exists()) { holder.innerHTML = "<p style='color:#64748b;'>No pending withdrawal requests.</p>"; return; }
                 
                 snapshot.forEach(child => {
                     const req = child.val();
-                    container.insertAdjacentHTML('beforeend', `
-                        <div class="admin-card withdraw">
-                            <b>Requestee User:</b> ${req.email}<br><b>Channel Strategy:</b> ${req.method} | <b>Route Address:</b> ${req.account}<br><b>Outbound Value:</b> <span style="color:#22c55e;font-weight:bold;">${req.amount} PKR</span><br>
-                            <div class="admin-btn-group">
-                                <button class="btn-approve" onclick="actionWithdrawClaim('${child.key}', '${req.uid}', true, ${req.amount})">Allow / Execute</button>
-                                <button class="btn-reject" onclick="actionWithdrawClaim('${child.key}', '${req.uid}', false, ${req.amount})">Reject & Revert Assets</button>
+                    holder.insertAdjacentHTML('beforeend', `
+                        <div class="admin-card type-withdraw">
+                            <b>User Node:</b> ${req.email}<br><b>Route Target:</b> ${req.method} — Acc: ${req.account}<br><b>Amount:</b> <span style="color:var(--accent);font-weight:700;">${req.amount} PKR</span>
+                            <div class="admin-actions">
+                                <button class="btn btn-small" style="background:var(--accent);" onclick="processWithdrawNode('${child.key}', '${req.uid}', true, ${req.amount})">Allow / Complete</button>
+                                <button class="btn btn-small btn-danger" onclick="processWithdrawNode('${child.key}', '${req.uid}', false, ${req.amount})">Reject & Refund</button>
                             </div>
                         </div>
                     `);
@@ -422,43 +511,41 @@
             });
         }
 
-        // --- 8. INTERNAL SYSTEM ADMIN MUTATION ACTION SYSTEM ROUTERS ---
-        function actionPlanClaim(reqKey, uid, isApprove) {
+        // --- 10. SYSTEM ADMINISTRATION DATA TRANSITIONS ---
+        function processPlanNode(key, uid, isApprove) {
             if(isApprove) {
-                db.ref('plan_requests/' + reqKey).once('value', s => {
+                db.ref('plan_requests/' + key).once('value', s => {
                     const r = s.val();
                     db.ref('users/' + uid).update({ status: "Active", planId: r.planId });
-                    db.ref('plan_requests/' + reqKey).update({ status: "Approved" });
+                    db.ref('plan_requests/' + key).update({ status: "Approved" });
                 });
             } else {
                 db.ref('users/' + uid).update({ status: "Rejected" });
-                db.ref('plan_requests/' + reqKey).update({ status: "Rejected" });
+                db.ref('plan_requests/' + key).update({ status: "Rejected" });
             }
         }
 
-        function actionWithdrawClaim(reqId, uid, isAllowed, amount) {
+        function processWithdrawNode(id, uid, isAllowed, amount) {
             if(isAllowed) {
-                // Outbound Transaction Allowed Successfully
-                db.ref('withdrawals/' + reqId).update({ status: "Approved" });
+                db.ref('withdrawals/' + id).update({ status: "Approved" });
                 db.ref('users/' + uid).update({ withdrawStatus: "Approved" }); // Unlock lock condition status mapping
             } else {
-                // Outbound Transaction Rejected -> Refund system trigger execution
-                db.ref('withdrawals/' + reqId).update({ status: "Rejected" });
+                db.ref('withdrawals/' + id).update({ status: "Rejected" });
                 db.ref('users/' + uid).once('value', s => {
                     const currentBal = s.val().balance || 0;
                     db.ref('users/' + uid).update({ 
-                        balance: currentBal + amount, // Revert exact liquidity to user asset structure
-                        withdrawStatus: "Rejected" // Clear structural block framework
+                        balance: currentBal + amount, // Complete automation refund structure 
+                        withdrawStatus: "Rejected" // Unlock lock state framework
                     });
                 });
             }
         }
 
-        // --- 9. AUXILIARY VISUAL INTERACTION HANDLERS ---
+        // --- 11. VISUAL INTERACTION AUTH ENGINE ---
         function handleAuth() {
             const email = document.getElementById('auth-email').value.trim();
             const pass = document.getElementById('auth-pass').value;
-            if(!email || !pass) return alert("Inputs structural mapping missing.");
+            if(!email || !pass) return alert("Credentials details required.");
 
             if(isSignUpMode) {
                 auth.createUserWithEmailAndPassword(email, pass)
@@ -472,9 +559,8 @@
 
         function toggleAuthMode() {
             isSignUpMode = !isSignUpMode;
-            document.getElementById('auth-title').innerText = isSignUpMode ? "Create New Node Profile" : "Sign In to Platform";
-            document.getElementById('auth-toggle-text').innerText = isSignUpMode ? "Already signed? Access account framework" : "Don't have an account? Sign Up";
-            document.getElementById('btn-primary-auth').innerText = isSignUpMode ? "Register Account" : "Proceed";
+            document.getElementById('auth-title').innerText = isSignUpMode ? "Create Account" : "Account Gateway";
+            document.getElementById('auth-toggle-text').innerText = isSignUpMode ? "Already verified? Login here" : "New to platform? Create an account";
         }
     </script>
 </body>
