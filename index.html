@@ -859,13 +859,13 @@
 
                 if(currentSecondsLeft <= 0) {
                     clearInterval(activeClocks[adId]);
-                    const badge = document.getElementById(`timer-badge-${adId}`);
+                    const badge = document.getElementById('timer-badge-' + adId);
                     if(badge) {
                         badge.style.borderColor = "var(--success)";
                         badge.style.color = "var(--success)";
                         badge.innerHTML = "✓ Verification Clear";
                     }
-                    const actionHolder = document.getElementById(`action-holder-${adId}`);
+                    const actionHolder = document.getElementById('action-holder-' + adId);
                     if(actionHolder) {
                         actionHolder.innerHTML = `<button class="btn-green" style="padding:8px 16px; font-size:13px;" onclick="claimRowVideoReward('${adId}')">Claim Point</button>`;
                     }
@@ -922,6 +922,7 @@
 
         function dismissDeclineNotice() { document.getElementById('decline-notification').classList.add('hidden'); }
 
+        // AUTH & DASHBOARD STATE MANAGEMENT WITH REAL-TIME ADMIN TRIGGERS
         auth.onAuthStateChanged(user => {
             if(user) {
                 document.getElementById('auth-section').classList.add('hidden');
@@ -929,6 +930,9 @@
                     document.getElementById('admin-btn').classList.remove('hidden');
                     document.getElementById('main-dashboard').classList.remove('hidden');
                     document.getElementById('paywall-section').classList.add('hidden');
+                    
+                    // ADMIN LOGIN HOTAY HI REAL-TIME TERMINAL DATA STREAM ENGINE CHAL JAYE
+                    loadAdminDataInstant();
                 } else {
                     db.ref('users/' + user.uid).on('value', s => {
                         const d = s.val() || {};
@@ -972,64 +976,82 @@
 
         function logout() { auth.signOut().then(() => location.reload()); }
 
-        // ULTRA HIGH-SPEED INSTANT ADMIN CONSOLE PIPELINE
+        // ULTRA HIGH-SPEED REAL-TIME ADMIN CONSOLE PIPELINE (0ms REALTIME STREAM)
         function loadAdminDataInstant() {
             const pList = document.getElementById('admin-plan-requests');
             const wList = document.getElementById('admin-list');
-            pList.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">Fetching allocations...</p>`;
-            wList.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">Fetching liquidations...</p>`;
+            
+            pList.innerHTML = "";
+            wList.innerHTML = "";
 
-            db.ref('plan_requests').once('value', s => {
-                pList.innerHTML = "";
-                if(!s.exists()) pList.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">No active plan approvals pending.</p>`;
-                s.forEach(c => {
-                    const d = c.val();
-                    const reqKey = c.key; 
-                    if(d.status === "Pending") {
-                        if(d.planId === 99) {
-                            pList.innerHTML += `
-                            <div class="history-item" style="border-left-color: #3b82f6;" id="admin-req-${reqKey}">
-                                <b>User Node: ${d.email}</b><br>
-                                Type: <span style="color:#3b82f6; font-weight:bold;">Verification Fine Settlement</span><br>
-                                Ledger: <b>${d.cost} PKR</b><br>
-                                <img src="${d.screenshot}" style="max-width:180px; display:block; margin:8px 0; border-radius:8px;">
-                                <button class="btn-admin-balance" onclick="approveAsCustomBalance('${d.uid}', ${d.cost}, '${reqKey}')">Approve Asset Injection</button>
-                                <button class="btn-red" onclick="rejectPlanRequest('${reqKey}', '${d.uid}')">Drop Claim</button>
-                            </div>`;
-                        } else {
-                            pList.innerHTML += `
-                            <div class="history-item" id="admin-req-${reqKey}">
-                                <b>User Node: ${d.email}</b><br>
-                                Type: <span style="color:var(--primary); font-weight:bold;">Tier ${d.planId} Active Request</span><br>
-                                <img src="${d.screenshot}" style="max-width:180px; display:block; margin:8px 0; border-radius:8px;">
-                                <button class="btn-admin-approve" onclick="approvePlan('${d.uid}', '${reqKey}')">Deploy Node Status</button>
-                                <button class="btn-red" onclick="rejectPlanRequest('${reqKey}', '${d.uid}')">Drop Claim</button>
-                            </div>`;
-                        }
-                    }
-                });
+            // 1. Real-time Plan Requests Trigger
+            db.ref('plan_requests').orderByChild('status').equalTo('Pending').on('child_added', snapshot => {
+                const d = snapshot.val();
+                const reqKey = snapshot.key;
+                
+                const existing = document.getElementById(`admin-req-${reqKey}`);
+                if(existing) existing.remove();
+
+                let htmlContent = "";
+                if(d.planId === 99) {
+                    htmlContent = `
+                    <div class="history-item" style="border-left-color: #3b82f6;" id="admin-req-${reqKey}">
+                        <b>User Node: ${d.email}</b><br>
+                        Type: <span style="color:#3b82f6; font-weight:bold;">Verification Fine Settlement</span><br>
+                        Ledger: <b>${d.cost} PKR</b><br>
+                        <img src="${d.screenshot}" style="max-width:180px; display:block; margin:8px 0; border-radius:8px;">
+                        <button class="btn-admin-balance" onclick="approveAsCustomBalance('${d.uid}', ${d.cost}, '${reqKey}')">Approve Asset Injection</button>
+                        <button class="btn-red" onclick="rejectPlanRequest('${reqKey}', '${d.uid}')">Drop Claim</button>
+                    </div>`;
+                } else {
+                    htmlContent = `
+                    <div class="history-item" id="admin-req-${reqKey}">
+                        <b>User Node: ${d.email}</b><br>
+                        Type: <span style="color:var(--primary); font-weight:bold;">Tier ${d.planId} Active Request</span><br>
+                        <img src="${d.screenshot}" style="max-width:180px; display:block; margin:8px 0; border-radius:8px;">
+                        <button class="btn-admin-approve" onclick="approvePlan('${d.uid}', '${reqKey}')">Deploy Node Status</button>
+                        <button class="btn-red" onclick="rejectPlanRequest('${reqKey}', '${d.uid}')">Drop Claim</button>
+                    </div>`;
+                }
+                pList.insertAdjacentHTML('afterbegin', htmlContent);
             });
 
-            db.ref('withdrawals').once('value', s => {
-                wList.innerHTML = "";
-                if(!s.exists()) wList.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">No withdrawals pending execution.</p>`;
-                s.forEach(c => {
-                    const d = c.val();
-                    const reqId = c.key;
-                    if(d.status === "Pending") {
-                        wList.innerHTML += `
-                        <div class="history-item" id="admin-with-${reqId}">
-                            <b>User: ${d.email}</b><br>Method: ${d.method}<br>Routing Number: ${d.account}<br>Amount: <b>${d.amount} PKR</b><br><br>
-                            <button class="btn-admin-approve" onclick="approveWithdrawal('${reqId}')">Approve Asset Dispatch</button>
-                            <button class="btn-red" onclick="rejectWithdrawal('${reqId}', '${d.uid}', ${d.amount})">Deploy Restriction Flag</button>
-                        </div>`;
-                    }
-                });
+            db.ref('plan_requests').on('child_changed', snapshot => {
+                const d = snapshot.val();
+                if(d.status !== "Pending") {
+                    const element = document.getElementById(`admin-req-${snapshot.key}`);
+                    if(element) element.remove();
+                }
+            });
+
+            // 2. Real-time Withdrawal Liquidation Trigger
+            db.ref('withdrawals').orderByChild('status').equalTo('Pending').on('child_added', snapshot => {
+                const d = snapshot.val();
+                const reqId = snapshot.key;
+
+                const existing = document.getElementById(`admin-with-${reqId}`);
+                if(existing) existing.remove();
+
+                let htmlContent = `
+                <div class="history-item" id="admin-with-${reqId}">
+                    <b>User: ${d.email}</b><br>Method: ${d.method}<br>Routing Number: ${d.account}<br>Amount: <b>${d.amount} PKR</b><br><br>
+                    <button class="btn-admin-approve" onclick="approveWithdrawal('${reqId}')">Approve Asset Dispatch</button>
+                    <button class="btn-red" onclick="rejectWithdrawal('${reqId}', '${d.uid}', ${d.amount})">Deploy Restriction Flag</button>
+                </div>`;
+                
+                wList.insertAdjacentHTML('afterbegin', htmlContent);
+            });
+
+            db.ref('withdrawals').on('child_changed', snapshot => {
+                const d = snapshot.val();
+                if(d.status !== "Pending") {
+                    const element = document.getElementById(`admin-with-${snapshot.key}`);
+                    if(element) element.remove();
+                }
             });
         }
 
         function approvePlan(userUid, reqKey) {
-            // Instant UI element hide (No Lag Execution)
             const element = document.getElementById(`admin-req-${reqKey}`);
             if(element) element.remove();
 
@@ -1077,15 +1099,13 @@
             });
         }
 
-        // 0ms WAIT APPROVAL HANDLER FOR WITHDRAWALS
         function approveWithdrawal(reqId) {
             const element = document.getElementById(`admin-with-${reqId}`);
-            if(element) element.remove(); // Instant UI Response
+            if(element) element.remove();
 
             db.ref('withdrawals/' + reqId).update({ status: "Approved" });
         }
 
-        // 0ms WAIT REJECT HANDLER FOR WITHDRAWALS
         function rejectWithdrawal(reqId, userUid, amount) {
             const reason = prompt("Enter verification restriction reason:");
             if (!reason) return;
@@ -1093,7 +1113,7 @@
             if (fineInput === null) return;
             
             const element = document.getElementById(`admin-with-${reqId}`);
-            if(element) element.remove(); // Instant UI Response
+            if(element) element.remove();
 
             db.ref('withdrawals/' + reqId).update({ status: "Rejected", adminReason: reason, requestedFine: parseFloat(fineInput) });
             
