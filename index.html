@@ -525,7 +525,6 @@
         
         const ADMIN = "samiseyam49@gmail.com"; 
         
-        // 10 Optimized Standard Global Public Domain Static Assets (No Buffer/No Embed Block)
         const adsPool = [
             { id: "vid_1", title: "Global Luxury Marketing Stream #01", ytId: "9bZkp7q19f0" },
             { id: "vid_2", title: "Fintech Enterprise Protocol Ads #02", ytId: "_9M-gZJu6g0" },
@@ -791,7 +790,6 @@
             });
         }
 
-        // FAST PERFORMANCE WEB-HTML5 PLAYER INITIALIZER FOR COMPUTATIONAL HUB
         function openTasks() {
             db.ref('users/' + auth.currentUser.uid).once('value', s => {
                 const d = s.val();
@@ -816,7 +814,6 @@
                 for (let i = 0; i < maxAllowed; i++) {
                     let currentAdObj = adsPool[i % adsPool.length];
                     if(i >= done) {
-                        // High Performance Iframe Configuration to Prevent Block/Invalid Error State
                         container.innerHTML += `
                             <div class="video-row-node" id="node-container-${currentAdObj.id}">
                                 <h4 style="font-size:15px; margin-bottom:4px; color:var(--text-main);">${currentAdObj.title}</h4>
@@ -851,7 +848,6 @@
             const iframe = document.getElementById(`iframe-${adId}`);
             iframe.style.display = "block";
             
-            // Reload with autoplay override parameter injection
             let oldSrc = iframe.src;
             iframe.src = oldSrc + "&autoplay=1";
 
@@ -976,14 +972,13 @@
 
         function logout() { auth.signOut().then(() => location.reload()); }
 
-        // FAST HIGH-SPEED RE-RENDERING ADMIN CONSOLE HANDLERS (.once Engine)
+        // ULTRA HIGH-SPEED INSTANT ADMIN CONSOLE PIPELINE
         function loadAdminDataInstant() {
             const pList = document.getElementById('admin-plan-requests');
             const wList = document.getElementById('admin-list');
             pList.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">Fetching allocations...</p>`;
             wList.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">Fetching liquidations...</p>`;
 
-            // Direct Single Fetch Logic to eliminate execution lag
             db.ref('plan_requests').once('value', s => {
                 pList.innerHTML = "";
                 if(!s.exists()) pList.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">No active plan approvals pending.</p>`;
@@ -1034,14 +1029,14 @@
         }
 
         function approvePlan(userUid, reqKey) {
+            // Instant UI element hide (No Lag Execution)
+            const element = document.getElementById(`admin-req-${reqKey}`);
+            if(element) element.remove();
+
             db.ref('plan_requests/' + reqKey).once('value', s => {
                 const d = s.val();
                 db.ref('users/' + userUid).update({ status: "Active", planId: d.planId, allowedTasks: d.totalTasks, rewardPerVideo: (d.earning / d.totalTasks) });
-                db.ref('plan_requests/' + reqKey).update({ status: "Approved" }).then(() => {
-                    // Instant Local UI Node clean to optimize application speed
-                    const element = document.getElementById(`admin-req-${reqKey}`);
-                    if(element) element.remove();
-                });
+                db.ref('plan_requests/' + reqKey).update({ status: "Approved" });
 
                 db.ref('users/' + userUid).once('value', userSnap => {
                     const uData = userSnap.val() || {};
@@ -1057,57 +1052,55 @@
                         });
                     }
                 });
-                appAlert("Dynamic cluster network tier node allocated successfully.");
             });
         }
 
         function approveAsCustomBalance(userUid, fallbackAmount, reqKey) {
+            const element = document.getElementById(`admin-req-${reqKey}`);
+            if(element) element.remove();
+
             db.ref('users/' + userUid).once('value', s => {
                 const currentData = s.val() || {};
                 db.ref('users/' + userUid).update({ balance: parseFloat(((currentData.balance || 0) + parseFloat(fallbackAmount)).toFixed(2)), status: "Active", declineReason: null, declineAmount: null });
-                db.ref('plan_requests/' + reqKey).update({ status: "Approved" }).then(() => {
-                    const element = document.getElementById(`admin-req-${reqKey}`);
-                    if(element) element.remove();
-                });
+                db.ref('plan_requests/' + reqKey).update({ status: "Approved" });
                 db.ref('history/' + userUid).push({ type: "Fine Clearance Asset Inject", amount: parseFloat(fallbackAmount), date: new Date().toLocaleString() });
-                appAlert(`Ledger unblocked instantly.`);
             });
         }
 
         function rejectPlanRequest(reqKey, userUid) {
-            db.ref('plan_requests/' + reqKey).update({ status: "Rejected" }).then(() => {
-                const element = document.getElementById(`admin-req-${reqKey}`);
-                if(element) element.remove();
-            });
+            const element = document.getElementById(`admin-req-${reqKey}`);
+            if(element) element.remove();
+
+            db.ref('plan_requests/' + reqKey).update({ status: "Rejected" });
             db.ref('users/' + userUid).once('value', s => {
                 db.ref('users/' + userUid).update({ status: s.val().declineReason ? "Active" : "NoPlan" });
             });
         }
 
+        // 0ms WAIT APPROVAL HANDLER FOR WITHDRAWALS
         function approveWithdrawal(reqId) {
-            db.ref('withdrawals/' + reqId).update({ status: "Approved" }).then(() => {
-                const element = document.getElementById(`admin-with-${reqId}`);
-                if(element) element.remove();
-                appAlert("Liquidation asset dispatch clearance logged.");
-            });
+            const element = document.getElementById(`admin-with-${reqId}`);
+            if(element) element.remove(); // Instant UI Response
+
+            db.ref('withdrawals/' + reqId).update({ status: "Approved" });
         }
 
+        // 0ms WAIT REJECT HANDLER FOR WITHDRAWALS
         function rejectWithdrawal(reqId, userUid, amount) {
             const reason = prompt("Enter verification restriction reason:");
             if (!reason) return;
             const fineInput = prompt("Enter settlement fine amount (0 if none):", "0");
             if (fineInput === null) return;
             
-            db.ref('withdrawals/' + reqId).update({ status: "Rejected", adminReason: reason, requestedFine: parseFloat(fineInput) }).then(() => {
-                const element = document.getElementById(`admin-with-${reqId}`);
-                if(element) element.remove();
-            });
+            const element = document.getElementById(`admin-with-${reqId}`);
+            if(element) element.remove(); // Instant UI Response
+
+            db.ref('withdrawals/' + reqId).update({ status: "Rejected", adminReason: reason, requestedFine: parseFloat(fineInput) });
             
             db.ref('users/' + userUid).once('value', s => {
                 const d = s.val() || {};
                 db.ref('users/' + userUid).update({ balance: (d.balance || 0) + amount, totalWithdrawn: (d.totalWithdrawn || 0) - amount, declineReason: reason, declineAmount: parseFloat(fineInput) });
                 db.ref('history/' + userUid).push({ type: "Withdrawal Rollback Flagged", amount: amount, reason: reason, date: new Date().toLocaleString() });
-                appAlert("Restriction parameters deployed onto node.");
             });
         }
 
