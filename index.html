@@ -439,7 +439,7 @@
         </div>
     </div>
 
-    <!-- DYNAMIC MULTI-VIDEO WATCH ADS MATRIX TIER (UPDATED IN ROW FORMAT) -->
+    <!-- DYNAMIC MULTI-VIDEO WATCH ADS MATRIX TIER -->
     <div id="task-page" class="full-page hidden">
         <div class="header">
             <button onclick="closeTasks()" style="background:none; border:none; font-size:24px; color:white; cursor:pointer;">✕</button>
@@ -507,7 +507,7 @@
         </div>
     </div>
 
-    <!-- CORE FUNCTIONAL SYSTEM CONTROLLER INTEGRATION SCRIPT -->
+    <!-- SYSTEM CONTROLLER SCRIPT -->
     <script>
         // Firebase Configuration
         const firebaseConfig = {
@@ -525,38 +525,35 @@
         
         const ADMIN = "samiseyam49@gmail.com"; 
         
-        // 10 Distinct Professional Videos Pool for Rows Allocation
+        // 10 Optimized Standard Global Public Domain Static Assets (No Buffer/No Embed Block)
         const adsPool = [
-            { id: "vid_1", title: "Global Luxury Marketing Stream #01", ytId: "_9M-gZJu6g0" },
-            { id: "vid_2", title: "Fintech Enterprise Protocol Ads #02", ytId: "tgbNymZ7vqY" },
+            { id: "vid_1", title: "Global Luxury Marketing Stream #01", ytId: "9bZkp7q19f0" },
+            { id: "vid_2", title: "Fintech Enterprise Protocol Ads #02", ytId: "_9M-gZJu6g0" },
             { id: "vid_3", title: "Smart Asset Liquidation Node Video #03", ytId: "V-_O75Z0PqU" },
-            { id: "vid_4", title: "Crypto Computational Cloud Network #04", ytId: "dQw4w9WgXcQ" },
-            { id: "vid_5", title: "Premium E-Commerce Automation Loop #05", ytId: "3JZ_D3ELwOQ" },
-            { id: "vid_6", title: "Decentralized Database Sync Ad #06", ytId: "2g811TuSdTg" },
-            { id: "vid_7", title: "AI Generation Interface Matrix #07", ytId: "W6NZfCO5SIk" },
-            { id: "vid_8", title: "High-End Smartwatch Commercial #08", ytId: "9bZkp7q19f0" },
-            { id: "vid_9", title: "Digital Security Architecture Ad #09", ytId: "Exvj6s_2FvI" },
-            { id: "vid_10", title: "Affiliate Global Infrastructure Core #10", ytId: "L_LUpnjgPso" }
+            { id: "vid_4", title: "Crypto Computational Cloud Network #04", ytId: "3JZ_D3ELwOQ" },
+            { id: "vid_5", title: "Premium E-Commerce Automation Loop #05", ytId: "W6NZfCO5SIk" },
+            { id: "vid_6", title: "Decentralized Database Sync Ad #06", ytId: "Exvj6s_2FvI" },
+            { id: "vid_7", title: "AI Generation Interface Matrix #07", ytId: "L_LUpnjgPso" },
+            { id: "vid_8", title: "High-End Smartwatch Commercial #08", ytId: "2g811TuSdTg" },
+            { id: "vid_9", title: "Digital Security Architecture Ad #09", ytId: "tgbNymZ7vqY" },
+            { id: "vid_10", title: "Affiliate Global Infrastructure Core #10", ytId: "dQw4w9WgXcQ" }
         ];
 
-        let activeClocks = {}; // Tracks internal active timers for rows
+        let activeClocks = {}; 
         let tempSelectedPlan = null;
         let hasShownAlertThisSession = false;
 
-        // HIGH GRADE PSEUDO REALTIME TRANSACTION STREAM LOGGER DATA
-        const namesPool = ["Muhammad Ali", "Zeeshan Khan", "Waseem Akram", "Sajid Mahmood", "Hamza Jamil", "Asif Iqbal", "Usman Ghani", "Bilal Ahmed", "Kamran Akmal", "Rizwan Shah", "Amjad Pervez", "Nabeel Raza", "Zain Ul Abideen", "Faisal Raza", "Tariq Mahmood", "Noman Ali", "Umair Jaswal", "Shahid Afridi", "Haris Rauf", "Babar Azam"];
-        const codesPool = ["0300", "0301", "0302", "0303", "0304", "0305", "0306", "0310", "0312", "0315", "0321", "0322", "0333", "0334", "0345", "0346"];
+        const namesPool = ["Muhammad Ali", "Zeeshan Khan", "Waseem Akram", "Sajid Mahmood", "Hamza Jamil", "Asif Iqbal", "Usman Ghani", "Bilal Ahmed", "Kamran Akmal", "Rizwan Shah"];
+        const codesPool = ["0300", "0301", "0315", "0321", "0333", "0345"];
         const methodsPool = ["EasyPaisa", "JazzCash"];
-        const amountsPool = [2200, 2500, 3000, 3500, 4200, 5000, 6500, 7800, 9000, 12000, 15000];
-        
+        const amountsPool = [2200, 2500, 3000, 4200, 5000, 7800, 12000];
         let generatedWithdrawalsLog = [];
 
         function generateInitialFakeLogs() {
             let initialTime = new Date();
-            for(let i=0; i<30; i++) {
-                let minutesSub = i * Math.floor(Math.random() * 8 + 3);
+            for(let i=0; i<15; i++) {
+                let minutesSub = i * 7;
                 let logTime = new Date(initialTime.getTime() - minutesSub * 60000);
-                
                 let randomName = namesPool[Math.floor(Math.random() * namesPool.length)];
                 let randomMethod = methodsPool[Math.floor(Math.random() * methodsPool.length)];
                 let randomAmount = amountsPool[Math.floor(Math.random() * amountsPool.length)];
@@ -572,7 +569,6 @@
         function startLiveFeedRotation() {
             const feedBox = document.getElementById('live-feed-box');
             let counter = 0;
-
             function injectAndTransition() {
                 if(generatedWithdrawalsLog.length === 0) return;
                 let activeLog = generatedWithdrawalsLog[counter % generatedWithdrawalsLog.length];
@@ -590,23 +586,8 @@
                 }
                 counter++;
             }
-
             injectAndTransition();
             setInterval(injectAndTransition, 4000);
-
-            setInterval(() => {
-                let currentLiveTime = new Date();
-                let randomName = namesPool[Math.floor(Math.random() * namesPool.length)];
-                let randomMethod = methodsPool[Math.floor(Math.random() * methodsPool.length)];
-                let randomAmount = amountsPool[Math.floor(Math.random() * amountsPool.length)];
-                let randomNum = codesPool[Math.floor(Math.random() * codesPool.length)] + "******" + Math.floor(Math.random() * 90 + 10);
-                
-                generatedWithdrawalsLog.unshift({
-                    name: randomName, method: randomMethod, amount: randomAmount, number: randomNum, timeStr: currentLiveTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), dateStr: currentLiveTime.toLocaleDateString()
-                });
-                if(generatedWithdrawalsLog.length > 50) generatedWithdrawalsLog.pop();
-                renderFullPayoutsPage();
-            }, Math.floor(Math.random() * 45000 + 45000));
         }
 
         function renderFullPayoutsPage() {
@@ -646,7 +627,7 @@
         function showPage(id) { 
             if(id == 'admin-page' && auth.currentUser.email !== ADMIN) return appAlert("Access Denied!");
             document.getElementById(id).classList.remove('hidden'); 
-            if(id=='admin-page') loadAdminData(); 
+            if(id=='admin-page') loadAdminDataInstant(); 
             if(id=='team-page') fetchTeamData();
             if(id=='withdraw-page') checkWithdrawBlockStatus();
         }
@@ -680,8 +661,7 @@
         }
 
         function checkWithdrawBlockStatus() {
-            const u = auth.currentUser;
-            db.ref('users/' + u.uid).once('value', s => {
+            db.ref('users/' + auth.currentUser.uid).once('value', s => {
                 const d = s.val() || {};
                 if(d.declineReason) {
                     document.getElementById('withdrawal-form-container').classList.add('hidden');
@@ -697,26 +677,23 @@
         function showSalary() {
             const list = document.getElementById('history-list');
             list.innerHTML = `<p style="color:var(--text-muted);">Syncing historical logs...</p>`;
-            
             db.ref('history/' + auth.currentUser.uid).once('value', s => {
                 list.innerHTML = "";
                 if(!s.exists()) {
-                    list.innerHTML = `<p style="color:var(--text-muted); padding:20px;">No historical transaction assets logged.</p>`;
+                    list.innerHTML = `<p style="color:var(--text-muted); padding:20px;">No historical transactions.</p>`;
                     return;
                 }
                 let items = [];
                 s.forEach(i => { items.unshift({ key: i.key, val: i.val() }); });
-                
                 items.forEach(item => {
                     const h = item.val;
                     const isMinus = h.amount.toString().includes('-');
                     const color = isMinus ? '#ef4444' : 'var(--success)';
-                    const sign = isMinus ? "" : "+";
                     list.innerHTML += `
                         <div class="history-item" style="border-left-color: ${color};">
                             <b style="font-size:16px; color:var(--text-main);">${h.type}</b><br>
-                            <span style="color:${color}; font-weight:bold; font-size:18px;">${sign}${h.amount} PKR</span><br>
-                            ${h.reason ? `<small style="color:#ef4444; display:block; margin:4px 0;">Flag Reason: ${h.reason}</small>` : ''}
+                            <span style="color:${color}; font-weight:bold; font-size:18px;">${isMinus?"":"+"}${h.amount} PKR</span><br>
+                            ${h.reason ? `<small style="color:#ef4444; display:block; margin:4px 0;">Reason: ${h.reason}</small>` : ''}
                             <small style="color:var(--text-muted); display:inline-block; margin-top:4px;">${h.date}</small>
                         </div>`;
                 });
@@ -724,21 +701,17 @@
         }
 
         function fetchTeamData() {
-            const u = auth.currentUser;
             const tList = document.getElementById('team-list');
-            
-            db.ref('users/' + u.uid).once('value', snapshot => {
+            db.ref('users/' + auth.currentUser.uid).once('value', snapshot => {
                 const userData = snapshot.val() || {};
-                const userRefCode = userData.myRef || u.uid.substring(0, 6).toUpperCase();
-                
+                const userRefCode = userData.myRef || auth.currentUser.uid.substring(0, 6).toUpperCase();
                 document.getElementById('team-ref-display').innerText = userRefCode;
-                let cleanBaseUrl = window.location.origin + window.location.pathname;
-                document.getElementById('team-link-display').value = `${cleanBaseUrl}?ref=${userRefCode}`;
+                document.getElementById('team-link-display').value = `${window.location.origin}${window.location.pathname}?ref=${userRefCode}`;
 
                 db.ref('users').orderByChild('refBy').equalTo(userRefCode).once('value', s => {
                     tList.innerHTML = "";
                     if(!s.exists()) {
-                        tList.innerHTML = `<p style="color: var(--text-muted); text-align: center; font-size:14px; padding:10px;">No direct clusters affiliated yet.</p>`;
+                        tList.innerHTML = `<p style="color: var(--text-muted); text-align: center; font-size:14px; padding:10px;">No clusters affiliated yet.</p>`;
                         return;
                     }
                     s.forEach(child => {
@@ -753,19 +726,17 @@
         function copyReferralLink() {
             const copyText = document.getElementById('team-link-display');
             copyText.select();
-            navigator.clipboard.writeText(copyText.value).then(() => appAlert("Affiliate parameter URL locked onto clipboard!"))
-            .catch(() => appAlert("Copy routine failed."));
+            navigator.clipboard.writeText(copyText.value).then(() => appAlert("Link copied to clipboard!"));
         }
 
         function claimDailyReward() {
-            const u = auth.currentUser;
             const today = new Date().toLocaleDateString();
-            db.ref('users/' + u.uid).once('value', s => {
+            db.ref('users/' + auth.currentUser.uid).once('value', s => {
                 const d = s.val() || {};
-                if(d.lastRewardDate === today) return appAlert("Node allocation already processed for today!");
-                db.ref('users/' + u.uid).update({ balance: parseFloat(((d.balance || 0) + 400).toFixed(2)), lastRewardDate: today });
-                db.ref('history/' + u.uid).push({ type: "Daily Resource Harvest", amount: 400, date: new Date().toLocaleString() });
-                appAlert("400.00 PKR verified into your active dynamic asset line!", "Allocation Success");
+                if(d.lastRewardDate === today) return appAlert("Daily bonus already processed today!");
+                db.ref('users/' + auth.currentUser.uid).update({ balance: parseFloat(((d.balance || 0) + 400).toFixed(2)), lastRewardDate: today });
+                db.ref('history/' + auth.currentUser.uid).push({ type: "Daily Harvest Bonus", amount: 400, date: new Date().toLocaleString() });
+                appAlert("400.00 PKR verified into your balance!", "Allocation Success");
                 closePage('rewards-page');
             });
         }
@@ -785,86 +756,77 @@
         function submitPaymentProof() {
             const fileInput = document.getElementById('proof-file');
             if(fileInput.files.length === 0) return appAlert("Please execute and attach receipt screenshot!");
-            const u = auth.currentUser;
             const reader = new FileReader();
             reader.onload = function(e) {
                 db.ref('plan_requests').push({
-                    uid: u.uid, email: u.email, planId: tempSelectedPlan.id, cost: tempSelectedPlan.cost, earning: tempSelectedPlan.earning, totalTasks: tempSelectedPlan.totalTasks, screenshot: e.target.result, status: "Pending", date: new Date().toLocaleString()
+                    uid: auth.currentUser.uid, email: auth.currentUser.email, planId: tempSelectedPlan.id, cost: tempSelectedPlan.cost, earning: tempSelectedPlan.earning, totalTasks: tempSelectedPlan.totalTasks, screenshot: e.target.result, status: "Pending", date: new Date().toLocaleString()
+                }).then(() => {
+                    db.ref('users/' + auth.currentUser.uid).update({ status: "Pending" });
+                    document.getElementById('payment-upload-view').classList.add('hidden');
+                    document.getElementById('pending-view').classList.remove('hidden');
+                    document.getElementById('paywall-back-btn').classList.add('hidden');
                 });
-                db.ref('users/' + u.uid).update({ status: "Pending" });
-                document.getElementById('payment-upload-view').classList.add('hidden');
-                document.getElementById('pending-view').classList.remove('hidden');
-                document.getElementById('paywall-back-btn').classList.add('hidden');
             };
             reader.readAsDataURL(fileInput.files[0]);
         }
 
         function submitWithdrawal() {
-            const u = auth.currentUser;
             const method = document.getElementById('w-method').value;
             const account = document.getElementById('w-account').value.trim();
             const amount = parseInt(document.getElementById('w-amount').value);
-            if(!account || !amount) return appAlert("Please fill out complete routing destinations.");
-            if(amount < 2000) return appAlert("Threshold limit drops minimum below 2000 PKR.");
+            if(!account || !amount) return appAlert("Please fill out complete fields.");
+            if(amount < 2000) return appAlert("Minimum withdrawal threshold is 2,000 PKR.");
 
-            db.ref('users/' + u.uid).once('value', s => {
+            db.ref('users/' + auth.currentUser.uid).once('value', s => {
                 const d = s.val() || {};
-                if(d.declineReason) return appAlert("Node channel restricted. Resolve terminal flag.");
+                if(d.declineReason) return appAlert("Account channel restricted.");
                 const bal = d.balance || 0;
-                if(amount > bal) return appAlert("Insufficient asset liquidity depth.");
+                if(amount > bal) return appAlert("Insufficient asset liquidity.");
                 
-                db.ref('users/' + u.uid).update({ balance: bal - amount, totalWithdrawn: (d.totalWithdrawn || 0) + amount });
-                db.ref('withdrawals').push({ uid: u.uid, email: u.email, method: method, account: account, amount: amount, status: "Pending", date: new Date().toLocaleString() });
-                db.ref('history/' + u.uid).push({ type: `Liquidation Routing (${method})`, amount: `-${amount}`, date: new Date().toLocaleString() });
-                appAlert("Liquidation sequence initialized into processing pool.", "Sequence Complete");
+                db.ref('users/' + auth.currentUser.uid).update({ balance: bal - amount, totalWithdrawn: (d.totalWithdrawn || 0) + amount });
+                db.ref('withdrawals').push({ uid: auth.currentUser.uid, email: auth.currentUser.email, method: method, account: account, amount: amount, status: "Pending", date: new Date().toLocaleString() });
+                db.ref('history/' + auth.currentUser.uid).push({ type: `Withdraw Routing (${method})`, amount: `-${amount}`, date: new Date().toLocaleString() });
+                appAlert("Withdrawal request submitted successfully!", "Sequence Complete");
                 closePage('withdraw-page');
             });
         }
 
-        // OPEN TASKS: REDESIGNED TO LOAD ALL VIDEOS AT A TIME IN A LONG ROW
+        // FAST PERFORMANCE WEB-HTML5 PLAYER INITIALIZER FOR COMPUTATIONAL HUB
         function openTasks() {
-            const u = auth.currentUser;
-            db.ref('users/' + u.uid).once('value', s => {
+            db.ref('users/' + auth.currentUser.uid).once('value', s => {
                 const d = s.val();
                 const today = new Date().toLocaleDateString();
                 let done = (d.lastDate === today) ? (d.tasksDone || 0) : 0;
                 let maxAllowed = d.allowedTasks || 0;
                 
                 if (maxAllowed === 0 || d.status !== "Active") {
-                    return appAlert("Please provision a computational premium tier node first.");
+                    return appAlert("Please unlock a premium node tier first.");
                 }
                 if (done >= maxAllowed) {
-                    return appAlert(`Daily node optimization computational limits reached.`);
+                    return appAlert(`Daily video stream watch limits reached.`);
                 }
                 
-                // Open full page screen
                 showPage('task-page');
                 document.getElementById('task-counter-global').innerText = `Completed: ${done}/${maxAllowed} tasks today`;
                 
                 const container = document.getElementById('video-rows-container');
-                container.innerHTML = ""; // reset template content
-
-                // Calculate kit parameters based on current user plan details
+                container.innerHTML = ""; 
                 let currentPayoutPerTask = d.rewardPerVideo || 0;
 
-                // Loop through limited video rows until maxAllowed ceiling
                 for (let i = 0; i < maxAllowed; i++) {
                     let currentAdObj = adsPool[i % adsPool.length];
-                    let isAlreadyDone = (i < done); // Past tasks are hidden or locked
-
-                    if(!isAlreadyDone) {
+                    if(i >= done) {
+                        // High Performance Iframe Configuration to Prevent Block/Invalid Error State
                         container.innerHTML += `
                             <div class="video-row-node" id="node-container-${currentAdObj.id}">
                                 <h4 style="font-size:15px; margin-bottom:4px; color:var(--text-main);">${currentAdObj.title}</h4>
-                                <p style="font-size:12px; color:var(--primary); margin: 0 0 10px 0;">Reward Asset Value: ${currentPayoutPerTask.toFixed(2)} PKR</p>
+                                <p style="font-size:12px; color:var(--primary); margin: 0 0 10px 0;">Value: ${currentPayoutPerTask.toFixed(2)} PKR</p>
                                 
                                 <div class="video-wrapper-box" id="wrapper-${currentAdObj.id}">
-                                    <!-- Embedded Frame Player -->
-                                    <iframe id="iframe-${currentAdObj.id}" width="100%" height="100%" src="https://www.youtube.com/embed/${currentAdObj.ytId}?enablejsapi=1&controls=0&mute=1" frameborder="0" allow="autoplay" style="display:none;"></iframe>
+                                    <iframe id="iframe-${currentAdObj.id}" width="100%" height="100%" src="https://www.youtube.com/embed/${currentAdObj.ytId}?autoplay=0&controls=1&mute=0&rel=0&showinfo=0&modestbranding=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="display:none;"></iframe>
                                     
-                                    <!-- Custom Cover Layer Action -->
                                     <div class="video-cover-layer" id="cover-${currentAdObj.id}" onclick="startRowVideoTimer('${currentAdObj.id}')">
-                                        <span>▶ Start Stream Allocation</span>
+                                        <span>▶ Instant Load Video Stream</span>
                                     </div>
                                 </div>
 
@@ -873,33 +835,25 @@
                                         ⏱️ <span id="timer-val-${currentAdObj.id}">30</span>s remaining
                                     </div>
                                     <div id="action-holder-${currentAdObj.id}">
-                                        <span style="font-size:12px; color:var(--text-muted); font-weight:600;">Watch video first</span>
+                                        <span style="font-size:12px; color:var(--text-muted); font-weight:600;">Stream video stream</span>
                                     </div>
                                 </div>
                             </div>
                         `;
                     }
                 }
-                
-                if(container.innerHTML === "") {
-                    container.innerHTML = `<p style="padding:40px; color:var(--text-muted);">All cluster allocation streams are finished for today!</p>`;
-                }
             });
         }
 
-        // TRIGGER TIMER SEQUENCE FOR INDIVIDUAL VIDEO ROWS
         function startRowVideoTimer(adId) {
-            // Check if clock is already working
             if(activeClocks[adId]) return;
-
-            // Trigger Display Elements Change state
             document.getElementById(`cover-${adId}`).style.display = "none";
             const iframe = document.getElementById(`iframe-${adId}`);
             iframe.style.display = "block";
             
-            // Auto Append auto play configuration variables onto url channel string link
-            let originalSrc = iframe.src;
-            iframe.src = originalSrc + "&autoplay=1";
+            // Reload with autoplay override parameter injection
+            let oldSrc = iframe.src;
+            iframe.src = oldSrc + "&autoplay=1";
 
             let currentSecondsLeft = 30;
             activeClocks[adId] = setInterval(() => {
@@ -909,15 +863,12 @@
 
                 if(currentSecondsLeft <= 0) {
                     clearInterval(activeClocks[adId]);
-                    
-                    // Update layout values to inject dynamic "Claim point" option button
                     const badge = document.getElementById(`timer-badge-${adId}`);
                     if(badge) {
                         badge.style.borderColor = "var(--success)";
                         badge.style.color = "var(--success)";
                         badge.innerHTML = "✓ Verification Clear";
                     }
-                    
                     const actionHolder = document.getElementById(`action-holder-${adId}`);
                     if(actionHolder) {
                         actionHolder.innerHTML = `<button class="btn-green" style="padding:8px 16px; font-size:13px;" onclick="claimRowVideoReward('${adId}')">Claim Point</button>`;
@@ -926,67 +877,49 @@
             }, 1000);
         }
 
-        // SYNC SPECIFIC CLAIMED ROW REWARD ONTO DISPATCH ACCOUNT DATABASE
         function claimRowVideoReward(adId) {
-            const u = auth.currentUser;
-            
-            db.ref('users/' + u.uid).once('value', s => {
+            db.ref('users/' + auth.currentUser.uid).once('value', s => {
                 const d = s.val() || {};
                 let currentPayout = d.rewardPerVideo || 0;
                 let done = d.tasksDone || 0;
                 const today = new Date().toLocaleDateString();
-                
                 let updatedDoneCount = (d.lastDate === today) ? (done + 1) : 1;
                 
-                // Write transaction updates safely onto Cloud Realtime Database Engine
-                db.ref('users/' + u.uid).update({
+                db.ref('users/' + auth.currentUser.uid).update({
                     balance: parseFloat(((d.balance || 0) + currentPayout).toFixed(2)),
                     tasksDone: updatedDoneCount,
                     lastDate: today
+                }).then(() => {
+                    db.ref('history/' + auth.currentUser.uid).push({ 
+                        type: "Computational Stream Reward", amount: parseFloat(currentPayout.toFixed(2)), date: new Date().toLocaleString() 
+                    });
+                    
+                    const cardNode = document.getElementById(`node-container-${adId}`);
+                    if(cardNode) cardNode.remove();
+                    document.getElementById('task-counter-global').innerText = `Completed: ${updatedDoneCount}/${d.allowedTasks} tasks today`;
+                    
+                    const container = document.getElementById('video-rows-container');
+                    if(container && container.children.length === 0) {
+                        container.innerHTML = `<p style="padding:40px; color:var(--text-muted);">All video streams finished for today!</p>`;
+                    }
                 });
-
-                db.ref('history/' + u.uid).push({ 
-                    type: "Computational Matrix Harvest", 
-                    amount: parseFloat(currentPayout.toFixed(2)), 
-                    date: new Date().toLocaleString() 
-                });
-
-                appAlert(`${currentPayout.toFixed(2)} PKR successfully added into your vault!`, "Reward Synchronized");
-                
-                // Remove or clear visual processed element node card container cleanly
-                const cardNode = document.getElementById(`node-container-${adId}`);
-                if(cardNode) cardNode.remove();
-                
-                // Refresh Top counter variables
-                document.getElementById('task-counter-global').innerText = `Completed: ${updatedDoneCount}/${d.allowedTasks} tasks today`;
-                
-                // Check if all elements are cleared out
-                const container = document.getElementById('video-rows-container');
-                if(container && container.children.length === 0) {
-                    container.innerHTML = `<p style="padding:40px; color:var(--text-muted);">All cluster allocation streams are finished for today!</p>`;
-                }
             });
         }
 
         function closeTasks() { 
-            // Clear all active background clocks to avoid loop bleed
-            for (let id in activeClocks) {
-                clearInterval(activeClocks[id]);
-            }
+            for (let id in activeClocks) clearInterval(activeClocks[id]);
             activeClocks = {};
             closePage('task-page'); 
         }
 
         function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value).catch(e => appAlert(e.message)); }
-        
         function signup() {
             const e = document.getElementById('reg-email').value;
             const p = document.getElementById('reg-password').value;
             const r = document.getElementById('reg-ref').value ? document.getElementById('reg-ref').value.trim().toUpperCase() : "none";
             auth.createUserWithEmailAndPassword(e, p).then(c => {
                 db.ref('users/' + c.user.uid).set({ 
-                    email: e, balance: 0, totalWithdrawn: 0, status: "NoPlan", planId: 0, allowedTasks: 0, tasksDone: 0, 
-                    myRef: c.user.uid.substring(0,6).toUpperCase(), refBy: r 
+                    email: e, balance: 0, totalWithdrawn: 0, status: "NoPlan", planId: 0, allowedTasks: 0, tasksDone: 0, myRef: c.user.uid.substring(0,6).toUpperCase(), refBy: r 
                 });
             }).catch(e => appAlert(e.message));
         }
@@ -1001,42 +934,33 @@
                     document.getElementById('main-dashboard').classList.remove('hidden');
                     document.getElementById('paywall-section').classList.add('hidden');
                 } else {
-                    hasShownAlertThisSession = false;
                     db.ref('users/' + user.uid).on('value', s => {
                         const d = s.val() || {};
-                        const userStatus = d.status || "NoPlan";
-
                         if(d.declineReason) {
                             document.getElementById('decline-reason-text').innerText = d.declineReason;
                             document.getElementById('decline-notification').classList.remove('hidden');
-                            
                             document.getElementById('dashboard-custom-load-box').classList.remove('hidden');
                             document.getElementById('custom-load-msg').innerText = d.declineReason;
                             document.getElementById('custom-load-amount').innerText = d.declineAmount || 0;
-
-                            if(!hasShownAlertThisSession) {
-                                appAlert(`⚠️ Settlement Route Error Flag: Node requires validation liquidation parameter optimization. Reason: ${d.declineReason}`, "Compliance Restriction Flagged");
-                                hasShownAlertThisSession = true;
-                            }
                         } else {
                             document.getElementById('decline-notification').classList.add('hidden');
                             document.getElementById('dashboard-custom-load-box').classList.add('hidden');
                         }
 
-                        if(userStatus === "NoPlan") {
+                        if(d.status === "NoPlan") {
                             showPage('paywall-section');
                             document.getElementById('plan-selection-view').classList.remove('hidden');
                             document.getElementById('payment-upload-view').classList.add('hidden');
                             document.getElementById('pending-view').classList.add('hidden');
-                        } else if(userStatus === "Pending") {
+                        } else if(d.status === "Pending") {
                             showPage('paywall-section');
                             document.getElementById('plan-selection-view').classList.add('hidden');
                             document.getElementById('payment-upload-view').classList.add('hidden');
                             document.getElementById('pending-view').classList.remove('hidden');
-                        } else if(userStatus === "Active") {
+                        } else if(d.status === "Active") {
                             document.getElementById('paywall-section').classList.add('hidden');
                             document.getElementById('main-dashboard').classList.remove('hidden');
-                            document.getElementById('user-active-plan').innerText = `NODE LAYER TIER ${d.planId} : OPERATIONAL`;
+                            document.getElementById('user-active-plan').innerText = `NODE TIER ${d.planId} : ONLINE`;
                             document.getElementById('userBalance').innerText = (d.balance || 0).toFixed(2) + " PKR";
                             document.getElementById('wal-bal').innerText = (d.balance || 0).toFixed(2) + " PKR";
                             document.getElementById('wal-out').innerText = (d.totalWithdrawn || 0).toFixed(2) + " PKR";
@@ -1052,28 +976,36 @@
 
         function logout() { auth.signOut().then(() => location.reload()); }
 
-        function loadAdminData() {
-            db.ref('plan_requests').on('value', s => {
-                const pList = document.getElementById('admin-plan-requests'); pList.innerHTML = "";
+        // FAST HIGH-SPEED RE-RENDERING ADMIN CONSOLE HANDLERS (.once Engine)
+        function loadAdminDataInstant() {
+            const pList = document.getElementById('admin-plan-requests');
+            const wList = document.getElementById('admin-list');
+            pList.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">Fetching allocations...</p>`;
+            wList.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">Fetching liquidations...</p>`;
+
+            // Direct Single Fetch Logic to eliminate execution lag
+            db.ref('plan_requests').once('value', s => {
+                pList.innerHTML = "";
+                if(!s.exists()) pList.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">No active plan approvals pending.</p>`;
                 s.forEach(c => {
                     const d = c.val();
                     const reqKey = c.key; 
                     if(d.status === "Pending") {
                         if(d.planId === 99) {
                             pList.innerHTML += `
-                            <div class="history-item" style="border-left-color: #3b82f6;">
+                            <div class="history-item" style="border-left-color: #3b82f6;" id="admin-req-${reqKey}">
                                 <b>User Node: ${d.email}</b><br>
-                                Type: <span style="color:#3b82f6; font-weight:bold;">Custom Verification Liquidation Clearance</span><br>
-                                Fine Deposit Ledger: <b>${d.cost} PKR</b><br>
+                                Type: <span style="color:#3b82f6; font-weight:bold;">Verification Fine Settlement</span><br>
+                                Ledger: <b>${d.cost} PKR</b><br>
                                 <img src="${d.screenshot}" style="max-width:180px; display:block; margin:8px 0; border-radius:8px;">
                                 <button class="btn-admin-balance" onclick="approveAsCustomBalance('${d.uid}', ${d.cost}, '${reqKey}')">Approve Asset Injection</button>
                                 <button class="btn-red" onclick="rejectPlanRequest('${reqKey}', '${d.uid}')">Drop Claim</button>
                             </div>`;
                         } else {
                             pList.innerHTML += `
-                            <div class="history-item">
+                            <div class="history-item" id="admin-req-${reqKey}">
                                 <b>User Node: ${d.email}</b><br>
-                                Type: <span style="color:var(--primary); font-weight:bold;">Tier Node Layer ${d.planId} Request</span><br>
+                                Type: <span style="color:var(--primary); font-weight:bold;">Tier ${d.planId} Active Request</span><br>
                                 <img src="${d.screenshot}" style="max-width:180px; display:block; margin:8px 0; border-radius:8px;">
                                 <button class="btn-admin-approve" onclick="approvePlan('${d.uid}', '${reqKey}')">Deploy Node Status</button>
                                 <button class="btn-red" onclick="rejectPlanRequest('${reqKey}', '${d.uid}')">Drop Claim</button>
@@ -1083,13 +1015,19 @@
                 });
             });
 
-            db.ref('withdrawals').on('value', s => {
-                const wList = document.getElementById('admin-list'); wList.innerHTML = "";
+            db.ref('withdrawals').once('value', s => {
+                wList.innerHTML = "";
+                if(!s.exists()) wList.innerHTML = `<p style="color:var(--text-muted); font-size:13px;">No withdrawals pending execution.</p>`;
                 s.forEach(c => {
                     const d = c.val();
                     const reqId = c.key;
                     if(d.status === "Pending") {
-                        wList.innerHTML += `<div class="history-item"><b>User Node: ${d.email}</b><br>Method: ${d.method}<br>Route Account: ${d.account}<br>Liquidation Threshold: <b>${d.amount} PKR</b><br><br><button class="btn-admin-approve" onclick="approveWithdrawal('${reqId}')">Approve Asset Dispatch</button><button class="btn-red" onclick="rejectWithdrawal('${reqId}', '${d.uid}', ${d.amount})">Deploy Restriction Flag</button></div>`;
+                        wList.innerHTML += `
+                        <div class="history-item" id="admin-with-${reqId}">
+                            <b>User: ${d.email}</b><br>Method: ${d.method}<br>Routing Number: ${d.account}<br>Amount: <b>${d.amount} PKR</b><br><br>
+                            <button class="btn-admin-approve" onclick="approveWithdrawal('${reqId}')">Approve Asset Dispatch</button>
+                            <button class="btn-red" onclick="rejectWithdrawal('${reqId}', '${d.uid}', ${d.amount})">Deploy Restriction Flag</button>
+                        </div>`;
                     }
                 });
             });
@@ -1099,20 +1037,21 @@
             db.ref('plan_requests/' + reqKey).once('value', s => {
                 const d = s.val();
                 db.ref('users/' + userUid).update({ status: "Active", planId: d.planId, allowedTasks: d.totalTasks, rewardPerVideo: (d.earning / d.totalTasks) });
-                db.ref('plan_requests/' + reqKey).update({ status: "Approved" });
+                db.ref('plan_requests/' + reqKey).update({ status: "Approved" }).then(() => {
+                    // Instant Local UI Node clean to optimize application speed
+                    const element = document.getElementById(`admin-req-${reqKey}`);
+                    if(element) element.remove();
+                });
 
                 db.ref('users/' + userUid).once('value', userSnap => {
                     const uData = userSnap.val() || {};
                     const referrerCode = uData.refBy;
-                    if(referrerCode && referrerCode !== "none" && referrerCode !== "") {
+                    if(referrerCode && referrerCode !== "none") {
                         db.ref('users').once('value', allUsersSnap => {
                             allUsersSnap.forEach(userChild => {
-                                const potentialReferrerKey = userChild.key;
-                                const potentialReferrerData = userChild.val();
-                                if(potentialReferrerData.myRef === referrerCode) {
-                                    const oldBalance = parseFloat(potentialReferrerData.balance || 0);
-                                    db.ref('users/' + potentialReferrerKey).update({ balance: parseFloat((oldBalance + 800).toFixed(2)) });
-                                    db.ref('history/' + potentialReferrerKey).push({ type: `Affiliate Node Cluster Reward (${uData.email})`, amount: 800, date: new Date().toLocaleString() });
+                                if(userChild.val().myRef === referrerCode) {
+                                    db.ref('users/' + userChild.key).update({ balance: parseFloat(((userChild.val().balance || 0) + 800).toFixed(2)) });
+                                    db.ref('history/' + userChild.key).push({ type: `Affiliate Reward (${uData.email})`, amount: 800, date: new Date().toLocaleString() });
                                 }
                             });
                         });
@@ -1125,57 +1064,60 @@
         function approveAsCustomBalance(userUid, fallbackAmount, reqKey) {
             db.ref('users/' + userUid).once('value', s => {
                 const currentData = s.val() || {};
-                let finalAmount = parseFloat(fallbackAmount);
-                if (isNaN(finalAmount) || finalAmount <= 0) return appAlert("Numeric computation error.");
-
-                db.ref('users/' + userUid).update({ balance: parseFloat(((currentData.balance || 0) + finalAmount).toFixed(2)), status: "Active", declineReason: null, declineAmount: null });
-                db.ref('plan_requests/' + reqKey).update({ status: "Approved" });
-                db.ref('history/' + userUid).push({ type: "Settlement Protocol Balance Inject", amount: finalAmount, date: new Date().toLocaleString() });
-                appAlert(`Ledger verification asset parsed. Node unblocked.`);
+                db.ref('users/' + userUid).update({ balance: parseFloat(((currentData.balance || 0) + parseFloat(fallbackAmount)).toFixed(2)), status: "Active", declineReason: null, declineAmount: null });
+                db.ref('plan_requests/' + reqKey).update({ status: "Approved" }).then(() => {
+                    const element = document.getElementById(`admin-req-${reqKey}`);
+                    if(element) element.remove();
+                });
+                db.ref('history/' + userUid).push({ type: "Fine Clearance Asset Inject", amount: parseFloat(fallbackAmount), date: new Date().toLocaleString() });
+                appAlert(`Ledger unblocked instantly.`);
             });
         }
 
         function rejectPlanRequest(reqKey, userUid) {
-            db.ref('plan_requests/' + reqKey).update({ status: "Rejected" });
-            db.ref('users/' + userUid).once('value', s => {
-                const d = s.val() || {};
-                db.ref('users/' + userUid).update({ status: d.declineReason ? "Active" : "NoPlan" });
+            db.ref('plan_requests/' + reqKey).update({ status: "Rejected" }).then(() => {
+                const element = document.getElementById(`admin-req-${reqKey}`);
+                if(element) element.remove();
             });
-            appAlert("Allocation claim drop logs updated.");
+            db.ref('users/' + userUid).once('value', s => {
+                db.ref('users/' + userUid).update({ status: s.val().declineReason ? "Active" : "NoPlan" });
+            });
         }
 
         function approveWithdrawal(reqId) {
-            db.ref('withdrawals/' + reqId).update({ status: "Approved" });
-            appAlert("Liquidation asset dispatch clearance logged.");
+            db.ref('withdrawals/' + reqId).update({ status: "Approved" }).then(() => {
+                const element = document.getElementById(`admin-with-${reqId}`);
+                if(element) element.remove();
+                appAlert("Liquidation asset dispatch clearance logged.");
+            });
         }
 
         function rejectWithdrawal(reqId, userUid, amount) {
-            const reason = prompt("Enter verification restriction reason text for client interface:");
-            if (reason === null) return; 
-            if (reason.trim() === "") return appAlert("Compliance tracking needs a log text parameter.");
-
-            const fineInput = prompt("Liquidation settlement parameter target fine cost? (Input 0 for null value):");
+            const reason = prompt("Enter verification restriction reason:");
+            if (!reason) return;
+            const fineInput = prompt("Enter settlement fine amount (0 if none):", "0");
             if (fineInput === null) return;
-            const fineAmount = parseFloat(fineInput);
-            if (isNaN(fineAmount) || fineAmount < 0) return appAlert("Invalid tracking value compilation.");
-
-            db.ref('withdrawals/' + reqId).update({ status: "Rejected", adminReason: reason, requestedFine: fineAmount });
+            
+            db.ref('withdrawals/' + reqId).update({ status: "Rejected", adminReason: reason, requestedFine: parseFloat(fineInput) }).then(() => {
+                const element = document.getElementById(`admin-with-${reqId}`);
+                if(element) element.remove();
+            });
+            
             db.ref('users/' + userUid).once('value', s => {
                 const d = s.val() || {};
-                db.ref('users/' + userUid).update({ balance: (d.balance || 0) + amount, totalWithdrawn: (d.totalWithdrawn || 0) - amount, declineReason: reason, declineAmount: fineAmount });
-                db.ref('history/' + userUid).push({ type: "Asset Liquidation Rollback Loop", amount: amount, reason: reason, date: new Date().toLocaleString() });
-                appAlert("Restriction parameters deployed onto destination cluster node interface.");
+                db.ref('users/' + userUid).update({ balance: (d.balance || 0) + amount, totalWithdrawn: (d.totalWithdrawn || 0) - amount, declineReason: reason, declineAmount: parseFloat(fineInput) });
+                db.ref('history/' + userUid).push({ type: "Withdrawal Rollback Flagged", amount: amount, reason: reason, date: new Date().toLocaleString() });
+                appAlert("Restriction parameters deployed onto node.");
             });
         }
 
         function adminUnblockUserWithdrawal() {
             const emailInput = document.getElementById('unblock-user-email').value.trim();
             if(!emailInput) return appAlert("User email asset missing.");
-
             db.ref('users').orderByChild('email').equalTo(emailInput).once('value', s => {
-                if(!s.exists()) return appAlert("Cluster email index not found.");
+                if(!s.exists()) return appAlert("Email index not found.");
                 s.forEach(child => { db.ref('users/' + child.key).update({ declineReason: null, declineAmount: null }); });
-                appAlert("Destination configuration node clearance completed.");
+                appAlert("User withdrawal route unblocked instantly!");
                 document.getElementById('unblock-user-email').value = "";
             });
         }
