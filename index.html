@@ -6,7 +6,10 @@
     <title>EarnMoney - Premium Ads Watching</title>
     
     <!-- Firebase Libraries -->
-    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
     <!-- Google Fonts for Real Website Look -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -592,11 +595,6 @@
                 }
             });
         }
-       // Supabase Client Setup
-const supabase = supabase.createClient(
-    "https://dswddznritotagvgrjys.supabase.co", 
-    "sb_publishable_W6cCT9lMsTKekz0LBtQlfg_jGwN3iAA"
-);
 
         function showSalary() {
             const list = document.getElementById('history-list');
@@ -886,33 +884,33 @@ const supabase = supabase.createClient(
         function logout() { auth.signOut().then(() => location.reload()); }
 
         // --- Live Firebase Data Listener Configured ---
-        async function loadAdminData() {
-    // Supabase se Plan Requests uthana
-    const { data: plans } = await supabase.from('plan_requests').select('*').eq('status', 'Pending');
-    const pList = document.getElementById('admin-plan-requests');
-    if (plans) {
-        pList.innerHTML = plans.map(req => `
-            <div class="history-item">
-                <b>User: ${req.user_email}</b><br>
-                Plan: ${req.plan_name} (${req.amount})
-                <button onclick="alert('Update in Supabase Dashboard')">Approve</button>
-            </div>
-        `).join('');
-    }
-
-    // Supabase se Withdrawals uthana
-    const { data: withdraws } = await supabase.from('withdrawals').select('*').eq('status', 'Pending');
-    const wList = document.getElementById('admin-list');
-    if (withdraws) {
-        wList.innerHTML = withdraws.map(w => `
-            <div class="history-item">
-                <b>User: ${w.user_email}</b><br>
-                Amount: ${w.amount}
-            </div>
-        `).join('');
-    }
-}
-
+        function loadAdminData() {
+            // .on lagaya hai taake bina refresh kiye foran live updates aayein
+            db.ref('plan_requests').on('value', s => {
+                const pList = document.getElementById('admin-plan-requests'); pList.innerHTML = "";
+                s.forEach(c => {
+                    const d = c.val();
+                    const reqKey = c.key; 
+                    if(d.status === "Pending") {
+                        if(d.planId === 99) {
+                            pList.innerHTML += `
+                            <div class="history-item" style="border-left-color: #3498db; background: rgba(59,130,246,0.05);">
+                                <b>User: ${d.email}</b><br>
+                                Type: <span style="color:#3498db; font-weight:bold;">Custom Rejection Fine Payment</span><br>
+                                Requested Fine Amount: <b>${d.cost} PKR</b><br>
+                                <img src="${d.screenshot}" style="max-width:150px; border-radius:10px; display:block; margin:10px 0; border:1px solid var(--border);">
+                                <button class="btn-admin-balance" onclick="approveAsCustomBalance('${d.uid}', ${d.cost}, '${reqKey}')">Approve & Load inside Balance</button>
+                                <button class="btn-red" onclick="rejectPlanRequest('${reqKey}', '${d.uid}')">Reject</button>
+                            </div>`;
+                        } else {
+                            pList.innerHTML += `
+                            <div class="history-item" style="border-left-color: var(--primary);">
+                                <b>User: ${d.email}</b><br>
+                                Type: <span style="color:var(--primary); font-weight:bold;">Plan ${d.planId} Request</span><br>
+                                <img src="${d.screenshot}" style="max-width:150px; border-radius:10px; display:block; margin:10px 0; border:1px solid var(--border);">
+                                <button class="btn-admin-approve" onclick="approvePlan('${d.uid}', '${reqKey}')">Activate Plan</button>
+                                <button class="btn-red" onclick="rejectPlanRequest('${reqKey}', '${d.uid}')">Reject</button>
+                            </div>`;
                         }
                     }
                 });
