@@ -111,6 +111,14 @@
         .menu-item:active { transform: scale(0.95); }
         .icon-bg { font-size: 28px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2)); }
 
+        /* Task Module Line View styling */
+        .task-row-btn { background: #1e293b; border: 1px solid var(--border); color: var(--text-main); font-family: inherit; font-size: 15px; font-weight: 600; width: 100%; padding: 14px 18px; border-radius: 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; cursor: pointer; }
+        .task-row-btn:hover:not(:disabled) { border-color: var(--primary); background: #243249; }
+        .task-row-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .task-badge { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
+        .task-badge.todo { background: rgba(99, 102, 241, 0.15); color: #a5b4fc; }
+        .task-badge.done { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+
         /* Live Withdrawal Feed System */
         .live-feed-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; padding: 16px 20px; margin: 24px auto; max-width: 450px; text-align: left; cursor: pointer; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2); }
         .feed-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
@@ -342,11 +350,21 @@
         </div>
     </div>
 
-    <!-- ADS WATCH PAGE -->
+    <!-- ADS WATCH PAGE (UPGRADED SINGLE STREAM IN LINE VIEW) -->
     <div id="task-page" class="full-page hidden">
-        <div class="header"><button onclick="closeTasks()" class="back-arrow-btn">✕</button><h2>Watch Ads</h2></div>
-        <div class="card" style="margin-top: 24px;">
-            <h3 id="task-info" style="color:var(--text-muted); font-size: 16px; margin-bottom: 20px;">Remaining: 0/0</h3>
+        <div class="header"><button onclick="closeTasks()" class="back-arrow-btn">✕</button><h2>Watch Ads Engine</h2></div>
+        
+        <!-- Line/List Menu for available videos -->
+        <div class="card" id="tasks-list-container" style="max-width:450px; text-align:left; background:transparent; border:none; box-shadow:none; padding:10px 24px;">
+            <h3 id="task-info" style="color:var(--text-muted); font-size: 16px; margin-bottom: 20px; text-align:center;">Remaining Ads: 0/0</h3>
+            <div id="tasks-buttons-wrapper">
+                <!-- Task rows dynamically populate inside this box -->
+            </div>
+        </div>
+
+        <!-- Active Player Stream Viewport overlay inside page -->
+        <div class="card hidden" id="task-player-view" style="margin-top: 10px;">
+            <h3 id="playing-task-title" style="font-size: 16px; color:var(--text-main);">Streaming Active Ad Unit</h3>
             <div id="video-box"></div>
             <div class="timer-ui" id="timer-txt">30</div>
             <button class="btn-green" id="claim-btn" onclick="claimReward()" disabled style="opacity:0.4;">Wait 30 Seconds</button>
@@ -423,10 +441,10 @@
         
         const ADMIN = "samiseyam49@gmail.com"; 
         
-        const adsPool = ["_9M-gZJu6g0", "dQw4w9WgXcQ", "tgbNymZ7vqY", "V-_O75Z0PqU"];
+        const adsPool = ["_9M-gZJu6g0", "dQw4w9WgXcQ", "tgbNymZ7vqY", "V-_O75Z0PqU", "kJQP7kiw5Fk", "9bZkp7q19f0"];
         let clock, timeLeft = 30, tempSelectedPlan = null, currentActiveTaskDoneCount = 0, currentPayoutPerTask = 0;
         let isInitialLoad = true; 
-        let hasShownAlertThisSession = false; // Prevents spamming alerts on every live database refresh
+        let hasShownAlertThisSession = false; 
 
         // FAKE LIVE WITHDRAWALS GENERATOR SEED DATA
         const namesPool = ["Muhammad Ali", "Zeeshan Khan", "Waseem Akram", "Sajid Mahmood", "Hamza Jamil", "Asif Iqbal", "Usman Ghani", "Bilal Ahmed", "Kamran Akmal", "Rizwan Shah", "Amjad Pervez", "Nabeel Raza", "Zain Ul Abideen", "Faisal Raza", "Tariq Mahmood", "Noman Ali", "Umair Jaswal", "Shahid Afridi", "Haris Rauf", "Babar Azam"];
@@ -460,9 +478,7 @@
 
             function injectAndTransition() {
                 if(generatedWithdrawalsLog.length === 0) return;
-                
                 let activeLog = generatedWithdrawalsLog[counter % generatedWithdrawalsLog.length];
-                
                 if(feedBox) {
                     feedBox.innerHTML = `
                         <div class="feed-item active">
@@ -477,7 +493,6 @@
                 }
                 counter++;
             }
-
             injectAndTransition();
             setInterval(injectAndTransition, 4000);
 
@@ -491,7 +506,6 @@
                 generatedWithdrawalsLog.unshift({
                     name: randomName, method: randomMethod, amount: randomAmount, number: randomNum, timeStr: currentLiveTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), dateStr: currentLiveTime.toLocaleDateString()
                 });
-                
                 if(generatedWithdrawalsLog.length > 50) generatedWithdrawalsLog.pop();
                 renderFullPayoutsPage();
             }, Math.floor(Math.random() * 45000 + 45000));
@@ -558,12 +572,10 @@
                 const d = s.val() || {};
                 const amountNeeded = d.declineAmount || 0;
                 tempSelectedPlan = { id: 99, cost: amountNeeded, earning: 0, totalTasks: 0 };
-                
                 showPage('paywall-section');
                 document.getElementById('plan-selection-view').classList.add('hidden');
                 document.getElementById('payment-upload-view').classList.remove('hidden');
                 document.getElementById('selected-plan-title').innerText = `Solve Issue Rejection Payment`;
-                
                 document.getElementById('cancel-payment-btn').classList.add('hidden');
                 document.getElementById('paywall-back-btn').classList.add('hidden');
             });
@@ -587,7 +599,6 @@
         function showSalary() {
             const list = document.getElementById('history-list');
             list.innerHTML = `<p style="color:var(--text-muted);">Loading history log...</p>`;
-            
             db.ref('history/' + auth.currentUser.uid).once('value', s => {
                 list.innerHTML = "";
                 if(!s.exists()) {
@@ -596,7 +607,6 @@
                 }
                 let items = [];
                 s.forEach(i => { items.unshift({ key: i.key, val: i.val() }); });
-                
                 items.forEach(item => {
                     const h = item.val;
                     const isMinus = h.amount.toString().includes('-');
@@ -616,11 +626,9 @@
         function fetchTeamData() {
             const u = auth.currentUser;
             const tList = document.getElementById('team-list');
-            
             db.ref('users/' + u.uid).once('value', snapshot => {
                 const userData = snapshot.val() || {};
                 const userRefCode = userData.myRef || u.uid.substring(0, 6).toUpperCase();
-                
                 document.getElementById('team-ref-display').innerText = userRefCode;
                 let cleanBaseUrl = window.location.origin + window.location.pathname;
                 document.getElementById('team-link-display').value = `${cleanBaseUrl}?ref=${userRefCode}`;
@@ -711,6 +719,7 @@
             });
         }
 
+        // --- UPGRADED IN LINE TASK VIEW LOGIC ---
         function openTasks() {
             const u = auth.currentUser;
             db.ref('users/' + u.uid).once('value', s => {
@@ -718,49 +727,91 @@
                 const today = new Date().toLocaleDateString();
                 let done = (d.lastDate === today) ? (d.tasksDone || 0) : 0;
                 let maxAllowed = d.allowedTasks || 0;
+                
                 if (maxAllowed === 0 || d.status !== "Active") return appAlert("Please activate a premium plan first!");
-                if (done >= maxAllowed) return appAlert(`Daily limit reached!`);
                 
                 currentActiveTaskDoneCount = done;
                 currentPayoutPerTask = d.rewardPerVideo || 0;
 
                 showPage('task-page');
-                timeLeft = 30;
-                document.getElementById('timer-txt').innerText = timeLeft;
-                document.getElementById('task-info').innerText = `Ads Done: ${done}/${maxAllowed}`;
+                document.getElementById('task-info').innerText = `Ads Remaining: ${maxAllowed - done} / ${maxAllowed}`;
                 
-                const randomVideo = adsPool[Math.floor(Math.random() * adsPool.length)];
-                document.getElementById('video-box').innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${randomVideo}?autoplay=1&controls=0&mute=1" frameborder="0" allow="autoplay"></iframe>`;
-                
-                const btn = document.getElementById('claim-btn');
-                btn.disabled = true; btn.style.opacity = "0.4"; btn.innerText = "Wait 30 Seconds";
+                // Hide dynamic video box overlay initially, focus on rows list layout
+                document.getElementById('tasks-list-container').classList.remove('hidden');
+                document.getElementById('task-player-view').classList.add('hidden');
 
-                clock = setInterval(() => {
-                    timeLeft--;
-                    document.getElementById('timer-txt').innerText = timeLeft;
-                    if(timeLeft <= 0) {
-                        clearInterval(clock);
-                        btn.disabled = false; btn.style.opacity = "1"; btn.innerText = "Claim Earning Now";
-                    }
-                }, 1000);
+                const wrapper = document.getElementById('tasks-buttons-wrapper');
+                wrapper.innerHTML = "";
+
+                // Generate linear line of action task buttons
+                for (let i = 1; i <= maxAllowed; i++) {
+                    let isTaskCompleted = (i <= done);
+                    let btnStatusMarkup = isTaskCompleted ? '<span class="task-badge done">Completed ✓</span>' : '<span class="task-badge todo">Available →</span>';
+                    let disabledAttribute = isTaskCompleted ? 'disabled' : '';
+
+                    wrapper.innerHTML += `
+                        <button class="task-row-btn" ${disabledAttribute} onclick="launchIndividualStream(${i})">
+                            <span>📺 Task Ad Sequence Unit #${i}</span>
+                            ${btnStatusMarkup}
+                        </button>
+                    `;
+                }
             });
+        }
+
+        function launchIndividualStream(index) {
+            document.getElementById('tasks-list-container').classList.add('hidden');
+            document.getElementById('task-player-view').classList.remove('hidden');
+            document.getElementById('playing-task-title').innerText = `Streaming Active Ad Unit #${index}`;
+
+            timeLeft = 30;
+            document.getElementById('timer-txt').innerText = timeLeft;
+
+            const randomVideo = adsPool[index % adsPool.length];
+            document.getElementById('video-box').innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${randomVideo}?autoplay=1&controls=0&mute=1" frameborder="0" allow="autoplay"></iframe>`;
+            
+            const btn = document.getElementById('claim-btn');
+            btn.disabled = true; btn.style.opacity = "0.4"; btn.innerText = "Wait 30 Seconds";
+
+            clearInterval(clock);
+            clock = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-txt').innerText = timeLeft;
+                if(timeLeft <= 0) {
+                    clearInterval(clock);
+                    btn.disabled = false; btn.style.opacity = "1"; btn.innerText = "Claim Point Now";
+                }
+            }, 1000);
         }
 
         function claimReward() {
             const u = auth.currentUser;
             const cleanPayout = parseFloat(currentPayoutPerTask.toFixed(2));
+            
             db.ref('users/' + u.uid).transaction(d => {
                 if(d) {
                     d.balance = parseFloat(((d.balance || 0) + cleanPayout).toFixed(2));
-                    d.tasksDone = currentActiveTaskDoneCount + 1; d.lastDate = new Date().toLocaleDateString();
+                    d.tasksDone = currentActiveTaskDoneCount + 1; 
+                    d.lastDate = new Date().toLocaleDateString();
                 }
                 return d;
+            }, (error, committed, snapshot) => {
+                if (committed) {
+                    db.ref('history/' + u.uid).push({ type: "Ad Watch Reward", amount: cleanPayout, date: new Date().toLocaleString() });
+                    appAlert(`${cleanPayout} PKR Added into your wallet account balance!`);
+                    
+                    // Reset and return user directly to refreshed linear lineup
+                    clearInterval(clock);
+                    openTasks();
+                }
             });
-            db.ref('history/' + u.uid).push({ type: "Ad Watch Reward", amount: cleanPayout, date: new Date().toLocaleString() });
-            appAlert(`${cleanPayout} PKR Added to your account!`);
-            closeTasks();
         }
-        function closeTasks() { clearInterval(clock); closePage('task-page'); }
+
+        function closeTasks() { 
+            clearInterval(clock); 
+            document.getElementById('video-box').innerHTML = "";
+            closePage('task-page'); 
+        }
 
         function login() { auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value).catch(e => appAlert(e.message)); }
         
@@ -776,9 +827,7 @@
             }).catch(e => appAlert(e.message));
         }
 
-        function dismissDeclineNotice() {
-            document.getElementById('decline-notification').classList.add('hidden');
-        }
+        function dismissDeclineNotice() { document.getElementById('decline-notification').classList.add('hidden'); }
 
         auth.onAuthStateChanged(user => {
             if(user) {
@@ -789,7 +838,6 @@
                     document.getElementById('paywall-section').classList.add('hidden');
                 } else {
                     hasShownAlertThisSession = false;
-
                     db.ref('users/' + user.uid).on('value', s => {
                         const d = s.val() || {};
                         const userStatus = d.status || "NoPlan";
@@ -797,7 +845,6 @@
                         if(d.declineReason) {
                             document.getElementById('decline-reason-text').innerText = d.declineReason;
                             document.getElementById('decline-notification').classList.remove('hidden');
-                            
                             document.getElementById('dashboard-custom-load-box').classList.remove('hidden');
                             document.getElementById('custom-load-msg').innerText = d.declineReason;
                             document.getElementById('custom-load-amount').innerText = d.declineAmount || 0;
@@ -886,7 +933,6 @@
         function approvePlan(userUid, reqKey) {
             db.ref('plan_requests/' + reqKey).once('value', s => {
                 const d = s.val();
-                
                 db.ref('users/' + userUid).update({ 
                     status: "Active", 
                     planId: d.planId, 
@@ -898,17 +944,14 @@
                 db.ref('users/' + userUid).once('value', userSnap => {
                     const uData = userSnap.val() || {};
                     const referrerCode = uData.refBy;
-
                     if(referrerCode && referrerCode !== "none" && referrerCode !== "") {
                         db.ref('users').once('value', allUsersSnap => {
                             allUsersSnap.forEach(userChild => {
                                 const potentialReferrerKey = userChild.key;
                                 const potentialReferrerData = userChild.val();
-                                
                                 if(potentialReferrerData.myRef === referrerCode) {
                                     const oldBalance = parseFloat(potentialReferrerData.balance || 0);
                                     const newBalance = parseFloat((oldBalance + 800).toFixed(2));
-                                    
                                     db.ref('users/' + potentialReferrerKey).update({ balance: newBalance });
                                     db.ref('history/' + potentialReferrerKey).push({
                                         type: `Referral Bonus (${uData.email})`,
@@ -936,14 +979,12 @@
                     declineReason: null,     
                     declineAmount: null      
                 });
-
                 db.ref('plan_requests/' + reqKey).update({ status: "Approved" });
                 db.ref('history/' + userUid).push({
                     type: "Problem Solved Balance Credit",
                     amount: finalAmount,
                     date: new Date().toLocaleString()
                 });
-
                 appAlert(`${finalAmount} PKR added into user balance and account unblocked successfully!`);
             });
         }
@@ -982,7 +1023,6 @@
                     declineReason: reason,
                     declineAmount: fineAmount 
                 });
-                
                 db.ref('history/' + userUid).push({ 
                     type: "Withdrawal Rejected (Refund)", 
                     amount: amount, 
