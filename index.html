@@ -3,339 +3,503 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EarnMoney - Premium Ads Watching</title>
+    <title>EarnMoney Premium - Smart Advertising Network</title>
     
     <!-- Firebase Libraries -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
+    <!-- Google Fonts for Professional Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
-        :root { --primary: #f39c12; --bg: #f4f7f6; --card-bg: #ffffff; --dark: #2c3e50; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 0; text-align: center; color: #333; }
+        :root { 
+            --primary: #ff9f43; 
+            --primary-gradient: linear-gradient(135deg, #ff9f43 0%, #ff5252 100%);
+            --bg: #0f172a; 
+            --card-bg: #1e293b; 
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --success: #10b981;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--bg); 
+            margin: 0; 
+            padding: 0; 
+            text-align: center; 
+            color: var(--text-main); 
+            -webkit-font-smoothing: antialiased;
+        }
+
         .hidden { display: none !important; }
         
-        /* UI Components */
-        .card { background: var(--card-bg); padding: 30px; border-radius: 28px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); max-width: 450px; margin: 20px auto; border: 1px solid #eee; }
-        input, select { width: 90%; padding: 15px; margin: 12px 0; border: 1.5px solid #eee; border-radius: 15px; font-size: 16px; outline: none; }
-        .btn-orange { background: var(--primary); color: white; border: none; width: 100%; padding: 18px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 17px; box-shadow: 0 5px 15px rgba(243,156,18,0.3); }
-        .btn-green { background: #27ae60; color: white; border: none; width: 100%; padding: 18px; border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 17px; }
-        .btn-main { background: var(--primary); color: white; border: none; width: 100%; padding: 16px; border-radius: 18px; font-weight: 700; cursor: pointer; font-size: 16px; }
-        .btn-red { background: #e74c3c; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-left: 5px; }
-        .btn-admin-approve { background: #27ae60; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
-        .btn-admin-balance { background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-left: 5px; }
+        /* Premium UI Components */
+        .card { 
+            background: var(--card-bg); 
+            padding: 35px 25px; 
+            border-radius: 24px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3); 
+            max-width: 440px; 
+            margin: 40px auto; 
+            border: 1px solid var(--border-color); 
+            box-sizing: border-box;
+        }
+
+        h1, h2, h3, h4 { font-weight: 700; letter-spacing: -0.5px; margin-top: 0; }
+
+        input, select { 
+            width: 100%; 
+            padding: 16px; 
+            margin: 14px 0; 
+            border: 1.5px solid var(--border-color); 
+            border-radius: 16px; 
+            font-size: 15px; 
+            background: #0f172a;
+            color: var(--text-main);
+            outline: none; 
+            box-sizing: border-box;
+            transition: all 0.3s;
+        }
+        input:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 159, 67, 0.15);
+        }
+
+        /* Professional Buttons */
+        .btn-gradient { 
+            background: var(--primary-gradient); 
+            color: white; 
+            border: none; 
+            width: 100%; 
+            padding: 16px; 
+            border-radius: 16px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            font-size: 16px; 
+            box-shadow: 0 10px 20px rgba(255, 82, 82, 0.25);
+            transition: transform 0.2s, opacity 0.2s;
+        }
+        .btn-gradient:active { transform: scale(0.98); }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-main);
+            border: 1.5px solid var(--border-color);
+            width: 100%;
+            padding: 16px;
+            border-radius: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        .btn-outline:hover { background: rgba(255,255,255,0.05); border-color: var(--text-muted); }
+
+        .btn-green { background: var(--success); color: white; border: none; width: 100%; padding: 16px; border-radius: 16px; font-weight: 700; cursor: pointer; font-size: 16px; }
+        .btn-red { background: #ef4444; color: white; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 700; cursor: pointer; margin-left: 5px; }
+        .btn-admin-approve { background: var(--success); color: white; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+        .btn-admin-balance { background: #3b82f6; color: white; border: none; padding: 10px 18px; border-radius: 10px; font-weight: 700; cursor: pointer; margin-left: 5px; }
 
         /* Notification Bar */
-        .notification-bar { background: #fff5f5; border: 1px solid #feb2b2; color: #c53030; padding: 15px; margin: 15px; border-radius: 18px; text-align: left; font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .notification-bar { 
+            background: rgba(239, 68, 68, 0.1); 
+            border: 1px solid rgba(239, 68, 68, 0.2); 
+            color: #fca5a5; 
+            padding: 16px; 
+            margin: 20px; 
+            border-radius: 16px; 
+            text-align: left; 
+            font-size: 14px; 
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
         /* Block Message Styling */
-        .block-box { background: #fff5f5; border: 2px dashed #e53e3e; padding: 20px; border-radius: 20px; color: #c53030; text-align: center; margin-top: 15px; }
+        .block-box { 
+            background: rgba(239, 68, 68, 0.05); 
+            border: 2px dashed #ef4444; 
+            padding: 25px; 
+            border-radius: 20px; 
+            color: #fca5a5; 
+            text-align: center; 
+        }
 
-        /* Plan Cards */
-        .plan-box { background: white; border: 2px solid #eee; padding: 20px; margin: 15px 0; border-radius: 20px; cursor: pointer; text-align: left; transition: 0.3s; }
-        .plan-box:hover { border-color: var(--primary); background: #fffcf6; }
-        .plan-box h3 { margin: 0 0 10px 0; color: var(--dark); }
-        .plan-box p { margin: 5px 0; font-size: 14px; color: #555; }
+        /* Modern Plan Cards */
+        .plan-box { 
+            background: #1e293b; 
+            border: 1.5px solid var(--border-color); 
+            padding: 20px; 
+            margin: 16px 0; 
+            border-radius: 18px; 
+            cursor: pointer; 
+            text-align: left; 
+            transition: all 0.3s ease; 
+        }
+        .plan-box:hover { 
+            border-color: var(--primary); 
+            background: #243249;
+            transform: translateY(-2px);
+        }
+        .plan-box h3 { margin: 0 0 6px 0; color: var(--text-main); font-size: 18px; }
+        .plan-box p { margin: 4px 0; font-size: 14px; color: var(--text-muted); }
 
-        /* Dashboard */
-        .balance-card { background: linear-gradient(135deg, var(--dark), #34495e); color: white; padding: 40px 20px; border-radius: 30px; margin: 20px; position: relative; overflow: hidden; }
-        .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 20px; }
-        .menu-item { background: white; padding: 20px 10px; border-radius: 25px; display: flex; flex-direction: column; align-items: center; gap: 10px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: 0.3s; }
-        .menu-item:active { transform: scale(0.9); }
-        .icon-bg { font-size: 32px; }
-
-        /* Live Withdrawal Feed Widget */
-        .live-feed-card { background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 24px; padding: 15px 20px; margin: 20px; text-align: left; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.03); overflow: hidden; position: relative; }
-        .feed-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; }
-        .feed-dot { width: 8px; height: 8px; background: #22c55e; border-radius: 50%; display: inline-block; animation: blink 1s infinite; }
-        .feed-container { height: 45px; position: relative; overflow: hidden; }
-        .feed-item { position: absolute; width: 100%; top: 0; left: 0; opacity: 0; transform: translateY(20px); transition: all 0.5s ease-in-out; display: flex; justify-content: space-between; align-items: center; }
-        .feed-item.active { opacity: 1; transform: translateY(0); }
-        @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-
-        /* Pages */
-        .full-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; overflow-y: auto; padding-bottom: 60px; }
-        .header { display: flex; align-items: center; padding: 20px; background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 10; }
-        .history-item { background: white; margin: 12px 20px; padding: 20px; border-radius: 20px; text-align: left; border-left: 8px solid var(--primary); box-shadow: 0 5px 15px rgba(0,0,0,0.04); }
+        /* Dashboard Gradient Card */
+        .balance-card { 
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); 
+            color: white; 
+            padding: 45px 20px; 
+            border-radius: 32px; 
+            margin: 25px auto; 
+            max-width: 440px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
         
-        /* Video Box Styling */
-        #video-box { width: 90%; margin: 20px auto; aspect-ratio: 16/9; background: #000; border-radius: 20px; overflow: hidden; }
-        .timer-ui { width: 100px; height: 100px; border: 6px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: bold; margin: 25px auto; color: var(--primary); }
+        /* Menu Grid Style */
+        .menu-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 16px; 
+            padding: 10px 20px; 
+            max-width: 460px;
+            margin: 0 auto;
+        }
+        .menu-item { 
+            background: var(--card-bg); 
+            padding: 22px 10px; 
+            border-radius: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 12px; 
+            font-size: 13px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease; 
+        }
+        .menu-item:hover { background: #243249; border-color: var(--text-muted); }
+        .menu-item:active { transform: scale(0.95); }
+        .icon-bg { font-size: 28px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2)); }
 
-        /* Custom Alert Popup Styling */
-        .custom-alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .custom-alert-box { background: white; width: 100%; max-width: 380px; border-radius: 24px; padding: 25px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.2); animation: popUp 0.3s ease; }
-        .custom-alert-title { font-size: 18px; font-weight: 800; color: #1e293b; margin: 0 0 10px 0; }
-        .custom-alert-msg { font-size: 15px; color: #64748b; line-height: 1.5; margin: 0 0 20px 0; font-weight: 500; }
-        .custom-alert-btn { background: var(--primary); color: white; border: none; width: 100%; padding: 14px; border-radius: 16px; font-weight: bold; font-size: 16px; cursor: pointer; }
-        @keyframes popUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        /* Real-Time Live Widget */
+        .live-feed-card { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border-color); 
+            border-radius: 20px; 
+            padding: 16px 20px; 
+            margin: 20px auto; 
+            max-width: 440px;
+            text-align: left; 
+            box-sizing: border-box;
+        }
+        .feed-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
+        .feed-dot { width: 8px; height: 8px; background: var(--success); border-radius: 50%; display: inline-block; animation: blink 1.2s infinite; }
+        .feed-container { height: 48px; position: relative; overflow: hidden; }
+        .feed-item { position: absolute; width: 100%; top: 0; left: 0; opacity: 0; display: flex; justify-content: space-between; align-items: center; }
+        .feed-item.active { opacity: 1; transition: opacity 0.4s ease; }
+        @keyframes blink { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+        /* Full Screen Window Pages */
+        .full-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg); z-index: 2000; overflow-y: auto; padding-bottom: 60px; box-sizing: border-box; }
+        .header { display: flex; align-items: center; padding: 20px; background: var(--card-bg); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 10; }
+        .history-item { background: var(--card-bg); margin: 14px 20px; padding: 20px; border-radius: 18px; text-align: left; border-left: 5px solid var(--primary); border-top: 1px solid var(--border-color); border-right: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); }
+        
+        /* Video Player Styling */
+        #video-box { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 16px; overflow: hidden; margin: 15px 0; border: 1px solid var(--border-color); }
+        .timer-ui { width: 90px; height: 90px; border: 4px solid var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 700; margin: 25px auto; color: var(--primary); background: rgba(255,159,67,0.05); }
+
+        /* Custom Modern Alert Styling */
+        .custom-alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,23,42,0.8); backdrop-filter: blur(4px); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; }
+        .custom-alert-box { background: var(--card-bg); width: 100%; max-width: 380px; border-radius: 24px; padding: 30px 25px; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.5); border: 1px solid var(--border-color); }
+        .custom-alert-title { font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 10px; }
+        .custom-alert-msg { font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 25px; }
+        
+        /* Trust & Security Badge Copy */
+        .security-badge { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 15px; font-weight: 500; }
     </style>
 </head>
 <body>
 
-    <!-- CUSTOM ALERT POPUP -->
+    <!-- CUSTOM POPUP ALERT -->
     <div id="custom-alert" class="custom-alert-overlay hidden">
         <div class="custom-alert-box">
-            <h4 class="custom-alert-title" id="alert-title">earnmoney56.github.io</h4>
-            <p class="custom-alert-msg" id="alert-message">Notification Message</p>
-            <button class="custom-alert-btn" onclick="closeAlert()">OK</button>
+            <h4 class="custom-alert-title" id="alert-title">Notification</h4>
+            <p class="custom-alert-msg" id="alert-message">Message details inside app system.</p>
+            <button class="btn-gradient" onclick="closeAlert()">Acknowledge</button>
         </div>
     </div>
 
-    <!-- AUTH SECTION -->
-    <div id="auth-section" class="card" style="margin-top: 50px;">
-        <h1 style="color: var(--primary); margin-bottom: 5px;">EarnMoney</h1>
-        <p style="color: #888; margin-bottom: 30px;">Login to your account</p>
+    <!-- AUTHENTICATION GATEWAY -->
+    <div id="auth-section" class="card" style="margin-top: 80px;">
+        <div style="font-size: 45px; margin-bottom: 10px;">⚡</div>
+        <h1 style="background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px; font-size: 32px;">EarnMoney</h1>
+        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 35px;">Decentralized Premium Ads Network</p>
+        
         <div id="login-form">
             <input type="email" id="email" placeholder="Email Address">
-            <input type="password" id="password" placeholder="Password">
-            <button class="btn-green" onclick="login()">Login Now</button>
-            <p onclick="showSignup()" style="cursor:pointer; color:var(--primary); font-weight:bold; margin-top:20px;">Don't have an account? Signup</p>
+            <input type="password" id="password" placeholder="Account Password">
+            <button class="btn-gradient" style="margin-top: 10px;" onclick="login()">Secure Sign In</button>
+            <p onclick="showSignup()" style="cursor:pointer; color:var(--primary); font-size: 14px; font-weight:600; margin-top:25px;">New to platform? Create Account</p>
         </div>
+        
         <div id="signup-form" class="hidden">
-            <input type="email" id="reg-email" placeholder="Email Address">
-            <input type="password" id="reg-password" placeholder="Password (Min 6 chars)">
+            <input type="email" id="reg-email" placeholder="Valid Email Address">
+            <input type="password" id="reg-password" placeholder="Password (Min 6 Characters)">
             <input type="text" id="reg-ref" placeholder="Referral Code (Optional)">
-            <button class="btn-orange" onclick="signup()">Create Account</button>
-            <p onclick="showLogin()" style="cursor:pointer; color:var(--primary); font-weight:bold; margin-top:20px;">Back to Login</p>
+            <button class="btn-gradient" style="margin-top: 10px;" onclick="signup()">Register Account</button>
+            <p onclick="showLogin()" style="cursor:pointer; color:var(--primary); font-size: 14px; font-weight:600; margin-top:25px;">Already have an account? Login</p>
         </div>
     </div>
 
-    <!-- PAYWALL SECTION -->
-    <div id="paywall-section" class="full-page hidden" style="background: #f8fafc;">
-        <div class="header" style="justify-content: center; border-bottom: 2px solid #edf2f7; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); position: relative;">
-            <button id="paywall-back-btn" onclick="closePage('paywall-section')" class="hidden" style="position: absolute; left: 15px; background: none; border: none; font-size: 24px; cursor: pointer; color: #1e293b;">←</button>
-            <h2 style="margin: 0; font-size: 22px; color: #1e293b; font-weight: 800; letter-spacing: 0.5px;">💎 VIP Membership Levels</h2>
+    <!-- DIGITAL PAYWALL GATEWAY -->
+    <div id="paywall-section" class="full-page hidden">
+        <div class="header" style="justify-content: center; position: relative;">
+            <button id="paywall-back-btn" onclick="closePage('paywall-section')" class="hidden" style="position: absolute; left: 20px; background: none; border: none; font-size: 22px; cursor: pointer; color: var(--text-main);">←</button>
+            <h2 style="margin: 0; font-size: 20px; font-weight: 700;">💎 Premium Nodes Allocation</h2>
         </div>
         
-        <div class="card" id="plan-selection-view" style="max-width: 480px; padding: 25px 20px; border: none; border-radius: 24px; margin-top: 25px;">
-            <p style="color: #64748b; font-size: 15px; margin-bottom: 25px; font-weight: 500;">Select an investment plan below to unlock your elite dashboard and start earning daily.</p>
+        <div class="card" id="plan-selection-view" style="max-width: 460px; margin-top: 30px;">
+            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 25px; line-height: 1.5;">Select an advertisement matrix tier below to unlock your active daily computational income line.</p>
             
             <div class="plan-box" onclick="selectPlan(1, 1000, 1500, 30)">
-                <div style="float: right; background: #fef3c7; color: #d97706; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 8px;">STARTER</div>
-                <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px;">Bronze Plan</h3>
-                <p style="margin:5px 0; font-size:13px; color:#64748b;">Deposit: <b>1,000 PKR</b> | Daily: <span style="color:#22c55e; font-weight:700;">1,500 PKR</span></p>
+                <div style="float: right; background: rgba(243,156,18,0.15); color: #f39c12; padding: 4px 10px; font-size: 11px; font-weight: 700; border-radius: 6px;">BRONZE</div>
+                <h3>Starter Plan</h3>
+                <p>Allocation: <b>1,000 PKR</b> | Daily Returns: <span style="color:var(--success); font-weight:700;">1,500 PKR</span></p>
             </div>
 
-            <div class="plan-box" onclick="selectPlan(2, 1500, 2000, 40)" style="border-color: #f39c12;">
-                <div style="float: right; background: #f39c12; color: white; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 8px;">POPULAR</div>
-                <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px;">Silver Plan</h3>
-                <p style="margin:5px 0; font-size:13px; color:#64748b;">Deposit: <b>1,500 PKR</b> | Daily: <span style="color:#22c55e; font-weight:700;">2,000 PKR</span></p>
+            <div class="plan-box" onclick="selectPlan(2, 1500, 2000, 40)" style="border-color: var(--primary);">
+                <div style="float: right; background: var(--primary-gradient); color: white; padding: 4px 10px; font-size: 11px; font-weight: 700; border-radius: 6px;">POPULAR</div>
+                <h3>Silver Plan</h3>
+                <p>Allocation: <b>1,500 PKR</b> | Daily Returns: <span style="color:var(--success); font-weight:700;">2,000 PKR</span></p>
             </div>
 
             <div class="plan-box" onclick="selectPlan(3, 2000, 2500, 50)">
-                <div style="float: right; background: #dbeafe; color: #1e40af; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 8px;">ADVANCED</div>
-                <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px;">Gold Plan</h3>
-                <p style="margin:5px 0; font-size:13px; color:#64748b;">Deposit: <b>2,000 PKR</b> | Daily: <span style="color:#22c55e; font-weight:700;">2,500 PKR</span></p>
+                <div style="float: right; background: rgba(59,130,246,0.15); color: #3b82f6; padding: 4px 10px; font-size: 11px; font-weight: 700; border-radius: 6px;">ADVANCED</div>
+                <h3>Gold Plan</h3>
+                <p>Allocation: <b>2,000 PKR</b> | Daily Returns: <span style="color:var(--success); font-weight:700;">2,500 PKR</span></p>
             </div>
 
             <div class="plan-box" onclick="selectPlan(4, 2500, 3000, 60)">
-                <div style="float: right; background: #e0f2fe; color: #0369a1; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 8px;">VIP</div>
-                <h3 style="margin: 0 0 8px 0; color: #0f172a; font-size: 18px;">Diamond Plan</h3>
-                <p style="margin:5px 0; font-size:13px; color:#64748b;">Deposit: <b>2,500 PKR</b> | Daily: <span style="color:#22c55e; font-weight:700;">3,000 PKR</span></p>
+                <div style="float: right; background: rgba(168,85,247,0.15); color: #a855f7; padding: 4px 10px; font-size: 11px; font-weight: 700; border-radius: 6px;">ELITE VIP</div>
+                <h3>Diamond Plan</h3>
+                <p>Allocation: <b>2,500 PKR</b> | Daily Returns: <span style="color:var(--success); font-weight:700;">3,000 PKR</span></p>
             </div>
         </div>
 
-        <!-- Payment Upload View -->
-        <div class="card hidden" id="payment-upload-view" style="max-width: 450px; padding: 25px;">
-            <h3 id="selected-plan-title" style="margin: 0 0 15px 0; color: #0f172a; font-size: 20px;">Secure Instant Deposit</h3>
-            <div style="background: #fff; border: 1.5px solid #edf2f7; border-radius: 18px; padding: 15px; text-align: left; margin-bottom: 20px;">
-                <span style="background: #e67e22; color: white; padding: 4px 10px; border-radius: 8px; font-size: 11px; font-weight: 800;">JAZZCASH / EASYPAISA</span>
-                <p style="margin: 10px 0 5px 0; color: #64748b; font-size: 12px;">ACCOUNT NUMBER</p>
-                <b style="font-size: 18px; color: #1e293b;">03106453151</b>
-                <p style="margin: 10px 0 5px 0; color: #64748b; font-size: 12px;">ACCOUNT TITLE</p>
-                <b style="font-size: 16px; color: #1e293b;">Seyam Hassan</b>
+        <!-- Escrow Gateway Upload View -->
+        <div class="card hidden" id="payment-upload-view" style="max-width: 440px;">
+            <h3 id="selected-plan-title" style="font-size: 18px; margin-bottom: 20px;">Secure Escrow Gateway</h3>
+            <div style="background: #0f172a; border: 1px solid var(--border-color); border-radius: 16px; padding: 20px; text-align: left; margin-bottom: 20px;">
+                <span style="background: var(--primary-gradient); color: white; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;">OFFICIAL MERCHANT</span>
+                <p style="margin: 12px 0 4px 0; color: var(--text-muted); font-size: 11px; letter-spacing: 0.5px;">MOBILE WALLET TYPE</p>
+                <b style="font-size: 16px;">JAZZCASH / EASYPAISA</b>
+                <p style="margin: 12px 0 4px 0; color: var(--text-muted); font-size: 11px; letter-spacing: 0.5px;">ACCOUNT NUMBER</p>
+                <b style="font-size: 20px; color: var(--primary); letter-spacing: 1px;">03106453151</b>
+                <p style="margin: 12px 0 4px 0; color: var(--text-muted); font-size: 11px; letter-spacing: 0.5px;">ACCOUNT HOLDER TITLE</p>
+                <b style="font-size: 16px;">Seyam Hassan</b>
             </div>
-            <div style="border: 2px dashed #cbd5e1; background: #f8fafc; border-radius: 18px; padding: 25px 15px; margin-bottom: 20px; position: relative;">
-                <span style="font-size: 35px; display: block;">📸</span>
-                <span style="font-size: 14px; font-weight: 600; display: block;">Upload Payment Screenshot</span>
+            
+            <div style="border: 2px dashed var(--border-color); background: #0f172a; border-radius: 16px; padding: 25px 15px; margin-bottom: 25px; position: relative; cursor: pointer;">
+                <span style="font-size: 32px; display: block; margin-bottom: 5px;">📤</span>
+                <span style="font-size: 14px; font-weight: 600; color: var(--text-main); display: block;">Attach Transfer Receipt Screenshot</span>
                 <input type="file" id="proof-file" accept="image/*" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
             </div>
-            <button class="btn-green" onclick="submitPaymentProof()">Verify & Submit Request</button>
-            <p id="cancel-payment-btn" onclick="backToPlans()" style="color: #ef4444; cursor: pointer; font-weight: 700; margin-top: 18px;">← Choose Another Option</p>
+            
+            <button class="btn-gradient" onclick="submitPaymentProof()">Verify Transaction Assets</button>
+            <p id="cancel-payment-btn" onclick="backToPlans()" style="color: #ef4444; font-size: 14px; cursor: pointer; font-weight: 700; margin-top: 20px;">← Cancel & Return</p>
+            <div class="security-badge">🔒 End-to-End Encrypted Verification Channel</div>
         </div>
 
-        <!-- Pending Verification View -->
-        <div class="card hidden" id="pending-view" style="max-width: 450px; padding: 35px 25px;">
-            <span style="font-size: 40px; display:block; margin-bottom:15px;">⏳</span>
-            <h2 style="color: #0f172a; font-weight: 800;">Payment Under Review</h2>
-            <p style="color: #64748b; font-size: 14px; line-height: 1.6;">Your digital transaction receipt has been submitted to secure manual verification channels. System activation parameters will trigger immediately upon confirmation (Takes 1-2 hours).</p>
-            <button class="btn-orange" onclick="logout()" style="background: #ef4444; width: 100%; margin-top:20px;">Exit Application</button>
+        <!-- Verification Holding Loop -->
+        <div class="card hidden" id="pending-view" style="max-width: 440px; padding: 40px 25px;">
+            <span style="font-size: 45px; display:block; margin-bottom:20px; linear-gradient">⏳</span>
+            <h3>Audit Check in Progress</h3>
+            <p style="color: var(--text-muted); font-size: 14px; line-height: 1.6;">Your financial ledger asset has been logged onto database. Server parameters activate automatically upon validation clearance (Takes 1-2 Hours maximum).</p>
+            <button class="btn-outline" onclick="logout()" style="margin-top:25px; border-color: #ef4444; color: #ef4444;">Disconnect Application</button>
         </div>
     </div>
 
-    <!-- MAIN DASHBOARD -->
+    <!-- MAIN CENTRAL OPERATIONS DASHBOARD -->
     <div id="main-dashboard" class="hidden">
         
-        <!-- DECLINED WITHDRAWAL NOTIFICATION -->
+        <!-- DECLINED SETTLEMENT BAR -->
         <div id="decline-notification" class="notification-bar hidden">
-            <span style="font-size: 20px;">⚠️</span>
+            <span style="font-size: 24px;">⚠️</span>
             <div>
-                <strong>Withdrawal Rejected Waja:</strong> <span id="decline-reason-text">Reason goes here...</span>
-                <br><small style="opacity:0.8; cursor:pointer; text-decoration:underline;" onclick="dismissDeclineNotice()">Dismiss Notification</small>
+                <strong>Withdrawal Settlement Rejected:</strong> <span id="decline-reason-text">-</span>
+                <br><small style="color: var(--text-muted); cursor:pointer; text-decoration:underline; display: inline-block; margin-top: 4px;" onclick="dismissDeclineNotice()">Clear Notice</small>
             </div>
         </div>
 
         <div class="balance-card">
-            <p id="user-active-plan" style="background:rgba(255,255,255,0.2); display:inline-block; padding:5px 15px; border-radius:50px; font-size:12px;">PLAN: LOADING...</p>
-            <p style="opacity: 0.7; font-size: 14px; margin: 10px 0 0 0;">TOTAL AVAILABLE BALANCE</p>
-            <h1 id="userBalance" style="font-size: 45px; margin: 10px 0;">0 PKR</h1>
-            <button class="btn-orange" style="background: rgba(255,255,255,0.15); border: 1px solid white; width:auto; padding: 10px 25px;" onclick="showPage('withdraw-page')">Withdraw Funds</button>
+            <span id="user-active-plan" style="background: rgba(255,255,255,0.08); border: 1px solid var(--border-color); display:inline-block; padding: 6px 16px; border-radius:50px; font-size:12px; font-weight: 700; letter-spacing: 0.5px;">NODE STATUS: COLD</span>
+            <p style="color: var(--text-muted); font-size: 13px; margin: 25px 0 5px 0; letter-spacing: 0.5px;">AVAILABLE VAULT BALANCE</p>
+            <h1 id="userBalance" style="font-size: 46px; margin: 0 0 25px 0; font-weight: 800; background: linear-gradient(to right, #fff, var(--text-muted)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">0.00 PKR</h1>
+            <button class="btn-gradient" style="max-width: 200px; padding: 12px 20px; font-size: 14px;" onclick="showPage('withdraw-page')">Withdraw Funds</button>
         </div>
 
-        <!-- LIVE WITHDRAWAL FEED WIDGET -->
+        <!-- REAL-TIME LEDGER LOG FEED WIDGET -->
         <div class="live-feed-card" onclick="showPage('live-withdrawals-page')">
             <div class="feed-header">
-                <span style="font-size: 13px; font-weight: 700; color: #475569;"><span class="feed-dot"></span> Live Withdrawals Status</span>
-                <span style="font-size: 11px; font-weight: bold; color: #22c55e; background: #f0fdf4; padding: 2px 8px; border-radius: 6px;">Real-Time</span>
+                <span style="font-size: 13px; font-weight: 700; color: var(--text-main);"><span class="feed-dot"></span> Live Processing Ledger</span>
+                <span style="font-size: 11px; font-weight: bold; color: var(--success); background: rgba(16,185,129,0.1); padding: 2px 8px; border-radius: 6px;">Real-Time</span>
             </div>
             <div class="feed-container" id="live-feed-box">
-                <!-- Items will dynamically swap here via JS -->
+                <!-- Rotates Automatically -->
             </div>
         </div>
 
-        <!-- DYNAMIC CUSTOM WALLET BOX -->
-        <div id="dashboard-custom-load-box" class="card hidden" style="border: 2px solid #3498db; background: #f0f9ff; margin-bottom: 25px; text-align: left;">
-            <div style="float: right; background: #3498db; color: white; padding: 4px 12px; font-size: 11px; font-weight: 700; border-radius: 8px;">REQUIRED ACTION</div>
-            <h3 style="margin: 0 0 8px 0; color: #1e3a8a; font-size: 18px;">⚠️ Solve Rejection Problem</h3>
-            <p style="margin: 5px 0; font-size: 14px; color: #2c3e50;">
-                Reason/Waja: <b id="custom-load-msg" style="color: #e74c3c;">-</b>
+        <!-- ACTION REQUIREMENT DYNAMIC WIDGET BOX -->
+        <div id="dashboard-custom-load-box" class="card hidden" style="border: 1px solid #3b82f6; background: rgba(59,130,246,0.05); margin-bottom: 25px; text-align: left; max-width: 440px;">
+            <div style="float: right; background: #3b82f6; color: white; padding: 4px 10px; font-size: 11px; font-weight: 700; border-radius: 6px;">REQUIRED INTERVENTION</div>
+            <h3 style="color: #60a5fa; font-size: 18px; margin-bottom: 8px;">Resolution Protocol</h3>
+            <p style="margin: 6px 0; font-size: 14px; color: var(--text-main);">
+                System Flag: <b id="custom-load-msg" style="color: #fca5a5;">-</b>
             </p>
-            <p style="margin: 5px 0; font-size: 14px; color: #2c3e50;">
-                Required Penalty/Fine: <b style="color: #27ae60; font-size: 16px;"><span id="custom-load-amount">0</span> PKR</b>
+            <p style="margin: 6px 0; font-size: 14px; color: var(--text-muted);">
+                Required Verification Fine: <b style="color: var(--success); font-size: 16px;"><span id="custom-load-amount">0</span> PKR</b>
             </p>
-            <button class="btn-main" onclick="openCustomPaymentFromDashboard()" style="background: #3498db; margin-top: 12px; padding: 12px;">Pay & Solve Issue Now</button>
+            <button class="btn-gradient" onclick="openCustomPaymentFromDashboard()" style="background: #3b82f6; margin-top: 15px; padding: 12px; box-shadow: none;">Execute Settlement Liquidation</button>
         </div>
 
+        <!-- OPERATIONS CONTROL GRID -->
         <div class="menu-grid">
             <div class="menu-item" onclick="openTasks()"><span class="icon-bg">📺</span><span>Watch Ads</span></div>
-            <div class="menu-item" onclick="openLevelsFromDashboard()"><span class="icon-bg">⚡</span><span>Level / Deposit</span></div>
-            <div class="menu-item" onclick="showPage('wallet-page')"><span class="icon-bg">💳</span><span>Wallet</span></div>
-            <div class="menu-item" onclick="showPage('rewards-page')"><span class="icon-bg">🎁</span><span>Rewards</span></div>
-            <div class="menu-item" onclick="showSalary()"><span class="icon-bg">📝</span><span>History</span></div>
-            <div class="menu-item" onclick="showPage('team-page')"><span class="icon-bg">👥</span><span>Team</span></div>
-            <div class="menu-item hidden" id="admin-btn" onclick="showPage('admin-page')"><span class="icon-bg">🛡️</span><span>Admin</span></div>
-            <div class="menu-item" onclick="logout()"><span class="icon-bg">🚪</span><span>Logout</span></div>
+            <div class="menu-item" onclick="openLevelsFromDashboard()"><span class="icon-bg">⚡</span><span>Upgrade Node</span></div>
+            <div class="menu-item" onclick="showPage('wallet-page')"><span class="icon-bg">💳</span><span>My Wallet</span></div>
+            <div class="menu-item" onclick="showPage('rewards-page')"><span class="icon-bg">🎁</span><span>Daily Claim</span></div>
+            <div class="menu-item" onclick="showPage('salary-page'); showSalary();"><span class="icon-bg">📝</span><span>Audit Logs</span></div>
+            <div class="menu-item" onclick="showPage('team-page')"><span class="icon-bg">👥</span><span>Affiliates</span></div>
+            <div class="menu-item hidden" id="admin-btn" onclick="showPage('admin-page')"><span class="icon-bg">🛡️</span><span>Console</span></div>
+            <div class="menu-item" style="border-color: rgba(239,68,68,0.2);" onclick="logout()"><span class="icon-bg">🚪</span><span style="color:#ef4444;">Disconnect</span></div>
         </div>
     </div>
 
-    <!-- LIVE WITHDRAWALS FULL LIST PAGE -->
+    <!-- FULL LOG RUNTIME VIEW PAGE -->
     <div id="live-withdrawals-page" class="full-page hidden">
         <div class="header">
-            <button onclick="closePage('live-withdrawals-page')" style="background:none; border:none; font-size:28px;">←</button>
-            <h2 style="margin-left:15px; font-size:20px;">Live Approved Payouts</h2>
+            <button onclick="closePage('live-withdrawals-page')" style="background:none; border:none; font-size:24px; color:white; cursor:pointer;">←</button>
+            <h2 style="margin-left:15px; font-size:18px;">Live Network Transfers Log</h2>
         </div>
-        <div style="padding: 10px 20px; text-align: left; background: #e2e8f0; margin: 10px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; color: #475569;">
-            📊 Live System Logs System Active
+        <div style="padding: 12px; text-align: left; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); margin: 15px 20px; border-radius: 12px; font-size: 13px; font-weight: 600; color: var(--text-muted);">
+            🌐 Real-time nodes data streaming verified via cluster terminal protocols.
         </div>
-        <div id="full-live-payouts-list" style="max-width: 500px; margin: 0 auto; padding-bottom: 30px;">
-            <!-- Will load continuous timeline logs -->
-        </div>
+        <div id="full-live-payouts-list" style="max-width: 480px; margin: 0 auto; padding-bottom: 40px;"></div>
     </div>
 
-    <!-- WALLET PAGE -->
+    <!-- WALLET PAGE VIEW -->
     <div id="wallet-page" class="full-page hidden">
-        <div class="header"><button onclick="closePage('wallet-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">My Wallet</h2></div>
-        <div class="card" style="text-align:left;">
-            <p>💰 Current Balance: <b id="wal-bal">0 PKR</b></p>
-            <p>📤 Total Withdrawn: <b id="wal-out">0 PKR</b></p>
+        <div class="header"><button onclick="closePage('wallet-page')" style="background:none; border:none; font-size:24px; color:white; cursor:pointer;">←</button><h2 style="margin-left:15px; font-size:18px;">Financial Liquidation Vault</h2></div>
+        <div class="card" style="text-align:left; margin-top: 30px;">
+            <p style="color: var(--text-muted); font-size: 14px;">Vault Clear Balance: <br><b id="wal-bal" style="font-size: 24px; color: var(--text-main);">0.00 PKR</b></p>
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 15px 0;">
+            <p style="color: var(--text-muted); font-size: 14px;">Total Cleared Settlements: <br><b id="wal-out" style="font-size: 20px; color: var(--success);">0.00 PKR</b></p>
         </div>
-        <button class="btn-orange" style="width:90%;" onclick="showPage('withdraw-page')">Request Withdrawal</button>
+        <div style="max-width: 440px; margin: 0 auto; padding: 0 20px;">
+            <button class="btn-gradient" onclick="showPage('withdraw-page')">Request Direct Payout Initiation</button>
+        </div>
     </div>
 
-    <!-- WITHDRAW PAGE -->
+    <!-- WITHDRAW ROUTING SETTLEMENT PAGE -->
     <div id="withdraw-page" class="full-page hidden">
-        <div class="header"><button onclick="closePage('withdraw-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Withdraw Money</h2></div>
+        <div class="header"><button onclick="closePage('withdraw-page')" style="background:none; border:none; font-size:24px; color:white; cursor:pointer;">←</button><h2 style="margin-left:15px; font-size:18px;">Asset Liquidation Route</h2></div>
         
-        <!-- Standard Form View -->
-        <div class="card" id="withdrawal-form-container">
-            <h3>Enter Details</h3>
-            <select id="w-method"><option value="EasyPaisa">EasyPaisa</option><option value="JazzCash">JazzCash</option></select>
-            <input type="text" id="w-account" placeholder="Account Number (e.g. 0300xxxxxxx)">
-            <input type="number" id="w-amount" placeholder="Amount (Minimum 2000 PKR)">
-            <button class="btn-main" onclick="submitWithdrawal()" style="margin-top:15px;">Submit Request</button>
+        <div class="card" id="withdrawal-form-container" style="margin-top:30px;">
+            <h3 style="font-size: 18px; margin-bottom: 8px;">Select Transfer Node</h3>
+            <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">Ensure details are accurate to prevent transaction routing fragmentation.</p>
+            <select id="w-method"><option value="EasyPaisa">EasyPaisa Gateway Account</option><option value="JazzCash">JazzCash Gateway Account</option></select>
+            <input type="text" id="w-account" placeholder="Destination Mobile Routing Number">
+            <input type="number" id="w-amount" placeholder="Amount (Minimum threshold 2,000 PKR)">
+            <button class="btn-gradient" onclick="submitWithdrawal()" style="margin-top:15px;">Deploy Settlement Pipeline</button>
         </div>
 
-        <!-- Locked View for Rejected Users -->
-        <div class="card hidden" id="withdrawal-blocked-container">
+        <div class="card hidden" id="withdrawal-blocked-container" style="margin-top:30px;">
             <div class="block-box">
-                <span style="font-size: 40px; display: block; margin-bottom: 10px;">🔒</span>
-                <h3 style="margin: 0 0 10px 0;">Withdrawal Options Locked</h3>
-                <p style="font-size: 14px; line-height: 1.5; color: #742a2a; margin-bottom: 15px;">
-                    Aapka pichla withdrawal reject kiya gaya tha. Pehle apna masla hal karwayein, uske baad hi naya withdrawal apply kar sakte hain.
+                <span style="font-size: 40px; display: block; margin-bottom: 12px;">🔒</span>
+                <h3 style="margin-bottom: 8px; color:#fca5a5;">Routing Channel Restricted</h3>
+                <p style="font-size: 14px; line-height: 1.5; color: var(--text-muted); margin-bottom: 20px;">
+                    Your transaction node was flagged by verification compliance. Solve the ledger error parameter to restore gateway functionality.
                 </p>
-                <div style="background: white; border: 1px solid #feb2b2; padding: 12px; border-radius: 12px; text-align: left; font-size: 13px;">
-                    <strong style="color: #c53030;">Rejection Reason (Waja):</strong>
-                    <div id="block-reason-display-text" style="margin-top: 5px; color: #4a5568; font-style: italic;">No reason provided.</div>
+                <div style="background: #0f172a; border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; text-align: left; font-size: 13px;">
+                    <strong style="color: #ef4444;">System Flag Log:</strong>
+                    <div id="block-reason-display-text" style="margin-top: 6px; color: var(--text-main); font-style: italic;">No specific message found.</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ADS WATCH PAGE -->
+    <!-- HIGH PROFILE WATCH AD UNIT MATRIX -->
     <div id="task-page" class="full-page hidden">
-        <div class="header"><button onclick="closeTasks()" style="background:none; border:none; font-size:28px;">✕</button><h2 style="margin-left:15px;">Watch Ads</h2></div>
-        <div class="card">
-            <h3 id="task-info">Remaining: 0/0</h3>
+        <div class="header"><button onclick="closeTasks()" style="background:none; border:none; font-size:24px; color:white; cursor:pointer;">✕</button><h2 style="margin-left:15px; font-size:18px;">Computational Ad Stream</h2></div>
+        <div class="card" style="margin-top: 30px;">
+            <h3 id="task-info" style="font-size: 16px; color: var(--text-muted);">Matrix Units Processed: 0/0</h3>
             <div id="video-box"></div>
             <div class="timer-ui" id="timer-txt">30</div>
-            <button class="btn-green" id="claim-btn" onclick="claimReward()" disabled style="opacity:0.5;">Wait 30 Seconds</button>
+            <button class="btn-green" id="claim-btn" onclick="claimReward()" disabled style="opacity:0.4; width: 100%;">Sync Stream Data Asset</button>
         </div>
     </div>
 
-    <!-- HISTORY PAGE -->
+    <!-- HISTORICAL AUDIT LOGS PAGE -->
     <div id="salary-page" class="full-page hidden">
-        <div class="header"><button onclick="closePage('salary-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Earning History</h2></div>
-        <div id="history-list" style="max-width: 500px; margin: 0 auto;"></div>
+        <div class="header"><button onclick="closePage('salary-page')" style="background:none; border:none; font-size:24px; color:white; cursor:pointer;">←</button><h2 style="margin-left:15px; font-size:18px;">Account Financial History</h2></div>
+        <div id="history-list" style="max-width: 480px; margin: 20px auto 0 auto;"></div>
     </div>
 
-    <!-- REWARDS PAGE -->
+    <!-- REWARDS HARVEST CHANNEL -->
     <div id="rewards-page" class="full-page hidden">
-        <div class="header"><button onclick="closePage('rewards-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Daily Rewards</h2></div>
-        <div class="card" style="margin-top: 40px; padding: 30px 20px;">
-            <div style="font-size: 50px;">🎁</div>
-            <h3>Daily Attendance Reward</h3>
-            <p style="color: #64748b; font-size: 14px;">Claim your free daily premium bonus of 400 PKR inside your wallet dashboard instantly.</p>
-            <button class="btn-green" onclick="claimDailyReward()">Claim 400 PKR Now</button>
+        <div class="header"><button onclick="closePage('rewards-page')" style="background:none; border:none; font-size:24px; color:white; cursor:pointer;">←</button><h2 style="margin-left:15px; font-size:18px;">Daily Matrix Claims</h2></div>
+        <div class="card" style="margin-top: 60px; padding: 40px 20px;">
+            <div style="font-size: 55px; margin-bottom: 15px;">🎁</div>
+            <h3>Daily Resource Allocation</h3>
+            <p style="color: var(--text-muted); font-size: 14px; line-height: 1.5; margin-bottom: 30px;">Acquire daily system attendance node balance premium boost parameters of 400 PKR instantly added inside active ledger.</p>
+            <button class="btn-gradient" onclick="claimDailyReward()">Harvest 400.00 PKR</button>
         </div>
     </div>
 
-    <!-- TEAM PAGE SECTION -->
+    <!-- REFERRAL NETWORK STRUCTURE AFFILIATES -->
     <div id="team-page" class="full-page hidden">
-        <div class="header"><button onclick="closePage('team-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">My Network Team</h2></div>
-        <div class="card" style="text-align: left;">
-            <h3 style="color: var(--primary); margin-top: 0;">My Referral Tracking</h3>
-            <label style="font-size: 12px; font-weight: 700; color: #64748b;">REFERRAL CODE</label>
-            <div style="background: #f8fafc; border: 1.5px dashed #cbd5e1; padding: 12px; border-radius: 12px; text-align: center; font-size: 20px; font-weight: bold; margin-bottom: 15px;" id="team-ref-display">LOADING...</div>
+        <div class="header"><button onclick="closePage('team-page')" style="background:none; border:none; font-size:24px; color:white; cursor:pointer;">←</button><h2 style="margin-left:15px; font-size:18px;">Distributed Affiliate Network</h2></div>
+        <div class="card" style="text-align: left; margin-top: 25px;">
+            <h3 style="font-size: 16px; color: var(--primary); margin-bottom: 12px;">Node Affiliate Asset Tracker</h3>
+            <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.5px;">PERSONAL MATRIX ACCESS KEY</label>
+            <div style="background: #0f172a; border: 1.5px dashed var(--border-color); padding: 14px; border-radius: 12px; text-align: center; font-size: 22px; font-weight: bold; margin: 8px 0 20px 0; color: var(--text-main);" id="team-ref-display">LOADING</div>
             
-            <label style="font-size: 12px; font-weight: 700; color: #64748b;">SHAREABLE REFERRAL LINK</label>
-            <div style="display: flex; gap: 8px;">
-                <input type="text" id="team-link-display" readonly style="width: 70%; margin: 0; padding: 12px; font-size: 13px; border-radius: 12px; background: #f8fafc; border: 1.5px solid #e2e8f0;">
-                <button onclick="copyReferralLink()" style="width: 30%; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer;">Copy</button>
+            <label style="font-size: 11px; font-weight: 700; color: var(--text-muted); letter-spacing: 0.5px;">INVITATION DEPLOYMENT URL</label>
+            <div style="display: flex; gap: 10px; margin-top: 8px;">
+                <input type="text" id="team-link-display" readonly style="margin: 0; padding: 14px; font-size: 13px; border-radius: 12px; background: #0f172a; border: 1px solid var(--border-color);">
+                <button onclick="copyReferralLink()" style="width: 100px; background: var(--primary-gradient); color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer;">Copy</button>
             </div>
-            <p style="font-size: 13px; color: #475569; margin-top: 15px; border-left: 3px solid var(--primary); padding-left: 8px;">Jab aapka dost koi bhi VIP Level active karega, to aapko foran 800 PKR ka special bonus milega!</p>
+            <p style="font-size: 13px; color: var(--text-muted); margin-top: 20px; line-height: 1.4; border-left: 2px solid var(--primary); padding-left: 10px;">When downline clusters authenticate and trigger node layer upgrades, a premium bonus of 800 PKR instantly registers onto your node.</p>
         </div>
-        <div class="card" style="text-align: left;">
-            <h3>Downline Network Members</h3>
-            <div id="team-list"><p style="color: #94a3b8; text-align: center;">Scanning network directory...</p></div>
+        <div class="card" style="text-align: left; margin-top: 20px;">
+            <h3 style="font-size:16px; margin-bottom:15px;">Active Direct Cluster Downline</h3>
+            <div id="team-list"><p style="color: var(--text-muted); text-align: center; font-size: 14px;">Syncing cluster logs...</p></div>
         </div>
     </div>
 
-    <!-- ADMIN PANEL -->
+    <!-- ROOT ADMINISTRATIVE TERMINAL ENGINE CONSOLE -->
     <div id="admin-page" class="full-page hidden">
-        <div class="header"><button onclick="closePage('admin-page')" style="background:none; border:none; font-size:28px;">←</button><h2 style="margin-left:15px;">Admin Panel</h2></div>
-        <div class="card"><h3>Plan / Custom Wallet Load Requests</h3><div id="admin-plan-requests"></div></div>
-        <div class="card"><h3>Withdrawal Requests</h3><div id="admin-list"></div></div>
+        <div class="header"><button onclick="closePage('admin-page')" style="background:none; border:none; font-size:24px; color:white; cursor:pointer;">←</button><h2 style="margin-left:15px; font-size:18px;">Administrative Terminal Engine</h2></div>
+        <div class="card" style="max-width: 550px;"><h3>Node Allocation Verification Claims</h3><div id="admin-plan-requests"></div></div>
+        <div class="card" style="max-width: 550px;"><h3>Gateway Liquidation Clearing Subsystem</h3><div id="admin-list"></div></div>
         
-        <div class="card">
+        <div class="card" style="max-width: 550px; text-align: left;">
             <h3>Clear User Rejection Status Manually</h3>
-            <p style="font-size: 13px; color: #64748b; text-align: left;">Jab user apna masla hal karwa le, to yahan uska email daal kar uska withdrawal option unblock karein:</p>
+            <p style="font-size: 13px; color: var(--text-muted);">Jab user apna masla hal karwa le, to yahan uska email daal kar uska withdrawal option unblock karein:</p>
             <input type="email" id="unblock-user-email" placeholder="User Email Address">
             <button class="btn-green" onclick="adminUnblockUserWithdrawal()">Unblock Withdrawal Now</button>
         </div>
     </div>
 
-    <!-- CORE JAVASCRIPT LOGIC -->
+    <!-- CORE FUNCTIONAL SYSTEM CONTROLLER INTEGRATION SCRIPT -->
     <script>
         // Firebase Configuration
         const firebaseConfig = {
@@ -355,10 +519,9 @@
         
         const adsPool = ["_9M-gZJu6g0", "dQw4w9WgXcQ", "tgbNymZ7vqY", "V-_O75Z0PqU"];
         let clock, timeLeft = 30, tempSelectedPlan = null, currentActiveTaskDoneCount = 0, currentPayoutPerTask = 0;
-        let isInitialLoad = true; 
-        let hasShownAlertThisSession = false; // Prevents spamming alerts on every live database refresh
+        let hasShownAlertThisSession = false;
 
-        // FAKE LIVE WITHDRAWALS GENERATOR SEED DATA
+        // HIGH GRADE PSEUDO REALTIME TRANSACTION STREAM LOGGER DATA
         const namesPool = ["Muhammad Ali", "Zeeshan Khan", "Waseem Akram", "Sajid Mahmood", "Hamza Jamil", "Asif Iqbal", "Usman Ghani", "Bilal Ahmed", "Kamran Akmal", "Rizwan Shah", "Amjad Pervez", "Nabeel Raza", "Zain Ul Abideen", "Faisal Raza", "Tariq Mahmood", "Noman Ali", "Umair Jaswal", "Shahid Afridi", "Haris Rauf", "Babar Azam"];
         const codesPool = ["0300", "0301", "0302", "0303", "0304", "0305", "0306", "0310", "0312", "0315", "0321", "0322", "0333", "0334", "0345", "0346"];
         const methodsPool = ["EasyPaisa", "JazzCash"];
@@ -390,18 +553,16 @@
 
             function injectAndTransition() {
                 if(generatedWithdrawalsLog.length === 0) return;
-                
                 let activeLog = generatedWithdrawalsLog[counter % generatedWithdrawalsLog.length];
-                
                 if(feedBox) {
                     feedBox.innerHTML = `
                         <div class="feed-item active">
                             <div>
-                                <strong style="font-size:14px; color:#1e293b;">${activeLog.name}</strong> 
-                                <small style="color:#64748b; font-size:12px; margin-left:5px;">(${activeLog.number})</small>
-                                <br><small style="color:#94a3b8; font-size:11px;">${activeLog.dateStr} | ${activeLog.timeStr} via ${activeLog.method}</small>
+                                <strong style="font-size:14px; color:var(--text-main);">${activeLog.name}</strong> 
+                                <small style="color:var(--text-muted); font-size:12px; margin-left:5px;">(${activeLog.number})</small>
+                                <br><small style="color:var(--text-muted); font-size:11px;">${activeLog.dateStr} | ${activeLog.timeStr} via ${activeLog.method}</small>
                             </div>
-                            <span style="color:#22c55e; font-weight:800; font-size:15px;">+${activeLog.amount} PKR</span>
+                            <span style="color:var(--success); font-weight:800; font-size:15px;">+${activeLog.amount} PKR</span>
                         </div>
                     `;
                 }
@@ -421,7 +582,6 @@
                 generatedWithdrawalsLog.unshift({
                     name: randomName, method: randomMethod, amount: randomAmount, number: randomNum, timeStr: currentLiveTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), dateStr: currentLiveTime.toLocaleDateString()
                 });
-                
                 if(generatedWithdrawalsLog.length > 50) generatedWithdrawalsLog.pop();
                 renderFullPayoutsPage();
             }, Math.floor(Math.random() * 45000 + 45000));
@@ -433,17 +593,17 @@
             fullListContainer.innerHTML = "";
             generatedWithdrawalsLog.forEach(log => {
                 fullListContainer.innerHTML += `
-                    <div class="history-item" style="border-left-color: #22c55e; margin: 10px 20px;">
-                        <div style="float: right; background: #f0fdf4; color: #22c55e; padding: 3px 10px; font-size: 11px; font-weight: 700; border-radius: 6px;">Success</div>
-                        <b style="font-size:15px; color:#1e293b;">${log.name}</b> <small style="color:#64748b;">(${log.number})</small><br>
-                        <span style="color:#22c55e; font-weight:bold; font-size:17px;">+${log.amount} PKR</span><br>
-                        <small style="color:#94a3b8;">Transferred via ${log.method} on ${log.dateStr} at ${log.timeStr}</small>
+                    <div class="history-item" style="border-left-color: var(--success);">
+                        <div style="float: right; background: rgba(16,185,129,0.1); color: var(--success); padding: 3px 10px; font-size: 11px; font-weight: 700; border-radius: 6px;">Distributed</div>
+                        <b style="font-size:15px; color:var(--text-main);">${log.name}</b> <small style="color:var(--text-muted);">(${log.number})</small><br>
+                        <span style="color:var(--success); font-weight:bold; font-size:17px;">+${log.amount} PKR</span><br>
+                        <small style="color:var(--text-muted); font-size: 12px; display:inline-block; margin-top:4px;">Transferred via ${log.method} on ${log.dateStr} at ${log.timeStr}</small>
                     </div>
                 `;
             });
         }
 
-        function appAlert(msg, title = "earnmoney56.github.io") {
+        function appAlert(msg, title = "System Notification") {
             document.getElementById('alert-title').innerText = title;
             document.getElementById('alert-message').innerText = msg;
             document.getElementById('custom-alert').classList.remove('hidden');
@@ -491,8 +651,7 @@
                 showPage('paywall-section');
                 document.getElementById('plan-selection-view').classList.add('hidden');
                 document.getElementById('payment-upload-view').classList.remove('hidden');
-                document.getElementById('selected-plan-title').innerText = `Solve Issue Rejection Payment`;
-                
+                document.getElementById('selected-plan-title').innerText = `Compliance Fee Liquidation`;
                 document.getElementById('cancel-payment-btn').classList.add('hidden');
                 document.getElementById('paywall-back-btn').classList.add('hidden');
             });
@@ -514,14 +673,13 @@
         }
 
         function showSalary() {
-            showPage('salary-page');
             const list = document.getElementById('history-list');
-            list.innerHTML = `<p style="color:#888;">Loading history log...</p>`;
+            list.innerHTML = `<p style="color:var(--text-muted);">Syncing historical logs...</p>`;
             
             db.ref('history/' + auth.currentUser.uid).once('value', s => {
                 list.innerHTML = "";
                 if(!s.exists()) {
-                    list.innerHTML = `<p style="color:#888; padding:20px;">No transactions found in history yet.</p>`;
+                    list.innerHTML = `<p style="color:var(--text-muted); padding:20px;">No historical transaction assets logged.</p>`;
                     return;
                 }
                 let items = [];
@@ -530,14 +688,14 @@
                 items.forEach(item => {
                     const h = item.val;
                     const isMinus = h.amount.toString().includes('-');
-                    const color = isMinus ? '#e74c3c' : '#27ae60';
+                    const color = isMinus ? '#ef4444' : 'var(--success)';
                     const sign = isMinus ? "" : "+";
                     list.innerHTML += `
                         <div class="history-item" style="border-left-color: ${color};">
-                            <b style="font-size:16px; color:#2c3e50;">${h.type}</b><br>
+                            <b style="font-size:16px; color:var(--text-main);">${h.type}</b><br>
                             <span style="color:${color}; font-weight:bold; font-size:18px;">${sign}${h.amount} PKR</span><br>
-                            ${h.reason ? `<small style="color:#e74c3c; display:block; margin:2px 0;">Waja: ${h.reason}</small>` : ''}
-                            <small style="color:#7f8c8d;">${h.date}</small>
+                            ${h.reason ? `<small style="color:#ef4444; display:block; margin:4px 0;">Flag Reason: ${h.reason}</small>` : ''}
+                            <small style="color:var(--text-muted); display:inline-block; margin-top:4px;">${h.date}</small>
                         </div>`;
                 });
             });
@@ -558,13 +716,13 @@
                 db.ref('users').orderByChild('refBy').equalTo(userRefCode).once('value', s => {
                     tList.innerHTML = "";
                     if(!s.exists()) {
-                        tList.innerHTML = `<p style="color: #94a3b8; text-align: center; font-size:14px; padding:10px;">No direct downline team members found yet.</p>`;
+                        tList.innerHTML = `<p style="color: var(--text-muted); text-align: center; font-size:14px; padding:10px;">No direct clusters affiliated yet.</p>`;
                         return;
                     }
                     s.forEach(child => {
                         const member = child.val();
-                        let planText = member.status === "Pending" ? "Reviewing ⏳" : (member.status === "Active" ? `Active ✅` : 'No Plan ❌');
-                        tList.innerHTML += `<div style="padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;"><span>${member.email}</span><b>${planText}</b></div>`;
+                        let planText = member.status === "Pending" ? "Auditing ⏳" : (member.status === "Active" ? `Active Verified ✅` : 'Offline Node ❌');
+                        tList.innerHTML += `<div style="padding:12px; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; font-size:14px;"><span>${member.email}</span><b style="color:var(--text-muted);">${planText}</b></div>`;
                     });
                 });
             });
@@ -573,8 +731,8 @@
         function copyReferralLink() {
             const copyText = document.getElementById('team-link-display');
             copyText.select();
-            navigator.clipboard.writeText(copyText.value).then(() => appAlert("Referral Link copied!"))
-            .catch(() => appAlert("Failed to copy link."));
+            navigator.clipboard.writeText(copyText.value).then(() => appAlert("Affiliate parameter URL locked onto clipboard!"))
+            .catch(() => appAlert("Copy routine failed."));
         }
 
         function claimDailyReward() {
@@ -582,10 +740,10 @@
             const today = new Date().toLocaleDateString();
             db.ref('users/' + u.uid).once('value', s => {
                 const d = s.val() || {};
-                if(d.lastRewardDate === today) return appAlert("Already claimed today!");
+                if(d.lastRewardDate === today) return appAlert("Node allocation already processed for today!");
                 db.ref('users/' + u.uid).update({ balance: parseFloat(((d.balance || 0) + 400).toFixed(2)), lastRewardDate: today });
-                db.ref('history/' + u.uid).push({ type: "Daily Reward", amount: 400, date: new Date().toLocaleString() });
-                appAlert("400 PKR Claimed Successfully!");
+                db.ref('history/' + u.uid).push({ type: "Daily Resource Harvest", amount: 400, date: new Date().toLocaleString() });
+                appAlert("400.00 PKR verified into your active dynamic asset line!", "Allocation Success");
                 closePage('rewards-page');
             });
         }
@@ -594,7 +752,7 @@
             tempSelectedPlan = { id: planId, cost: price, earning: dailyEarn, totalTasks: maxTasks };
             document.getElementById('plan-selection-view').classList.add('hidden');
             document.getElementById('payment-upload-view').classList.remove('hidden');
-            document.getElementById('selected-plan-title').innerText = `Deposit Confirmation (Plan ${planId})`;
+            document.getElementById('selected-plan-title').innerText = `Provision Matrix Node (Tier ${planId})`;
         }
         
         function backToPlans() {
@@ -604,7 +762,7 @@
 
         function submitPaymentProof() {
             const fileInput = document.getElementById('proof-file');
-            if(fileInput.files.length === 0) return appAlert("Please upload payment screenshot!");
+            if(fileInput.files.length === 0) return appAlert("Please execute and attach receipt screenshot!");
             const u = auth.currentUser;
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -624,19 +782,19 @@
             const method = document.getElementById('w-method').value;
             const account = document.getElementById('w-account').value.trim();
             const amount = parseInt(document.getElementById('w-amount').value);
-            if(!account || !amount) return appAlert("Please fill all details!");
-            if(amount < 2000) return appAlert("Minimum withdrawal is 2000 PKR!");
+            if(!account || !amount) return appAlert("Please fill out complete routing destinations.");
+            if(amount < 2000) return appAlert("Threshold limit drops minimum below 2000 PKR.");
 
             db.ref('users/' + u.uid).once('value', s => {
                 const d = s.val() || {};
-                if(d.declineReason) return appAlert("Your withdrawal is locked! Solve your issue first.");
+                if(d.declineReason) return appAlert("Node channel restricted. Resolve terminal flag.");
                 const bal = d.balance || 0;
-                if(amount > bal) return appAlert("Insufficient balance!");
+                if(amount > bal) return appAlert("Insufficient asset liquidity depth.");
                 
                 db.ref('users/' + u.uid).update({ balance: bal - amount, totalWithdrawn: (d.totalWithdrawn || 0) + amount });
                 db.ref('withdrawals').push({ uid: u.uid, email: u.email, method: method, account: account, amount: amount, status: "Pending", date: new Date().toLocaleString() });
-                db.ref('history/' + u.uid).push({ type: `Withdrawal (${method})`, amount: `-${amount}`, date: new Date().toLocaleString() });
-                appAlert("Withdrawal request submitted!");
+                db.ref('history/' + u.uid).push({ type: `Liquidation Routing (${method})`, amount: `-${amount}`, date: new Date().toLocaleString() });
+                appAlert("Liquidation sequence initialized into processing pool.", "Sequence Complete");
                 closePage('withdraw-page');
             });
         }
@@ -648,8 +806,8 @@
                 const today = new Date().toLocaleDateString();
                 let done = (d.lastDate === today) ? (d.tasksDone || 0) : 0;
                 let maxAllowed = d.allowedTasks || 0;
-                if (maxAllowed === 0 || d.status !== "Active") return appAlert("Please activate a premium plan first!");
-                if (done >= maxAllowed) return appAlert(`Daily limit reached!`);
+                if (maxAllowed === 0 || d.status !== "Active") return appAlert("Please provision a computational premium tier node first.");
+                if (done >= maxAllowed) return appAlert(`Daily node optimization computational limits reached.`);
                 
                 currentActiveTaskDoneCount = done;
                 currentPayoutPerTask = d.rewardPerVideo || 0;
@@ -657,20 +815,20 @@
                 showPage('task-page');
                 timeLeft = 30;
                 document.getElementById('timer-txt').innerText = timeLeft;
-                document.getElementById('task-info').innerText = `Ads Done: ${done}/${maxAllowed}`;
+                document.getElementById('task-info').innerText = `Matrix Streams Completed: ${done}/${maxAllowed}`;
                 
                 const randomVideo = adsPool[Math.floor(Math.random() * adsPool.length)];
                 document.getElementById('video-box').innerHTML = `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${randomVideo}?autoplay=1&controls=0&mute=1" frameborder="0" allow="autoplay"></iframe>`;
                 
                 const btn = document.getElementById('claim-btn');
-                btn.disabled = true; btn.style.opacity = "0.5"; btn.innerText = "Wait 30 Seconds";
+                btn.disabled = true; btn.style.opacity = "0.4"; btn.innerText = "Processing Data stream...";
 
                 clock = setInterval(() => {
                     timeLeft--;
                     document.getElementById('timer-txt').innerText = timeLeft;
                     if(timeLeft <= 0) {
                         clearInterval(clock);
-                        btn.disabled = false; btn.style.opacity = "1"; btn.innerText = "Claim Earning Now";
+                        btn.disabled = false; btn.style.opacity = "1"; btn.innerText = "Sync Stream Data Asset";
                     }
                 }, 1000);
             });
@@ -686,8 +844,8 @@
                 }
                 return d;
             });
-            db.ref('history/' + u.uid).push({ type: "Ad Watch Reward", amount: cleanPayout, date: new Date().toLocaleString() });
-            appAlert(`${cleanPayout} PKR Added to your account!`);
+            db.ref('history/' + u.uid).push({ type: "Computational Matrix Harvest", amount: cleanPayout, date: new Date().toLocaleString() });
+            appAlert(`${cleanPayout} PKR synced into account pool.`, "Asset Refreshed");
             closeTasks();
         }
         function closeTasks() { clearInterval(clock); closePage('task-page'); }
@@ -706,9 +864,7 @@
             }).catch(e => appAlert(e.message));
         }
 
-        function dismissDeclineNotice() {
-            document.getElementById('decline-notification').classList.add('hidden');
-        }
+        function dismissDeclineNotice() { document.getElementById('decline-notification').classList.add('hidden'); }
 
         auth.onAuthStateChanged(user => {
             if(user) {
@@ -718,14 +874,11 @@
                     document.getElementById('main-dashboard').classList.remove('hidden');
                     document.getElementById('paywall-section').classList.add('hidden');
                 } else {
-                    // NEW: Reset state toggle on fresh authentication session to receive latest alert triggers
                     hasShownAlertThisSession = false;
-
                     db.ref('users/' + user.uid).on('value', s => {
                         const d = s.val() || {};
                         const userStatus = d.status || "NoPlan";
 
-                        // AUTOMATIC POPUP MONITORING ALERTS SYSTEM (Your Requested Core Feature addition)
                         if(d.declineReason) {
                             document.getElementById('decline-reason-text').innerText = d.declineReason;
                             document.getElementById('decline-notification').classList.remove('hidden');
@@ -734,9 +887,8 @@
                             document.getElementById('custom-load-msg').innerText = d.declineReason;
                             document.getElementById('custom-load-amount').innerText = d.declineAmount || 0;
 
-                            // Triggers popup notification instantly upon account restriction check
                             if(!hasShownAlertThisSession) {
-                                appAlert(`⚠️ Withdrawal Alert: Your account requires manual verification optimization. Reason: ${d.declineReason}`, "Account Restricted");
+                                appAlert(`⚠️ Settlement Route Error Flag: Node requires validation liquidation parameter optimization. Reason: ${d.declineReason}`, "Compliance Restriction Flagged");
                                 hasShownAlertThisSession = true;
                             }
                         } else {
@@ -757,10 +909,10 @@
                         } else if(userStatus === "Active") {
                             document.getElementById('paywall-section').classList.add('hidden');
                             document.getElementById('main-dashboard').classList.remove('hidden');
-                            document.getElementById('user-active-plan').innerText = `PLAN ${d.planId} Active`;
-                            document.getElementById('userBalance').innerText = (d.balance || 0) + " PKR";
-                            document.getElementById('wal-bal').innerText = (d.balance || 0) + " PKR";
-                            document.getElementById('wal-out').innerText = (d.totalWithdrawn || 0) + " PKR";
+                            document.getElementById('user-active-plan').innerText = `NODE LAYER TIER ${d.planId} : OPERATIONAL`;
+                            document.getElementById('userBalance').innerText = (d.balance || 0).toFixed(2) + " PKR";
+                            document.getElementById('wal-bal').innerText = (d.balance || 0).toFixed(2) + " PKR";
+                            document.getElementById('wal-out').innerText = (d.totalWithdrawn || 0).toFixed(2) + " PKR";
                         }
                     });
                 }
@@ -782,22 +934,22 @@
                     if(d.status === "Pending") {
                         if(d.planId === 99) {
                             pList.innerHTML += `
-                            <div class="history-item" style="border-left-color: #3498db; background: #f0f9ff;">
-                                <b>User: ${d.email}</b><br>
-                                Type: <span style="color:#3498db; font-weight:bold;">Custom Rejection Fine Payment</span><br>
-                                Requested Fine Amount: <b>${d.cost} PKR</b><br>
-                                <img src="${d.screenshot}" style="max-width:150px; display:block; margin:5px 0;">
-                                <button class="btn-admin-balance" onclick="approveAsCustomBalance('${d.uid}', ${d.cost}, '${reqKey}')">Approve & Load inside Balance</button>
-                                <button class="btn-red" onclick="rejectPlanRequest('${reqKey}', '${d.uid}')">Reject</button>
+                            <div class="history-item" style="border-left-color: #3b82f6;">
+                                <b>User Node: ${d.email}</b><br>
+                                Type: <span style="color:#3b82f6; font-weight:bold;">Custom Verification Liquidation Clearance</span><br>
+                                Fine Deposit Ledger: <b>${d.cost} PKR</b><br>
+                                <img src="${d.screenshot}" style="max-width:180px; display:block; margin:8px 0; border-radius:8px;">
+                                <button class="btn-admin-balance" onclick="approveAsCustomBalance('${d.uid}', ${d.cost}, '${reqKey}')">Approve Asset Injection</button>
+                                <button class="btn-red" onclick="rejectPlanRequest('${reqKey}', '${d.uid}')">Drop Claim</button>
                             </div>`;
                         } else {
                             pList.innerHTML += `
                             <div class="history-item">
-                                <b>User: ${d.email}</b><br>
-                                Type: <span style="color:var(--primary); font-weight:bold;">Plan ${d.planId} Request</span><br>
-                                <img src="${d.screenshot}" style="max-width:150px; display:block; margin:5px 0;">
-                                <button class="btn-admin-approve" onclick="approvePlan('${d.uid}', '${reqKey}')">Activate Plan</button>
-                                <button class="btn-red" onclick="rejectPlanRequest('${reqKey}', '${d.uid}')">Reject</button>
+                                <b>User Node: ${d.email}</b><br>
+                                Type: <span style="color:var(--primary); font-weight:bold;">Tier Node Layer ${d.planId} Request</span><br>
+                                <img src="${d.screenshot}" style="max-width:180px; display:block; margin:8px 0; border-radius:8px;">
+                                <button class="btn-admin-approve" onclick="approvePlan('${d.uid}', '${reqKey}')">Deploy Node Status</button>
+                                <button class="btn-red" onclick="rejectPlanRequest('${reqKey}', '${d.uid}')">Drop Claim</button>
                             </div>`;
                         }
                     }
@@ -810,7 +962,7 @@
                     const d = c.val();
                     const reqId = c.key;
                     if(d.status === "Pending") {
-                        wList.innerHTML += `<div class="history-item"><b>User: ${d.email}</b><br>Method: ${d.method}<br>Account: ${d.account}<br>Amount: <b>${d.amount} PKR</b><br><br><button class="btn-admin-approve" onclick="approveWithdrawal('${reqId}')">Approve</button><button class="btn-red" onclick="rejectWithdrawal('${reqId}', '${d.uid}', ${d.amount})">Reject</button></div>`;
+                        wList.innerHTML += `<div class="history-item"><b>User Node: ${d.email}</b><br>Method: ${d.method}<br>Route Account: ${d.account}<br>Liquidation Threshold: <b>${d.amount} PKR</b><br><br><button class="btn-admin-approve" onclick="approveWithdrawal('${reqId}')">Approve Asset Dispatch</button><button class="btn-red" onclick="rejectWithdrawal('${reqId}', '${d.uid}', ${d.amount})">Deploy Restriction Flag</button></div>`;
                     }
                 });
             });
@@ -819,41 +971,27 @@
         function approvePlan(userUid, reqKey) {
             db.ref('plan_requests/' + reqKey).once('value', s => {
                 const d = s.val();
-                
-                db.ref('users/' + userUid).update({ 
-                    status: "Active", 
-                    planId: d.planId, 
-                    allowedTasks: d.totalTasks, 
-                    rewardPerVideo: (d.earning / d.totalTasks) 
-                });
+                db.ref('users/' + userUid).update({ status: "Active", planId: d.planId, allowedTasks: d.totalTasks, rewardPerVideo: (d.earning / d.totalTasks) });
                 db.ref('plan_requests/' + reqKey).update({ status: "Approved" });
 
                 db.ref('users/' + userUid).once('value', userSnap => {
                     const uData = userSnap.val() || {};
                     const referrerCode = uData.refBy;
-
                     if(referrerCode && referrerCode !== "none" && referrerCode !== "") {
                         db.ref('users').once('value', allUsersSnap => {
                             allUsersSnap.forEach(userChild => {
                                 const potentialReferrerKey = userChild.key;
                                 const potentialReferrerData = userChild.val();
-                                
                                 if(potentialReferrerData.myRef === referrerCode) {
                                     const oldBalance = parseFloat(potentialReferrerData.balance || 0);
-                                    const newBalance = parseFloat((oldBalance + 800).toFixed(2));
-                                    
-                                    db.ref('users/' + potentialReferrerKey).update({ balance: newBalance });
-                                    db.ref('history/' + potentialReferrerKey).push({
-                                        type: `Referral Bonus (${uData.email})`,
-                                        amount: 800,
-                                        date: new Date().toLocaleString()
-                                    });
+                                    db.ref('users/' + potentialReferrerKey).update({ balance: parseFloat((oldBalance + 800).toFixed(2)) });
+                                    db.ref('history/' + potentialReferrerKey).push({ type: `Affiliate Node Cluster Reward (${uData.email})`, amount: 800, date: new Date().toLocaleString() });
                                 }
                             });
                         });
                     }
                 });
-                appAlert("Plan Activated successfully!");
+                appAlert("Dynamic cluster network tier node allocated successfully.");
             });
         }
 
@@ -861,23 +999,12 @@
             db.ref('users/' + userUid).once('value', s => {
                 const currentData = s.val() || {};
                 let finalAmount = parseFloat(fallbackAmount);
-                if (isNaN(finalAmount) || finalAmount <= 0) return appAlert("Invalid numeric value!");
+                if (isNaN(finalAmount) || finalAmount <= 0) return appAlert("Numeric computation error.");
 
-                db.ref('users/' + userUid).update({
-                    balance: parseFloat(((currentData.balance || 0) + finalAmount).toFixed(2)),
-                    status: "Active",
-                    declineReason: null,     
-                    declineAmount: null      
-                });
-
+                db.ref('users/' + userUid).update({ balance: parseFloat(((currentData.balance || 0) + finalAmount).toFixed(2)), status: "Active", declineReason: null, declineAmount: null });
                 db.ref('plan_requests/' + reqKey).update({ status: "Approved" });
-                db.ref('history/' + userUid).push({
-                    type: "Problem Solved Balance Credit",
-                    amount: finalAmount,
-                    date: new Date().toLocaleString()
-                });
-
-                appAlert(`${finalAmount} PKR added into user balance and account unblocked successfully!`);
+                db.ref('history/' + userUid).push({ type: "Settlement Protocol Balance Inject", amount: finalAmount, date: new Date().toLocaleString() });
+                appAlert(`Ledger verification asset parsed. Node unblocked.`);
             });
         }
 
@@ -885,57 +1012,43 @@
             db.ref('plan_requests/' + reqKey).update({ status: "Rejected" });
             db.ref('users/' + userUid).once('value', s => {
                 const d = s.val() || {};
-                let nextStatus = d.declineReason ? "Active" : "NoPlan";
-                db.ref('users/' + userUid).update({ status: nextStatus });
+                db.ref('users/' + userUid).update({ status: d.declineReason ? "Active" : "NoPlan" });
             });
-            appAlert("Deposit Request Rejected!");
+            appAlert("Allocation claim drop logs updated.");
         }
 
         function approveWithdrawal(reqId) {
             db.ref('withdrawals/' + reqId).update({ status: "Approved" });
-            appAlert("Withdrawal Request Approved!");
+            appAlert("Liquidation asset dispatch clearance logged.");
         }
 
         function rejectWithdrawal(reqId, userUid, amount) {
-            const reason = prompt("Enter decline reason (User ko kya masla/waja show ho?):");
+            const reason = prompt("Enter verification restriction reason text for client interface:");
             if (reason === null) return; 
-            if (reason.trim() === "") return appAlert("Rejection ki waja likhna zaroori hai!");
+            if (reason.trim() === "") return appAlert("Compliance tracking needs a log text parameter.");
 
-            const fineInput = prompt("Is masle ko hal karne ke liye user kitne paise (Fine) bhejey? (Agar penalty nahi lagani to 0 likhein):");
+            const fineInput = prompt("Liquidation settlement parameter target fine cost? (Input 0 for null value):");
             if (fineInput === null) return;
             const fineAmount = parseFloat(fineInput);
-            if (isNaN(fineAmount) || fineAmount < 0) return appAlert("Please enter a valid numeric fine amount!");
+            if (isNaN(fineAmount) || fineAmount < 0) return appAlert("Invalid tracking value compilation.");
 
             db.ref('withdrawals/' + reqId).update({ status: "Rejected", adminReason: reason, requestedFine: fineAmount });
             db.ref('users/' + userUid).once('value', s => {
                 const d = s.val() || {};
-                db.ref('users/' + userUid).update({ 
-                    balance: (d.balance || 0) + amount,
-                    totalWithdrawn: (d.totalWithdrawn || 0) - amount,
-                    declineReason: reason,
-                    declineAmount: fineAmount 
-                });
-                
-                db.ref('history/' + userUid).push({ 
-                    type: "Withdrawal Rejected (Refund)", 
-                    amount: amount, 
-                    reason: reason,
-                    date: new Date().toLocaleString() 
-                });
-                appAlert("Withdrawal reject ho gaya aur user ko waja bhej di gayi hai!");
+                db.ref('users/' + userUid).update({ balance: (d.balance || 0) + amount, totalWithdrawn: (d.totalWithdrawn || 0) - amount, declineReason: reason, declineAmount: fineAmount });
+                db.ref('history/' + userUid).push({ type: "Asset Liquidation Rollback Loop", amount: amount, reason: reason, date: new Date().toLocaleString() });
+                appAlert("Restriction parameters deployed onto destination cluster node interface.");
             });
         }
 
         function adminUnblockUserWithdrawal() {
             const emailInput = document.getElementById('unblock-user-email').value.trim();
-            if(!emailInput) return appAlert("Please enter a user email!");
+            if(!emailInput) return appAlert("User email asset missing.");
 
             db.ref('users').orderByChild('email').equalTo(emailInput).once('value', s => {
-                if(!s.exists()) return appAlert("User email not found inside database!");
-                s.forEach(child => {
-                    db.ref('users/' + child.key).update({ declineReason: null, declineAmount: null });
-                });
-                appAlert("User withdrawal section unblocked successfully!");
+                if(!s.exists()) return appAlert("Cluster email index not found.");
+                s.forEach(child => { db.ref('users/' + child.key).update({ declineReason: null, declineAmount: null }); });
+                appAlert("Destination configuration node clearance completed.");
                 document.getElementById('unblock-user-email').value = "";
             });
         }
