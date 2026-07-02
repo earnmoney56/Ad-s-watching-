@@ -350,7 +350,7 @@
         </div>
     </div>
 
-    <!-- ADS WATCH PAGE (UPGRADED SINGLE STREAM IN LINE VIEW) -->
+    <!-- ADS WATCH PAGE -->
     <div id="task-page" class="full-page hidden">
         <div class="header"><button onclick="closeTasks()" class="back-arrow-btn">✕</button><h2>Watch Ads Engine</h2></div>
         
@@ -719,7 +719,6 @@
             });
         }
 
-        // --- UPGRADED IN LINE TASK VIEW LOGIC ---
         function openTasks() {
             const u = auth.currentUser;
             db.ref('users/' + u.uid).once('value', s => {
@@ -736,14 +735,12 @@
                 showPage('task-page');
                 document.getElementById('task-info').innerText = `Ads Remaining: ${maxAllowed - done} / ${maxAllowed}`;
                 
-                // Hide dynamic video box overlay initially, focus on rows list layout
                 document.getElementById('tasks-list-container').classList.remove('hidden');
                 document.getElementById('task-player-view').classList.add('hidden');
 
                 const wrapper = document.getElementById('tasks-buttons-wrapper');
                 wrapper.innerHTML = "";
 
-                // Generate linear line of action task buttons
                 for (let i = 1; i <= maxAllowed; i++) {
                     let isTaskCompleted = (i <= done);
                     let btnStatusMarkup = isTaskCompleted ? '<span class="task-badge done">Completed ✓</span>' : '<span class="task-badge todo">Available →</span>';
@@ -800,7 +797,6 @@
                     db.ref('history/' + u.uid).push({ type: "Ad Watch Reward", amount: cleanPayout, date: new Date().toLocaleString() });
                     appAlert(`${cleanPayout} PKR Added into your wallet account balance!`);
                     
-                    // Reset and return user directly to refreshed linear lineup
                     clearInterval(clock);
                     openTasks();
                 }
@@ -887,7 +883,9 @@
 
         function logout() { auth.signOut().then(() => location.reload()); }
 
+        // --- Live Firebase Data Listener Configured ---
         function loadAdminData() {
+            // .on lagaya hai taake bina refresh kiye foran live updates aayein
             db.ref('plan_requests').on('value', s => {
                 const pList = document.getElementById('admin-plan-requests'); pList.innerHTML = "";
                 s.forEach(c => {
@@ -906,7 +904,7 @@
                             </div>`;
                         } else {
                             pList.innerHTML += `
-                            <div class="history-item">
+                            <div class="history-item" style="border-left-color: var(--primary);">
                                 <b>User: ${d.email}</b><br>
                                 Type: <span style="color:var(--primary); font-weight:bold;">Plan ${d.planId} Request</span><br>
                                 <img src="${d.screenshot}" style="max-width:150px; border-radius:10px; display:block; margin:10px 0; border:1px solid var(--border);">
