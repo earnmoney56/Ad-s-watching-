@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ACM Global - Earning App</title>
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -32,7 +34,7 @@
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .stat-card { background: white; padding: 16px 14px; border-radius: 20px; border: 1px solid #f1f5f9; }
         .stat-card .label { font-size: 0.68rem; color: #64748b; font-weight: 800; margin-bottom: 6px; }
-        .stat-card .value { font-size: 1.25rem; font-weight: 700; color: #0f172a; }
+        .stat-card .value { font-size: 1.1rem; font-weight: 700; color: #0f172a; word-break: break-all; }
         .actions-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 22px; }
         .action-card { border-radius: 24px; padding: 22px 10px; text-align: center; color: white; cursor: pointer; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06); }
         .action-card i { font-size: 1.6rem; margin-bottom: 12px; display: block; }
@@ -46,7 +48,7 @@
         .back-btn { background: white; border: none; width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; font-size: 1.1rem; color: #1e293b; display: flex; align-items: center; justify-content: center; }
         .screen-title { font-size: 1.5rem; font-weight: 800; color: #0f172a; }
 
-        /* --- PREMIUM INVESTMENT PLANS STYLES --- */
+        /* --- INVESTMENT PLANS --- */
         .plan-card { background: white; border-radius: 28px; padding: 20px; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.02); border: 2px solid transparent; transition: all 0.3s; position: relative; overflow: hidden; }
         .plan-card.active-plan-border { border-color: #2563eb; }
         .plan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 12px; }
@@ -58,6 +60,18 @@
         .plan-row .p-val { font-size: 0.9rem; font-weight: 700; color: #1e293b; }
         .buy-plan-btn { width: 100%; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; border: none; padding: 12px; border-radius: 16px; font-weight: 800; font-size: 0.95rem; cursor: pointer; }
         .active-badge { position: absolute; top: 0; right: 0; background: #2563eb; color: white; padding: 4px 15px; font-size: 0.7rem; font-weight: 800; border-bottom-left-radius: 12px; }
+
+        /* --- CHECKOUT GATEWAY GATE OVERLAY --- */
+        .checkout-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
+        .checkout-content { background: white; width: 100%; max-width: 420px; border-radius: 30px; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .gateway-header { text-align: center; margin-bottom: 20px; }
+        .gateway-badge { background: #ea580c; color: white; padding: 6px 14px; border-radius: 12px; font-size: 0.85rem; font-weight: 800; display: inline-block; margin-bottom: 10px; }
+        .account-details-box { background: #fff7ed; border: 1px solid #ffedd5; border-radius: 16px; padding: 14px; margin-bottom: 18px; }
+        .acc-info-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 0.85rem; }
+        .acc-info-row span:first-child { color: #64748b; font-weight: 600; }
+        .acc-info-row span:last-child { color: #1e293b; font-weight: 800; }
+        .close-modal-btn { background: #f1f5f9; color: #64748b; border: none; width: 100%; padding: 12px; border-radius: 14px; font-weight: 700; cursor: pointer; margin-top: 8px; }
 
         /* --- VIDEO TASKS CARDS --- */
         .task-card { background: white; border-radius: 24px; padding: 16px; margin-bottom: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; }
@@ -85,6 +99,7 @@
 
     <div class="app-container">
 
+        <!-- ================= REGISTER VIEW ================= -->
         <div id="registerView" class="app-view active">
             <div class="auth-container">
                 <div class="auth-logo"><h2>ACM <span>Global</span></h2><p style="font-size:0.8rem; color:#64748b;">Create Your Earning Account</p></div>
@@ -96,6 +111,7 @@
             </div>
         </div>
 
+        <!-- ================= LOGIN VIEW ================= -->
         <div id="loginView" class="app-view">
             <div class="auth-container">
                 <div class="auth-logo"><h2>Welcome <span>Back</span></h2><p style="font-size:0.8rem; color:#64748b;">Login to continue journey</p></div>
@@ -106,6 +122,7 @@
             </div>
         </div>
 
+        <!-- ================= HOME VIEW ================= -->
         <div id="homeView" class="app-view">
             <div class="main-balance-wrapper">
                 <h1 class="main-balance-text"><span>Rs</span><span id="rs-balance">0.00</span></h1>
@@ -114,7 +131,7 @@
             <div class="glass-card-section">
                 <div class="stats-grid">
                     <div class="stat-card"><p class="label">ACCOUNT BALANCE</p><p class="value" id="acc-balance">0.00</p></div>
-                    <div class="stat-card"><p class="label">ACTIVE PLANS</p><p class="value" id="active-plans">0</p></div>
+                    <div class="stat-card"><p class="label">ACTIVE PLAN</p><p class="value" id="active-plans" style="color: #2563eb; font-weight:800;">None</p></div>
                     <div class="stat-card"><p class="label">TOTAL WITHDRAW</p><p class="value" id="total-withdraw">0.00</p></div>
                     <div class="stat-card"><p class="label">TOTAL DEPOSIT</p><p class="value" id="total-deposit">0.00</p></div>
                 </div>
@@ -127,6 +144,7 @@
             </div>
         </div>
 
+        <!-- ================= INVESTMENT PLANS VIEW ================= -->
         <div id="plansView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -134,48 +152,85 @@
             </div>
 
             <div id="plans-list-container">
+                <!-- Plan 1 -->
                 <div class="plan-card" id="p1">
-                    <div class="plan-header"><div class="plan-title">START PLAN</div><div class="plan-price">Rs 1,000</div></div>
+                    <div class="plan-header"><div class="plan-title">Plan 1</div><div class="plan-price">Rs 1,000</div></div>
                     <div class="plan-details">
                         <div class="plan-row"><p class="p-label">Daily Earning</p><p class="p-val">Rs 1500</p></div>
                         <div class="plan-row"><p class="p-label">Daily Videos</p><p class="p-val">30 Videos</p></div>
                         <div class="plan-row"><p class="p-label">Plan Duration</p><p class="p-val">30 Days</p></div>
                     </div>
-                    <button class="buy-plan-btn" onclick="buyPlanEngine(1000, 1500, 30)">BUY PLAN</button>
+                    <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 1', 1000, 1500, 30)">BUY PLAN</button>
                 </div>
 
+                <!-- Plan 2 -->
                 <div class="plan-card" id="p2">
-                    <div class="plan-header"><div class="plan-title">SILVER PLAN</div><div class="plan-price">Rs 1,500</div></div>
+                    <div class="plan-header"><div class="plan-title">Plan 2</div><div class="plan-price">Rs 1,500</div></div>
                     <div class="plan-details">
                         <div class="plan-row"><p class="p-label">Daily Earning</p><p class="p-val">Rs 2000</p></div>
                         <div class="plan-row"><p class="p-label">Daily Videos</p><p class="p-val">40 Videos</p></div>
                         <div class="plan-row"><p class="p-label">Plan Duration</p><p class="p-val">30 Days</p></div>
                     </div>
-                    <button class="buy-plan-btn" onclick="buyPlanEngine(1500, 2000, 40)">BUY PLAN</button>
+                    <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 2', 1500, 2000, 40)">BUY PLAN</button>
                 </div>
 
+                <!-- Plan 3 -->
                 <div class="plan-card" id="p3">
-                    <div class="plan-header"><div class="plan-title">GOLD PLAN</div><div class="plan-price">Rs 2,000</div></div>
+                    <div class="plan-header"><div class="plan-title">Plan 3</div><div class="plan-price">Rs 2,000</div></div>
                     <div class="plan-details">
                         <div class="plan-row"><p class="p-label">Daily Earning</p><p class="p-val">Rs 3000</p></div>
                         <div class="plan-row"><p class="p-label">Daily Videos</p><p class="p-val">60 Videos</p></div>
                         <div class="plan-row"><p class="p-label">Plan Duration</p><p class="p-val">30 Days</p></div>
                     </div>
-                    <button class="buy-plan-btn" onclick="buyPlanEngine(2000, 3000, 60)">BUY PLAN</button>
+                    <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 3', 2000, 3000, 60)">BUY PLAN</button>
                 </div>
 
+                <!-- Plan 4 -->
                 <div class="plan-card" id="p4">
-                    <div class="plan-header"><div class="plan-title">DIAMOND PLAN</div><div class="plan-price">Rs 3,500</div></div>
+                    <div class="plan-header"><div class="plan-title">Plan 4</div><div class="plan-price">Rs 3,000</div></div>
                     <div class="plan-details">
                         <div class="plan-row"><p class="p-label">Daily Earning</p><p class="p-val">Rs 4000</p></div>
                         <div class="plan-row"><p class="p-label">Daily Videos</p><p class="p-val">80 Videos</p></div>
                         <div class="plan-row"><p class="p-label">Plan Duration</p><p class="p-val">30 Days</p></div>
                     </div>
-                    <button class="buy-plan-btn" onclick="buyPlanEngine(3500, 4000, 80)">BUY PLAN</button>
+                    <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 4', 3000, 4000, 80)">BUY PLAN</button>
                 </div>
             </div>
         </div>
 
+        <!-- ================= JAZZCASH GATEWAY MODAL ================= -->
+        <div class="checkout-modal" id="checkoutGateway">
+            <div class="checkout-content">
+                <div class="gateway-header">
+                    <div class="gateway-badge"><i class="fa-solid fa-building-columns"></i> JazzCash Merchant</div>
+                    <h3 id="checkout-plan-name" style="color:#0f172a; font-weight:800;">Plan Activation</h3>
+                </div>
+                
+                <div class="account-details-box">
+                    <div class="acc-info-row"><span>Bank / Wallet:</span><span>JazzCash</span></div>
+                    <div class="acc-info-row"><span>Account Number:</span><span style="color:#ea580c; font-size:1.05rem;">03173944967</span></div>
+                    <div class="acc-info-row"><span>Account Name:</span><span>Muhammad Israr khan</span></div>
+                </div>
+
+                <div style="background:#f8fafc; border-radius:12px; padding:10px; margin-bottom:15px; font-size:0.75rem; color:#64748b; font-weight:600;">
+                    ⚠️ Is number par payment send karein aur neechay exact amount likh kar screenshot attach karein. 990 ya kam payment par account active nahi hoga.
+                </div>
+
+                <div class="input-group">
+                    <label>SENT AMOUNT (PKR)</label>
+                    <input type="number" id="pay-amount" placeholder="Enter exact plan amount">
+                </div>
+                <div class="input-group">
+                    <label>TRANSACTION SCREENSHOT</label>
+                    <input type="file" id="pay-screenshot" accept="image/*" style="padding:10px;">
+                </div>
+
+                <button class="submit-btn" style="background:linear-gradient(135deg, #ea580c 0%, #c2410c 100%);" onclick="validateAndActivatePlan()">Submit Verification</button>
+                <button class="close-modal-btn" onclick="closeCheckoutGateway()">Cancel</button>
+            </div>
+        </div>
+
+        <!-- ================= TASKS VIEW ================= -->
         <div id="tasksView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -184,9 +239,11 @@
             <div style="margin-bottom: 12px; font-weight:700; color:#2563eb; font-size:0.9rem;" id="task-limit-status"></div>
 
             <div id="dynamic-tasks-box">
-                </div>
+                <!-- Videos will render here dynamically -->
+            </div>
         </div>
 
+        <!-- ================= WITHDRAW VIEW ================= -->
         <div id="withdrawView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -204,6 +261,7 @@
             </div>
         </div>
 
+        <!-- ================= BOTTOM NAVIGATION BAR ================= -->
         <div class="bottom-nav-bar" id="appNavigation" style="display: none;">
             <div class="nav-link active" id="nav-home" onclick="switchView('homeView')"><i class="fa-solid fa-house"></i><span>HOME</span></div>
             <div class="nav-link" id="nav-plans" onclick="switchView('plansView')"><i class="fa-solid fa-gem"></i><span>PLANS</span></div>
@@ -215,14 +273,18 @@
     </div>
 
     <script>
-        // --- Standalone Active Sessions Core ---
+        // Session and Checkout State Management
         let currentSession = JSON.parse(localStorage.getItem('acm_session')) || null;
+        let pendingCheckout = null;
 
         function updateUI() {
             if(!currentSession) return;
             document.getElementById('rs-balance').innerText = currentSession.balance.toFixed(2);
             document.getElementById('acc-balance').innerText = currentSession.balance.toFixed(2);
-            document.getElementById('active-plans').innerText = currentSession.activePlanPrice > 0 ? "1" : "0";
+            
+            // Displays Exact Plan Name on Home Screen Grid
+            document.getElementById('active-plans').innerText = currentSession.activePlanName ? currentSession.activePlanName : "None";
+            
             document.getElementById('total-withdraw').innerText = currentSession.total_withdraw.toFixed(2);
             document.getElementById('total-deposit').innerText = currentSession.total_deposit.toFixed(2);
             renderPlansHighlight();
@@ -234,7 +296,7 @@
             document.getElementById(targetView).classList.add('active');
         }
 
-        // --- Auth Implementation ---
+        // --- Authentication ---
         function handleRegister() {
             const user = document.getElementById('reg-username').value.trim();
             const phone = document.getElementById('reg-phone').value.trim();
@@ -245,7 +307,7 @@
             let usersList = JSON.parse(localStorage.getItem('acm_users_db')) || [];
             if(usersList.find(u => u.phone === phone)) { alert("Yeh number pehle se registered hai!"); return; }
 
-            let newUser = { username: user, phone: phone, password: pass, balance: 0.00, activePlanPrice: 0, dailyVideosLimit: 0, rewardPerVideo: 0, total_withdraw: 0, total_deposit: 0 };
+            let newUser = { username: user, phone: phone, password: pass, balance: 0.00, activePlanPrice: 0, activePlanName: "", dailyVideosLimit: 0, rewardPerVideo: 0, total_withdraw: 0, total_deposit: 0 };
             usersList.push(newUser);
             localStorage.setItem('acm_users_db', JSON.stringify(usersList));
             
@@ -290,9 +352,6 @@
             document.getElementById('plansView').style.display = 'none';
             document.getElementById('tasksView').style.display = 'none';
             document.getElementById('withdrawView').style.display = 'none';
-            document.getElementById('reg-username').value = "";
-            document.getElementById('reg-phone').value = "";
-            document.getElementById('reg-pass').value = "";
             switchAuth('registerView');
             document.getElementById('registerView').style.display = 'block';
         }
@@ -308,7 +367,6 @@
             localStorage.setItem('acm_session', JSON.stringify(currentSession));
         }
 
-        // --- Safe Tab Navigation Router ---
         function switchView(viewId) {
             if(!currentSession) return;
             document.getElementById('homeView').style.display = 'none';
@@ -324,10 +382,10 @@
             if(viewId === 'withdrawView') document.getElementById('nav-withdraw').classList.add('active');
         }
 
-        // --- Guard Rail Plan Logic ---
+        // --- Clean Screen Router (No Alert Windows) ---
         function checkPlanBeforeTasks() {
-            if(currentSession.activePlanPrice === 0) {
-                alert("Pehle koi Ek Earning Plan buy karein taake tasks video open ho sakein! 💰");
+            if(!currentSession.activePlanName || currentSession.activePlanPrice === 0) {
+                // Instantly routes directly to plan panel without system popups
                 switchView('plansView');
             } else {
                 switchView('tasksView');
@@ -335,18 +393,45 @@
             }
         }
 
-        // --- Premium Activation Logic ---
-        function buyPlanEngine(price, totalEarning, videosCount) {
-            let confirmation = confirm(`Kya aap Rs ${price} ka plan activate karna chahte hain?\nDaily Earning: Rs ${totalEarning / 30} (Total: Rs ${totalEarning})\nTotal Videos: ${videosCount}`);
-            if(!confirmation) return;
+        // --- JazzCash Checkout System ---
+        function openCheckoutGateway(name, price, totalEarning, videosCount) {
+            pendingCheckout = { name: name, price: price, totalEarning: totalEarning, videosCount: videosCount };
+            document.getElementById('checkout-plan-name').innerText = `Activate ${name} - Rs ${price}`;
+            document.getElementById('pay-amount').value = "";
+            document.getElementById('pay-screenshot').value = "";
+            document.getElementById('checkoutGateway').style.display = 'flex';
+        }
 
-            currentSession.activePlanPrice = price;
-            currentSession.dailyVideosLimit = videosCount;
-            currentSession.rewardPerVideo = parseFloat(totalEarning / videosCount / 30); // Dynamic reward setup
-            currentSession.total_deposit += price;
+        function closeCheckoutGateway() {
+            document.getElementById('checkoutGateway').style.display = 'none';
+            pendingCheckout = null;
+        }
+
+        function validateAndActivatePlan() {
+            const enteredAmount = parseFloat(document.getElementById('pay-amount').value);
+            const screenshotFile = document.getElementById('pay-screenshot').files[0];
+
+            if(!enteredAmount || !screenshotFile) {
+                alert("Meherbani karke screenshot upload karein aur sent amount enter karein!");
+                return;
+            }
+
+            // Strict mathematical checking system
+            if(enteredAmount < pendingCheckout.price) {
+                alert(`Transaction Rejected! Aapne Rs ${enteredAmount} enter kiya jo ke kam hai. Is plan ki poori payment Rs ${pendingCheckout.price} banti hai.`);
+                return;
+            }
+
+            // Grant active state tokens
+            currentSession.activePlanPrice = pendingCheckout.price;
+            currentSession.activePlanName = pendingCheckout.name; // Stores explicit name (Plan 1, Plan 2 etc.)
+            currentSession.dailyVideosLimit = pendingCheckout.videosCount;
+            currentSession.rewardPerVideo = parseFloat(pendingCheckout.totalEarning / pendingCheckout.videosCount / 30);
+            currentSession.total_deposit += pendingCheckout.price;
 
             saveCurrentSessionToDatabase();
-            alert(`🎉 Plan Rs ${price} Successfully Activated! Ab aap daily ${videosCount} videos dekh sakte hain.`);
+            closeCheckoutGateway();
+            alert(`🎉 Screenshot Verified! Aapka ${currentSession.activePlanName} kamyabi sa active ho gaya hai.`);
             switchView('homeView');
         }
 
@@ -364,23 +449,20 @@
                     activeCard.classList.add('active-plan-border');
                     let badge = document.createElement('div');
                     badge.className = 'active-badge';
-                    badge.innerText = "ACTIVE PLAN";
+                    badge.innerText = "ACTIVE";
                     activeCard.appendChild(badge);
                 }
             }
         }
 
-        // --- Dynamic Tasks Engine based on Plan Limits ---
+        // --- Dynamic Tasks Engine ---
         function buildDynamicTaskCards() {
             const container = document.getElementById('dynamic-tasks-box');
             container.innerHTML = ""; 
             
             document.getElementById('task-limit-status').innerText = `Your Current Plan Limit: ${currentSession.dailyVideosLimit} Daily Tasks Video`;
 
-            // Standard rich content YouTube pool links
-            const youtubePool = [
-                "dQw4w9WgXcQ", "3JZ_D3ELwOQ", "tgbNymZ7vqY", "2Vv-BfVoq4g", "kJQP7kiw5Fk"
-            ];
+            const youtubePool = ["dQw4w9WgXcQ", "3JZ_D3ELwOQ", "tgbNymZ7vqY", "2Vv-BfVoq4g", "kJQP7kiw5Fk"];
 
             for (let i = 1; i <= currentSession.dailyVideosLimit; i++) {
                 let randomVid = youtubePool[i % youtubePool.length];
@@ -402,7 +484,6 @@
                 container.innerHTML += cardHtml;
             }
 
-            // Fire timers triggers instantly
             for (let i = 1; i <= currentSession.dailyVideosLimit; i++) {
                 setTimeout(() => { startYouTubeTimer(`dynBadge${i}`, `dynClaimBtn${i}`); }, 400);
             }
@@ -437,7 +518,7 @@
             if(element) element.remove();
         }
 
-        // --- Withdraw Logic ---
+        // --- Withdraw Engine ---
         function submitWithdrawal() {
             const method = document.getElementById('method').value;
             const number = document.getElementById('acc-num').value;
@@ -457,7 +538,6 @@
             switchView('homeView');
         }
 
-        // Setup Init Session On Startup
         document.addEventListener('DOMContentLoaded', () => {
             if(currentSession) {
                 enterAppDashboard();
