@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Earning Dashboard</title>
+    <title>ACM Global - Earning App</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -12,9 +12,17 @@
         body { background: radial-gradient(circle at top right, rgba(230,253,245,0.7) 0%, rgba(245,243,255,0.7) 100%), #f8fafc; min-height: 100vh; padding-bottom: 100px; }
         .app-container { width: 100%; max-width: 480px; padding: 18px; margin: 0 auto; position: relative; }
         
-        /* Smooth View Transitions */
+        /* Views System */
         .app-view { display: none; }
         .app-view.active { display: block; }
+
+        /* --- AUTH STYLES --- */
+        .auth-container { background: white; padding: 30px 24px; border-radius: 32px; box-shadow: 0 15px 35px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; margin-top: 40px; }
+        .auth-logo { text-align: center; margin-bottom: 30px; }
+        .auth-logo h2 { font-size: 1.8rem; font-weight: 800; color: #1e293b; }
+        .auth-logo span { color: #2563eb; }
+        .auth-toggle { text-align: center; margin-top: 15px; font-size: 0.85rem; color: #64748b; }
+        .auth-toggle span { color: #2563eb; font-weight: 700; cursor: pointer; }
 
         /* --- HOME SCREEN --- */
         .main-balance-wrapper { margin: 20px 0 15px 5px; }
@@ -33,12 +41,25 @@
         .bg-withdraw { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
         .bg-task { background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); }
 
-        /* --- SCREENS COMMON HEADER --- */
+        /* --- SCREEN HEADERS --- */
         .screen-header { display: flex; align-items: center; gap: 15px; margin: 15px 0 25px 0; }
         .back-btn { background: white; border: none; width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; font-size: 1.1rem; color: #1e293b; display: flex; align-items: center; justify-content: center; }
         .screen-title { font-size: 1.5rem; font-weight: 800; color: #0f172a; }
 
-        /* --- VIDEO ADS PLATFORM --- */
+        /* --- PREMIUM INVESTMENT PLANS STYLES --- */
+        .plan-card { background: white; border-radius: 28px; padding: 20px; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.02); border: 2px solid transparent; transition: all 0.3s; position: relative; overflow: hidden; }
+        .plan-card.active-plan-border { border-color: #2563eb; }
+        .plan-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 12px; }
+        .plan-title { font-size: 1.3rem; font-weight: 800; color: #0f172a; }
+        .plan-price { font-size: 1.4rem; font-weight: 800; color: #2563eb; }
+        .plan-details { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .plan-row { background: #f8fafc; padding: 8px 12px; border-radius: 12px; }
+        .plan-row .p-label { font-size: 0.68rem; color: #64748b; font-weight: 700; }
+        .plan-row .p-val { font-size: 0.9rem; font-weight: 700; color: #1e293b; }
+        .buy-plan-btn { width: 100%; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; border: none; padding: 12px; border-radius: 16px; font-weight: 800; font-size: 0.95rem; cursor: pointer; }
+        .active-badge { position: absolute; top: 0; right: 0; background: #2563eb; color: white; padding: 4px 15px; font-size: 0.7rem; font-weight: 800; border-bottom-left-radius: 12px; }
+
+        /* --- VIDEO TASKS CARDS --- */
         .task-card { background: white; border-radius: 24px; padding: 16px; margin-bottom: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; }
         .task-info h3 { font-size: 1rem; color: #1e293b; font-weight: 700; margin-bottom: 4px; }
         .task-info p { font-size: 0.75rem; color: #10b981; font-weight: 700; margin-bottom: 12px; }
@@ -47,14 +68,13 @@
         .timer-badge { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.8); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; z-index: 5; }
         .claim-btn { width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 14px; border-radius: 16px; font-weight: 800; font-size: 1rem; cursor: pointer; margin-top: 12px; display: none; }
 
-        /* --- WITHDRAW CONFIG --- */
-        .form-card { background: white; border-radius: 28px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; }
+        /* --- FORM CONTROLS --- */
         .input-group { margin-bottom: 18px; }
         .input-group label { display: block; font-size: 0.78rem; font-weight: 800; color: #64748b; margin-bottom: 8px; }
         select, input { width: 100%; padding: 14px; border-radius: 16px; border: 1px solid #cbd5e1; font-size: 0.95rem; font-weight: 600; color: #1e293b; background: #f8fafc; outline: none; }
         .submit-btn { width: 100%; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; border: none; padding: 16px; border-radius: 18px; font-size: 1rem; font-weight: 800; cursor: pointer; margin-top: 10px; }
 
-        /* --- PREMIUM NAVIGATION --- */
+        /* --- BOTTOM NAVIGATION BAR --- */
         .bottom-nav-bar { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 440px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 35px; display: flex; justify-content: space-between; align-items: center; padding: 10px 24px; box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08); z-index: 9999; border: 1px solid rgba(255, 255, 255, 0.8); }
         .nav-link { display: flex; flex-direction: column; align-items: center; color: #94a3b8; font-size: 0.65rem; font-weight: 700; cursor: pointer; }
         .nav-link i { font-size: 1.3rem; margin-bottom: 3px; }
@@ -65,7 +85,28 @@
 
     <div class="app-container">
 
-        <div id="homeView" class="app-view active">
+        <div id="registerView" class="app-view active">
+            <div class="auth-container">
+                <div class="auth-logo"><h2>ACM <span>Global</span></h2><p style="font-size:0.8rem; color:#64748b;">Create Your Earning Account</p></div>
+                <div class="input-group"><label>USER NAME</label><input type="text" id="reg-username" placeholder="Enter username"></div>
+                <div class="input-group"><label>MOBILE NUMBER</label><input type="number" id="reg-phone" placeholder="e.g. 03001234567"></div>
+                <div class="input-group"><label>PASSWORD</label><input type="password" id="reg-pass" placeholder="Enter password"></div>
+                <button class="submit-btn" onclick="handleRegister()">Register Account</button>
+                <div class="auth-toggle">Already have an account? <span onclick="switchAuth('loginView')">Login Now</span></div>
+            </div>
+        </div>
+
+        <div id="loginView" class="app-view">
+            <div class="auth-container">
+                <div class="auth-logo"><h2>Welcome <span>Back</span></h2><p style="font-size:0.8rem; color:#64748b;">Login to continue journey</p></div>
+                <div class="input-group"><label>MOBILE NUMBER</label><input type="number" id="login-phone" placeholder="Enter registered number"></div>
+                <div class="input-group"><label>PASSWORD</label><input type="password" id="login-pass" placeholder="Enter account password"></div>
+                <button class="submit-btn" onclick="handleLogin()">Login Account</button>
+                <div class="auth-toggle">Don't have an account? <span onclick="switchAuth('registerView')">Register Here</span></div>
+            </div>
+        </div>
+
+        <div id="homeView" class="app-view">
             <div class="main-balance-wrapper">
                 <h1 class="main-balance-text"><span>Rs</span><span id="rs-balance">0.00</span></h1>
             </div>
@@ -73,16 +114,65 @@
             <div class="glass-card-section">
                 <div class="stats-grid">
                     <div class="stat-card"><p class="label">ACCOUNT BALANCE</p><p class="value" id="acc-balance">0.00</p></div>
-                    <div class="stat-card"><p class="label">ACTIVE PLANS</p><p class="value" id="active-plans">1</p></div>
+                    <div class="stat-card"><p class="label">ACTIVE PLANS</p><p class="value" id="active-plans">0</p></div>
                     <div class="stat-card"><p class="label">TOTAL WITHDRAW</p><p class="value" id="total-withdraw">0.00</p></div>
                     <div class="stat-card"><p class="label">TOTAL DEPOSIT</p><p class="value" id="total-deposit">0.00</p></div>
                 </div>
             </div>
 
             <div class="actions-grid">
-                <div class="action-card bg-deposit" onclick="alert('Deposit system active soon!')"><i class="fa-solid fa-wallet"></i><span>DEPOSIT</span></div>
+                <div class="action-card bg-deposit" onclick="switchView('plansView')"><i class="fa-solid fa-wallet"></i><span>DEPOSIT</span></div>
                 <div class="action-card bg-withdraw" onclick="switchView('withdrawView')"><i class="fa-solid fa-money-bill-transfer"></i><span>WITHDRAW</span></div>
-                <div class="action-card bg-task" onclick="switchView('tasksView')"><i class="fa-solid fa-circle-play"></i><span>TASK VIDEO</span></div>
+                <div class="action-card bg-task" onclick="checkPlanBeforeTasks()"><i class="fa-solid fa-circle-play"></i><span>TASK VIDEO</span></div>
+            </div>
+        </div>
+
+        <div id="plansView" class="app-view">
+            <div class="screen-header">
+                <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
+                <h1 class="screen-title">Investment Plans</h1>
+            </div>
+
+            <div id="plans-list-container">
+                <div class="plan-card" id="p1">
+                    <div class="plan-header"><div class="plan-title">START PLAN</div><div class="plan-price">Rs 1,000</div></div>
+                    <div class="plan-details">
+                        <div class="plan-row"><p class="p-label">Daily Earning</p><p class="p-val">Rs 1500</p></div>
+                        <div class="plan-row"><p class="p-label">Daily Videos</p><p class="p-val">30 Videos</p></div>
+                        <div class="plan-row"><p class="p-label">Plan Duration</p><p class="p-val">30 Days</p></div>
+                    </div>
+                    <button class="buy-plan-btn" onclick="buyPlanEngine(1000, 1500, 30)">BUY PLAN</button>
+                </div>
+
+                <div class="plan-card" id="p2">
+                    <div class="plan-header"><div class="plan-title">SILVER PLAN</div><div class="plan-price">Rs 1,500</div></div>
+                    <div class="plan-details">
+                        <div class="plan-row"><p class="p-label">Daily Earning</p><p class="p-val">Rs 2000</p></div>
+                        <div class="plan-row"><p class="p-label">Daily Videos</p><p class="p-val">40 Videos</p></div>
+                        <div class="plan-row"><p class="p-label">Plan Duration</p><p class="p-val">30 Days</p></div>
+                    </div>
+                    <button class="buy-plan-btn" onclick="buyPlanEngine(1500, 2000, 40)">BUY PLAN</button>
+                </div>
+
+                <div class="plan-card" id="p3">
+                    <div class="plan-header"><div class="plan-title">GOLD PLAN</div><div class="plan-price">Rs 2,000</div></div>
+                    <div class="plan-details">
+                        <div class="plan-row"><p class="p-label">Daily Earning</p><p class="p-val">Rs 3000</p></div>
+                        <div class="plan-row"><p class="p-label">Daily Videos</p><p class="p-val">60 Videos</p></div>
+                        <div class="plan-row"><p class="p-label">Plan Duration</p><p class="p-val">30 Days</p></div>
+                    </div>
+                    <button class="buy-plan-btn" onclick="buyPlanEngine(2000, 3000, 60)">BUY PLAN</button>
+                </div>
+
+                <div class="plan-card" id="p4">
+                    <div class="plan-header"><div class="plan-title">DIAMOND PLAN</div><div class="plan-price">Rs 3,500</div></div>
+                    <div class="plan-details">
+                        <div class="plan-row"><p class="p-label">Daily Earning</p><p class="p-val">Rs 4000</p></div>
+                        <div class="plan-row"><p class="p-label">Daily Videos</p><p class="p-val">80 Videos</p></div>
+                        <div class="plan-row"><p class="p-label">Plan Duration</p><p class="p-val">30 Days</p></div>
+                    </div>
+                    <button class="buy-plan-btn" onclick="buyPlanEngine(3500, 4000, 80)">BUY PLAN</button>
+                </div>
             </div>
         </div>
 
@@ -91,30 +181,10 @@
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
                 <h1 class="screen-title">Daily Video Tasks</h1>
             </div>
+            <div style="margin-bottom: 12px; font-weight:700; color:#2563eb; font-size:0.9rem;" id="task-limit-status"></div>
 
-            <div class="task-card" id="taskCard1">
-                <div class="task-info">
-                    <h3>Premium Youtube Ad #1</h3>
-                    <p>Reward: Rs 50.00</p>
+            <div id="dynamic-tasks-box">
                 </div>
-                <div class="video-wrapper">
-                    <div class="timer-badge" id="badge1">30s</div>
-                    <iframe id="video1" src="https://www.youtube.com/embed/dQw4w9WgXcQ?enablejsapi=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                </div>
-                <button class="claim-btn" id="claimBtn1" onclick="claimReward('taskCard1', 50)">CLAIM RS 50.00 🎉</button>
-            </div>
-
-            <div class="task-card" id="taskCard2">
-                <div class="task-info">
-                    <h3>Premium Youtube Ad #2</h3>
-                    <p>Reward: Rs 50.00</p>
-                </div>
-                <div class="video-wrapper">
-                    <div class="timer-badge" id="badge2">30s</div>
-                    <iframe id="video2" src="https://www.youtube.com/embed/3JZ_D3ELwOQ?enablejsapi=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                </div>
-                <button class="claim-btn" id="claimBtn2" onclick="claimReward('taskCard2', 50)">CLAIM RS 50.00 🎉</button>
-            </div>
         </div>
 
         <div id="withdrawView" class="app-view">
@@ -126,68 +196,218 @@
             <div class="form-card">
                 <div class="input-group">
                     <label>CHOOSE METHOD</label>
-                    <select id="method">
-                        <option value="JazzCash">JazzCash</option>
-                        <option value="EasyPaisa">EasyPaisa</option>
-                    </select>
+                    <select id="method"><option value="JazzCash">JazzCash</option><option value="EasyPaisa">EasyPaisa</option></select>
                 </div>
-                <div class="input-group">
-                    <label>ACCOUNT NUMBER</label>
-                    <input type="number" id="acc-num" placeholder="e.g. 03001234567">
-                </div>
-                <div class="input-group">
-                    <label>WITHDRAW AMOUNT (PKR)</label>
-                    <input type="number" id="amount" placeholder="Minimum Rs 500">
-                </div>
+                <div class="input-group"><label>ACCOUNT NUMBER</label><input type="number" id="acc-num" placeholder="e.g. 03001234567"></div>
+                <div class="input-group"><label>WITHDRAW AMOUNT (PKR)</label><input type="number" id="amount" placeholder="Minimum Rs 500"></div>
                 <button class="submit-btn" onclick="submitWithdrawal()">Submit Request</button>
             </div>
         </div>
 
-        <div class="bottom-nav-bar">
+        <div class="bottom-nav-bar" id="appNavigation" style="display: none;">
             <div class="nav-link active" id="nav-home" onclick="switchView('homeView')"><i class="fa-solid fa-house"></i><span>HOME</span></div>
-            <div class="nav-link" id="nav-tasks" onclick="switchView('tasksView')"><i class="fa-solid fa-bolt"></i><span>TASKS</span></div>
+            <div class="nav-link" id="nav-plans" onclick="switchView('plansView')"><i class="fa-solid fa-gem"></i><span>PLANS</span></div>
+            <div class="nav-link" id="nav-tasks" onclick="checkPlanBeforeTasks()"><i class="fa-solid fa-bolt"></i><span>TASKS</span></div>
             <div class="nav-link" id="nav-withdraw" onclick="switchView('withdrawView')"><i class="fa-solid fa-money-bill-transfer"></i><span>WITHDRAW</span></div>
+            <div class="nav-link" id="nav-logout" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>LOGOUT</span></div>
         </div>
 
     </div>
 
     <script>
-        // --- Standalone Wallet Storage (No APIs Required) ---
-        let wallet = {
-            balance: parseFloat(localStorage.getItem('w_balance')) || 0.00,
-            total_withdraw: parseFloat(localStorage.getItem('w_withdraw')) || 0.00,
-            total_deposit: parseFloat(localStorage.getItem('w_deposit')) || 0.00
-        };
+        // --- Standalone Active Sessions Core ---
+        let currentSession = JSON.parse(localStorage.getItem('acm_session')) || null;
 
         function updateUI() {
-            document.getElementById('rs-balance').innerText = wallet.balance.toFixed(2);
-            document.getElementById('acc-balance').innerText = wallet.balance.toFixed(2);
-            document.getElementById('total-withdraw').innerText = wallet.total_withdraw.toFixed(2);
-            document.getElementById('total-deposit').innerText = wallet.total_deposit.toFixed(2);
+            if(!currentSession) return;
+            document.getElementById('rs-balance').innerText = currentSession.balance.toFixed(2);
+            document.getElementById('acc-balance').innerText = currentSession.balance.toFixed(2);
+            document.getElementById('active-plans').innerText = currentSession.activePlanPrice > 0 ? "1" : "0";
+            document.getElementById('total-withdraw').innerText = currentSession.total_withdraw.toFixed(2);
+            document.getElementById('total-deposit').innerText = currentSession.total_deposit.toFixed(2);
+            renderPlansHighlight();
         }
 
-        // --- Foolproof View Switching ---
-        function switchView(viewId) {
+        function switchAuth(targetView) {
+            document.getElementById('registerView').classList.remove('active');
+            document.getElementById('loginView').classList.remove('active');
+            document.getElementById(targetView).classList.add('active');
+        }
+
+        // --- Auth Implementation ---
+        function handleRegister() {
+            const user = document.getElementById('reg-username').value.trim();
+            const phone = document.getElementById('reg-phone').value.trim();
+            const pass = document.getElementById('reg-pass').value.trim();
+
+            if(!user || !phone || !pass) { alert("Sari fields fill karein!"); return; }
+
+            let usersList = JSON.parse(localStorage.getItem('acm_users_db')) || [];
+            if(usersList.find(u => u.phone === phone)) { alert("Yeh number pehle se registered hai!"); return; }
+
+            let newUser = { username: user, phone: phone, password: pass, balance: 0.00, activePlanPrice: 0, dailyVideosLimit: 0, rewardPerVideo: 0, total_withdraw: 0, total_deposit: 0 };
+            usersList.push(newUser);
+            localStorage.setItem('acm_users_db', JSON.stringify(usersList));
+            
+            currentSession = newUser;
+            localStorage.setItem('acm_session', JSON.stringify(currentSession));
+            
+            alert("Account registered successfully! 🎉");
+            enterAppDashboard();
+        }
+
+        function handleLogin() {
+            const phone = document.getElementById('login-phone').value.trim();
+            const pass = document.getElementById('login-pass').value.trim();
+
+            if(!phone || !pass) { alert("Phone aur password enter karein!"); return; }
+
+            let usersList = JSON.parse(localStorage.getItem('acm_users_db')) || [];
+            let matchedUser = usersList.find(u => u.phone === phone && u.password === pass);
+
+            if(!matchedUser) { alert("Wrong Phone Number or Password!"); return; }
+
+            currentSession = matchedUser;
+            localStorage.setItem('acm_session', JSON.stringify(currentSession));
+            
+            alert(`Welcome back, ${currentSession.username}! 👋`);
+            enterAppDashboard();
+        }
+
+        function enterAppDashboard() {
+            document.getElementById('registerView').style.display = 'none';
+            document.getElementById('loginView').style.display = 'none';
+            document.getElementById('appNavigation').style.display = 'flex';
+            switchView('homeView');
+        }
+
+        function handleLogout() {
+            saveCurrentSessionToDatabase();
+            localStorage.removeItem('acm_session');
+            currentSession = null;
+            document.getElementById('appNavigation').style.display = 'none';
             document.getElementById('homeView').style.display = 'none';
+            document.getElementById('plansView').style.display = 'none';
+            document.getElementById('tasksView').style.display = 'none';
+            document.getElementById('withdrawView').style.display = 'none';
+            document.getElementById('reg-username').value = "";
+            document.getElementById('reg-phone').value = "";
+            document.getElementById('reg-pass').value = "";
+            switchAuth('registerView');
+            document.getElementById('registerView').style.display = 'block';
+        }
+
+        function saveCurrentSessionToDatabase() {
+            if(!currentSession) return;
+            let usersList = JSON.parse(localStorage.getItem('acm_users_db')) || [];
+            let index = usersList.findIndex(u => u.phone === currentSession.phone);
+            if(index !== -1) {
+                usersList[index] = currentSession;
+                localStorage.setItem('acm_users_db', JSON.stringify(usersList));
+            }
+            localStorage.setItem('acm_session', JSON.stringify(currentSession));
+        }
+
+        // --- Safe Tab Navigation Router ---
+        function switchView(viewId) {
+            if(!currentSession) return;
+            document.getElementById('homeView').style.display = 'none';
+            document.getElementById('plansView').style.display = 'none';
             document.getElementById('tasksView').style.display = 'none';
             document.getElementById('withdrawView').style.display = 'none';
             
             document.getElementById(viewId).style.display = 'block';
-
             document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-            if(viewId === 'homeView') {
-                document.getElementById('nav-home').classList.add('active');
-                updateUI();
-            }
-            if(viewId === 'tasksView') {
-                document.getElementById('nav-tasks').classList.add('active');
-                startYouTubeTimer('badge1', 'claimBtn1');
-                startYouTubeTimer('badge2', 'claimBtn2');
-            }
+            
+            if(viewId === 'homeView') { document.getElementById('nav-home').classList.add('active'); updateUI(); }
+            if(viewId === 'plansView') { document.getElementById('nav-plans').classList.add('active'); renderPlansHighlight(); }
             if(viewId === 'withdrawView') document.getElementById('nav-withdraw').classList.add('active');
         }
 
-        // --- Standard Universal YouTube Timer Engine ---
+        // --- Guard Rail Plan Logic ---
+        function checkPlanBeforeTasks() {
+            if(currentSession.activePlanPrice === 0) {
+                alert("Pehle koi Ek Earning Plan buy karein taake tasks video open ho sakein! 💰");
+                switchView('plansView');
+            } else {
+                switchView('tasksView');
+                buildDynamicTaskCards();
+            }
+        }
+
+        // --- Premium Activation Logic ---
+        function buyPlanEngine(price, totalEarning, videosCount) {
+            let confirmation = confirm(`Kya aap Rs ${price} ka plan activate karna chahte hain?\nDaily Earning: Rs ${totalEarning / 30} (Total: Rs ${totalEarning})\nTotal Videos: ${videosCount}`);
+            if(!confirmation) return;
+
+            currentSession.activePlanPrice = price;
+            currentSession.dailyVideosLimit = videosCount;
+            currentSession.rewardPerVideo = parseFloat(totalEarning / videosCount / 30); // Dynamic reward setup
+            currentSession.total_deposit += price;
+
+            saveCurrentSessionToDatabase();
+            alert(`🎉 Plan Rs ${price} Successfully Activated! Ab aap daily ${videosCount} videos dekh sakte hain.`);
+            switchView('homeView');
+        }
+
+        function renderPlansHighlight() {
+            document.querySelectorAll('.plan-card').forEach(card => {
+                card.classList.remove('active-plan-border');
+                const badge = card.querySelector('.active-badge');
+                if(badge) badge.remove();
+            });
+
+            if(currentSession && currentSession.activePlanPrice > 0) {
+                let planId = currentSession.activePlanPrice === 1000 ? 'p1' : currentSession.activePlanPrice === 1500 ? 'p2' : currentSession.activePlanPrice === 2000 ? 'p3' : 'p4';
+                let activeCard = document.getElementById(planId);
+                if(activeCard) {
+                    activeCard.classList.add('active-plan-border');
+                    let badge = document.createElement('div');
+                    badge.className = 'active-badge';
+                    badge.innerText = "ACTIVE PLAN";
+                    activeCard.appendChild(badge);
+                }
+            }
+        }
+
+        // --- Dynamic Tasks Engine based on Plan Limits ---
+        function buildDynamicTaskCards() {
+            const container = document.getElementById('dynamic-tasks-box');
+            container.innerHTML = ""; 
+            
+            document.getElementById('task-limit-status').innerText = `Your Current Plan Limit: ${currentSession.dailyVideosLimit} Daily Tasks Video`;
+
+            // Standard rich content YouTube pool links
+            const youtubePool = [
+                "dQw4w9WgXcQ", "3JZ_D3ELwOQ", "tgbNymZ7vqY", "2Vv-BfVoq4g", "kJQP7kiw5Fk"
+            ];
+
+            for (let i = 1; i <= currentSession.dailyVideosLimit; i++) {
+                let randomVid = youtubePool[i % youtubePool.length];
+                let reward = currentSession.rewardPerVideo.toFixed(2);
+
+                let cardHtml = `
+                    <div class="task-card" id="dynamicCard${i}">
+                        <div class="task-info">
+                            <h3>Premium Video Task #${i}</h3>
+                            <p>Reward: Rs ${reward}</p>
+                        </div>
+                        <div class="video-wrapper">
+                            <div class="timer-badge" id="dynBadge${i}">30s</div>
+                            <iframe id="dynVideo${i}" src="https://www.youtube.com/embed/${randomVid}?enablejsapi=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                        </div>
+                        <button class="claim-btn" id="dynClaimBtn${i}" onclick="claimDynamicReward('dynamicCard${i}', ${reward})">CLAIM RS ${reward} 🎉</button>
+                    </div>
+                `;
+                container.innerHTML += cardHtml;
+            }
+
+            // Fire timers triggers instantly
+            for (let i = 1; i <= currentSession.dailyVideosLimit; i++) {
+                setTimeout(() => { startYouTubeTimer(`dynBadge${i}`, `dynClaimBtn${i}`); }, 400);
+            }
+        }
+
         function startYouTubeTimer(badgeId, claimBtnId) {
             const bElement = document.getElementById(badgeId);
             const cElement = document.getElementById(claimBtnId);
@@ -198,54 +418,53 @@
             let timeRemaining = 30;
             const timer = setInterval(() => {
                 timeRemaining--;
-                bElement.innerText = timeRemaining + "s";
+                if(bElement) bElement.innerText = timeRemaining + "s";
                 
                 if (timeRemaining <= 0) {
                     clearInterval(timer);
-                    bElement.style.display = 'none';
-                    cElement.style.display = 'block'; 
+                    if(bElement) bElement.style.display = 'none';
+                    if(cElement) cElement.style.display = 'block'; 
                 }
             }, 1000);
         }
 
-        // --- Claim Rewards ---
-        function claimReward(cardId, prizeAmount) {
-            wallet.balance += prizeAmount;
-            localStorage.setItem('w_balance', wallet.balance);
+        function claimDynamicReward(cardId, prizeAmount) {
+            currentSession.balance += parseFloat(prizeAmount);
+            saveCurrentSessionToDatabase();
             updateUI();
-            alert(`Rs ${prizeAmount}.00 wallet mein jama ho gaye hain! 🎉`);
-            document.getElementById(cardId).remove();
+            alert(`Rs ${parseFloat(prizeAmount).toFixed(2)} wallet mein successfully credit ho gaye! 🎉`);
+            const element = document.getElementById(cardId);
+            if(element) element.remove();
         }
 
-        // --- Submit Withdrawal ---
+        // --- Withdraw Logic ---
         function submitWithdrawal() {
             const method = document.getElementById('method').value;
             const number = document.getElementById('acc-num').value;
             const amount = parseFloat(document.getElementById('amount').value);
 
-            if(!number || !amount) {
-                alert("Please fill all details completely.");
-                return;
-            }
+            if(!number || !amount) { alert("Please fill all details completely."); return; }
+            if(amount < 500) { alert("Minimum withdrawal amount is Rs 500."); return; }
+            if(amount > currentSession.balance) { alert("Insufficient balance available!"); return; }
 
-            if(amount > wallet.balance) {
-                alert("Insufficient balance available!");
-                return;
-            }
+            currentSession.balance -= amount;
+            currentSession.total_withdraw += amount;
+            saveCurrentSessionToDatabase();
 
-            wallet.balance -= amount;
-            wallet.total_withdraw += amount;
-            
-            localStorage.setItem('w_balance', wallet.balance);
-            localStorage.setItem('w_withdraw', wallet.total_withdraw);
-            
             alert(`Withdrawal request of Rs ${amount} submitted via ${method} to ${number}! 🚀`);
             document.getElementById('acc-num').value = "";
             document.getElementById('amount').value = "";
             switchView('homeView');
         }
 
-        document.addEventListener('DOMContentLoaded', updateUI);
+        // Setup Init Session On Startup
+        document.addEventListener('DOMContentLoaded', () => {
+            if(currentSession) {
+                enterAppDashboard();
+            } else {
+                switchAuth('registerView');
+            }
+        });
     </script>
 </body>
 </html>
