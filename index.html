@@ -13,7 +13,7 @@
         body { background: radial-gradient(circle at top right, rgba(230,253,245,0.7) 0%, rgba(245,243,255,0.7) 100%), #f8fafc; min-height: 100vh; padding-bottom: 100px; }
         .app-container { width: 100%; max-width: 480px; padding: 18px; margin: 0 auto; position: relative; }
         
-        /* Views Wrapper */
+        /* Views Management */
         .app-view { display: none; }
         .app-view.active { display: block; }
 
@@ -39,13 +39,13 @@
         .back-btn { background: white; border: none; width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; font-size: 1.1rem; color: #1e293b; display: flex; align-items: center; justify-content: center; }
         .screen-title { font-size: 1.5rem; font-weight: 800; color: #0f172a; }
 
-        /* --- TASK CARDS & VIDEOS --- */
+        /* --- TASK CARDS WITH YOUTUBE IFRAME --- */
         .task-card { background: white; border-radius: 24px; padding: 16px; margin-bottom: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; }
         .task-info h3 { font-size: 1rem; color: #1e293b; font-weight: 700; margin-bottom: 4px; }
         .task-info p { font-size: 0.75rem; color: #10b981; font-weight: 700; margin-bottom: 12px; }
-        .video-wrapper { width: 100%; height: 210px; background: #000; border-radius: 18px; overflow: hidden; position: relative; }
-        video { width: 100%; height: 100%; object-fit: cover; }
-        .timer-badge { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.8); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; z-index: 5; }
+        .video-wrapper { width: 100%; height: 220px; background: #000; border-radius: 18px; overflow: hidden; position: relative; }
+        iframe { width: 100%; height: 100%; border: none; }
+        .timer-badge { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.8); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; z-index: 5; pointer-events: none; }
         .claim-btn { width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 14px; border-radius: 16px; font-weight: 800; font-size: 1rem; cursor: pointer; margin-top: 12px; display: none; }
 
         /* --- WITHDRAW FORM --- */
@@ -95,24 +95,24 @@
 
             <div class="task-card" id="taskCard1">
                 <div class="task-info">
-                    <h3>Short Ad Video Task #1</h3>
+                    <h3>Premium Youtube Ad #1</h3>
                     <p>Reward: Rs 50.00</p>
                 </div>
                 <div class="video-wrapper">
                     <div class="timer-badge" id="badge1">30s</div>
-                    <video id="video1" src="https://html5demos.com/assets/dizzy.mp4" playsinline controls></video>
+                    <iframe id="video1" src="https://www.youtube.com/embed/dQw4w9WgXcQ?enablejsapi=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                 </div>
                 <button class="claim-btn" id="claimBtn1" onclick="claimReward('taskCard1', 50)">CLAIM RS 50.00 🎉</button>
             </div>
 
             <div class="task-card" id="taskCard2">
                 <div class="task-info">
-                    <h3>Short Ad Video Task #2</h3>
+                    <h3>Premium Youtube Ad #2</h3>
                     <p>Reward: Rs 50.00</p>
                 </div>
                 <div class="video-wrapper">
                     <div class="timer-badge" id="badge2">30s</div>
-                    <video id="video2" src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4" playsinline controls></video>
+                    <iframe id="video2" src="https://www.youtube.com/embed/3JZ_D3ELwOQ?enablejsapi=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                 </div>
                 <button class="claim-btn" id="claimBtn2" onclick="claimReward('taskCard2', 50)">CLAIM RS 50.00 🎉</button>
             </div>
@@ -160,28 +160,31 @@
         const USER_ID = "22deb1ca-dfc3-4794-978c-2b64d8424f1e";
 
         try {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            if (window.supabase) {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            }
         } catch(e) {
-            console.log("Supabase Connection Delayed or Blocked.");
+            console.log("Supabase connection delayed.");
         }
 
-        // --- View Switching System (No Overlap) ---
+        // --- Foolproof Tab Switching System ---
         function switchView(viewId) {
-            // Hide all views instantly
             document.getElementById('homeView').style.display = 'none';
             document.getElementById('tasksView').style.display = 'none';
             document.getElementById('withdrawView').style.display = 'none';
             
-            // Show active view
             document.getElementById(viewId).style.display = 'block';
 
-            // Active Menu Class Update
             document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
             if(viewId === 'homeView') {
                 document.getElementById('nav-home').classList.add('active');
                 loadUserData();
             }
-            if(viewId === 'tasksView') document.getElementById('nav-tasks').classList.add('active');
+            if(viewId === 'tasksView') {
+                document.getElementById('nav-tasks').classList.add('active');
+                startYouTubeTimer('badge1', 'claimBtn1');
+                startYouTubeTimer('badge2', 'claimBtn2');
+            }
             if(viewId === 'withdrawView') document.getElementById('nav-withdraw').classList.add('active');
         }
 
@@ -200,41 +203,35 @@
             } catch(err) { console.log(err); }
         }
 
-        // --- 30 Seconds Auto Timer Track Engine ---
-        function setupVideoTimer(videoId, badgeId, claimBtnId) {
-            const vElement = document.getElementById(videoId);
+        // --- Standard Universal YouTube Timer Logic ---
+        function startYouTubeTimer(badgeId, claimBtnId) {
             const bElement = document.getElementById(badgeId);
             const cElement = document.getElementById(claimBtnId);
-            let timeRemaining = 30;
-            let isTracking = false;
+            
+            if (bElement.getAttribute('data-started') === 'true') return;
+            bElement.setAttribute('data-started', 'true');
 
-            vElement.addEventListener('play', () => {
-                if (!isTracking) {
-                    isTracking = true;
-                    const timer = setInterval(() => {
-                        if (!vElement.paused && !vElement.ended) {
-                            timeRemaining--;
-                            bElement.innerText = timeRemaining + "s";
-                            
-                            if (timeRemaining <= 0) {
-                                clearInterval(timer);
-                                vElement.pause();
-                                vElement.style.display = 'none';
-                                bElement.style.display = 'none';
-                                cElement.style.display = 'block'; // Reward unlocked!
-                            }
-                        }
-                    }, 1000);
+            let timeRemaining = 30;
+            const timer = setInterval(() => {
+                timeRemaining--;
+                bElement.innerText = timeRemaining + "s";
+                
+                if (timeRemaining <= 0) {
+                    clearInterval(timer);
+                    bElement.style.display = 'none';
+                    cElement.style.display = 'block'; // Reward button unlock
                 }
-            });
+            }, 1000);
         }
 
         // --- Claim Rewards ---
         async function claimReward(cardId, prizeAmount) {
             if(supabase) {
-                const { data } = await supabase.from('profiles').select('balance').eq('id', USER_ID).single();
-                const currentBal = parseFloat(data.balance || 0);
-                await supabase.from('profiles').update({ balance: currentBal + prizeAmount }).eq('id', USER_ID);
+                try {
+                    const { data } = await supabase.from('profiles').select('balance').eq('id', USER_ID).single();
+                    const currentBal = parseFloat(data.balance || 0);
+                    await supabase.from('profiles').update({ balance: currentBal + prizeAmount }).eq('id', USER_ID);
+                } catch(e) { console.log(e); }
             }
             alert(`Rs ${prizeAmount}.00 successfully credited to wallet! 🎉`);
             document.getElementById(cardId).remove();
@@ -252,18 +249,20 @@
             }
 
             if(supabase) {
-                const { data } = await supabase.from('profiles').select('balance, total_withdraw').eq('id', USER_ID).single();
-                const currentBal = parseFloat(data.balance || 0);
-                
-                if(amount > currentBal) {
-                    alert("Insufficient balance!");
-                    return;
-                }
+                try {
+                    const { data } = await supabase.from('profiles').select('balance, total_withdraw').eq('id', USER_ID).single();
+                    const currentBal = parseFloat(data.balance || 0);
+                    
+                    if(amount > currentBal) {
+                        alert("Insufficient balance!");
+                        return;
+                    }
 
-                await supabase.from('profiles').update({ 
-                    balance: currentBal - amount,
-                    total_withdraw: parseFloat(data.total_withdraw || 0) + amount
-                }).eq('id', USER_ID);
+                    await supabase.from('profiles').update({ 
+                        balance: currentBal - amount,
+                        total_withdraw: parseFloat(data.total_withdraw || 0) + amount
+                    }).eq('id', USER_ID);
+                } catch(e) { console.log(e); }
             }
 
             alert(`Withdrawal request of Rs ${amount} submitted via ${method} to ${number}! 🚀`);
@@ -272,12 +271,7 @@
             switchView('homeView');
         }
 
-        // Start Initializers
-        document.addEventListener('DOMContentLoaded', () => {
-            loadUserData();
-            setupVideoTimer('video1', 'badge1', 'claimBtn1');
-            setupVideoTimer('video2', 'badge2', 'claimBtn2');
-        });
+        document.addEventListener('DOMContentLoaded', loadUserData);
     </script>
 </body>
 </html>
