@@ -6,14 +6,13 @@
     <title>Earning Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: radial-gradient(circle at top right, rgba(230,253,245,0.7) 0%, rgba(245,243,255,0.7) 100%), #f8fafc; min-height: 100vh; padding-bottom: 100px; }
         .app-container { width: 100%; max-width: 480px; padding: 18px; margin: 0 auto; position: relative; }
         
-        /* Views Management */
+        /* Smooth View Transitions */
         .app-view { display: none; }
         .app-view.active { display: block; }
 
@@ -34,28 +33,28 @@
         .bg-withdraw { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
         .bg-task { background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); }
 
-        /* --- SCREEN HEADERS --- */
+        /* --- SCREENS COMMON HEADER --- */
         .screen-header { display: flex; align-items: center; gap: 15px; margin: 15px 0 25px 0; }
         .back-btn { background: white; border: none; width: 40px; height: 40px; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; font-size: 1.1rem; color: #1e293b; display: flex; align-items: center; justify-content: center; }
         .screen-title { font-size: 1.5rem; font-weight: 800; color: #0f172a; }
 
-        /* --- TASK CARDS WITH YOUTUBE IFRAME --- */
+        /* --- VIDEO ADS PLATFORM --- */
         .task-card { background: white; border-radius: 24px; padding: 16px; margin-bottom: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; }
         .task-info h3 { font-size: 1rem; color: #1e293b; font-weight: 700; margin-bottom: 4px; }
         .task-info p { font-size: 0.75rem; color: #10b981; font-weight: 700; margin-bottom: 12px; }
         .video-wrapper { width: 100%; height: 220px; background: #000; border-radius: 18px; overflow: hidden; position: relative; }
         iframe { width: 100%; height: 100%; border: none; }
-        .timer-badge { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.8); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; z-index: 5; pointer-events: none; }
+        .timer-badge { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.8); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; z-index: 5; }
         .claim-btn { width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 14px; border-radius: 16px; font-weight: 800; font-size: 1rem; cursor: pointer; margin-top: 12px; display: none; }
 
-        /* --- WITHDRAW FORM --- */
+        /* --- WITHDRAW CONFIG --- */
         .form-card { background: white; border-radius: 28px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; }
         .input-group { margin-bottom: 18px; }
         .input-group label { display: block; font-size: 0.78rem; font-weight: 800; color: #64748b; margin-bottom: 8px; }
         select, input { width: 100%; padding: 14px; border-radius: 16px; border: 1px solid #cbd5e1; font-size: 0.95rem; font-weight: 600; color: #1e293b; background: #f8fafc; outline: none; }
         .submit-btn { width: 100%; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; border: none; padding: 16px; border-radius: 18px; font-size: 1rem; font-weight: 800; cursor: pointer; margin-top: 10px; }
 
-        /* --- BOTTOM NAVIGATION BAR --- */
+        /* --- PREMIUM NAVIGATION --- */
         .bottom-nav-bar { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 440px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 35px; display: flex; justify-content: space-between; align-items: center; padding: 10px 24px; box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08); z-index: 9999; border: 1px solid rgba(255, 255, 255, 0.8); }
         .nav-link { display: flex; flex-direction: column; align-items: center; color: #94a3b8; font-size: 0.65rem; font-weight: 700; cursor: pointer; }
         .nav-link i { font-size: 1.3rem; margin-bottom: 3px; }
@@ -74,14 +73,14 @@
             <div class="glass-card-section">
                 <div class="stats-grid">
                     <div class="stat-card"><p class="label">ACCOUNT BALANCE</p><p class="value" id="acc-balance">0.00</p></div>
-                    <div class="stat-card"><p class="label">ACTIVE PLANS</p><p class="value" id="active-plans">0</p></div>
+                    <div class="stat-card"><p class="label">ACTIVE PLANS</p><p class="value" id="active-plans">1</p></div>
                     <div class="stat-card"><p class="label">TOTAL WITHDRAW</p><p class="value" id="total-withdraw">0.00</p></div>
                     <div class="stat-card"><p class="label">TOTAL DEPOSIT</p><p class="value" id="total-deposit">0.00</p></div>
                 </div>
             </div>
 
             <div class="actions-grid">
-                <div class="action-card bg-deposit"><i class="fa-solid fa-wallet"></i><span>DEPOSIT</span></div>
+                <div class="action-card bg-deposit" onclick="alert('Deposit system active soon!')"><i class="fa-solid fa-wallet"></i><span>DEPOSIT</span></div>
                 <div class="action-card bg-withdraw" onclick="switchView('withdrawView')"><i class="fa-solid fa-money-bill-transfer"></i><span>WITHDRAW</span></div>
                 <div class="action-card bg-task" onclick="switchView('tasksView')"><i class="fa-solid fa-circle-play"></i><span>TASK VIDEO</span></div>
             </div>
@@ -153,21 +152,21 @@
     </div>
 
     <script>
-        // --- Supabase Config Safely Setup ---
-        const SUPABASE_URL = 'https://kfbvwxafwbptdllonbwm.supabase.co'; 
-        const SUPABASE_KEY = 'Sb_publishable_EFOjhEF20LOuN_rr3MTAzQ_CkWhQVU8';
-        let supabase = null;
-        const USER_ID = "22deb1ca-dfc3-4794-978c-2b64d8424f1e";
+        // --- Standalone Wallet Storage (No APIs Required) ---
+        let wallet = {
+            balance: parseFloat(localStorage.getItem('w_balance')) || 0.00,
+            total_withdraw: parseFloat(localStorage.getItem('w_withdraw')) || 0.00,
+            total_deposit: parseFloat(localStorage.getItem('w_deposit')) || 0.00
+        };
 
-        try {
-            if (window.supabase) {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-            }
-        } catch(e) {
-            console.log("Supabase connection delayed.");
+        function updateUI() {
+            document.getElementById('rs-balance').innerText = wallet.balance.toFixed(2);
+            document.getElementById('acc-balance').innerText = wallet.balance.toFixed(2);
+            document.getElementById('total-withdraw').innerText = wallet.total_withdraw.toFixed(2);
+            document.getElementById('total-deposit').innerText = wallet.total_deposit.toFixed(2);
         }
 
-        // --- Foolproof Tab Switching System ---
+        // --- Foolproof View Switching ---
         function switchView(viewId) {
             document.getElementById('homeView').style.display = 'none';
             document.getElementById('tasksView').style.display = 'none';
@@ -178,7 +177,7 @@
             document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
             if(viewId === 'homeView') {
                 document.getElementById('nav-home').classList.add('active');
-                loadUserData();
+                updateUI();
             }
             if(viewId === 'tasksView') {
                 document.getElementById('nav-tasks').classList.add('active');
@@ -188,27 +187,12 @@
             if(viewId === 'withdrawView') document.getElementById('nav-withdraw').classList.add('active');
         }
 
-        // --- Fetch Profile Sync ---
-        async function loadUserData() {
-            if(!supabase) return;
-            try {
-                const { data } = await supabase.from('profiles').select('*').eq('id', USER_ID).single();
-                if (data) {
-                    document.getElementById('rs-balance').innerText = parseFloat(data.balance || 0).toFixed(2);
-                    document.getElementById('acc-balance').innerText = parseFloat(data.balance || 0).toFixed(2);
-                    document.getElementById('active-plans').innerText = data.active_plans || 0;
-                    document.getElementById('total-withdraw').innerText = parseFloat(data.total_withdraw || 0).toFixed(2);
-                    document.getElementById('total-deposit').innerText = parseFloat(data.total_deposit || 0).toFixed(2);
-                }
-            } catch(err) { console.log(err); }
-        }
-
-        // --- Standard Universal YouTube Timer Logic ---
+        // --- Standard Universal YouTube Timer Engine ---
         function startYouTubeTimer(badgeId, claimBtnId) {
             const bElement = document.getElementById(badgeId);
             const cElement = document.getElementById(claimBtnId);
             
-            if (bElement.getAttribute('data-started') === 'true') return;
+            if (!bElement || bElement.getAttribute('data-started') === 'true') return;
             bElement.setAttribute('data-started', 'true');
 
             let timeRemaining = 30;
@@ -219,26 +203,22 @@
                 if (timeRemaining <= 0) {
                     clearInterval(timer);
                     bElement.style.display = 'none';
-                    cElement.style.display = 'block'; // Reward button unlock
+                    cElement.style.display = 'block'; 
                 }
             }, 1000);
         }
 
         // --- Claim Rewards ---
-        async function claimReward(cardId, prizeAmount) {
-            if(supabase) {
-                try {
-                    const { data } = await supabase.from('profiles').select('balance').eq('id', USER_ID).single();
-                    const currentBal = parseFloat(data.balance || 0);
-                    await supabase.from('profiles').update({ balance: currentBal + prizeAmount }).eq('id', USER_ID);
-                } catch(e) { console.log(e); }
-            }
-            alert(`Rs ${prizeAmount}.00 successfully credited to wallet! 🎉`);
+        function claimReward(cardId, prizeAmount) {
+            wallet.balance += prizeAmount;
+            localStorage.setItem('w_balance', wallet.balance);
+            updateUI();
+            alert(`Rs ${prizeAmount}.00 wallet mein jama ho gaye hain! 🎉`);
             document.getElementById(cardId).remove();
         }
 
         // --- Submit Withdrawal ---
-        async function submitWithdrawal() {
+        function submitWithdrawal() {
             const method = document.getElementById('method').value;
             const number = document.getElementById('acc-num').value;
             const amount = parseFloat(document.getElementById('amount').value);
@@ -248,30 +228,24 @@
                 return;
             }
 
-            if(supabase) {
-                try {
-                    const { data } = await supabase.from('profiles').select('balance, total_withdraw').eq('id', USER_ID).single();
-                    const currentBal = parseFloat(data.balance || 0);
-                    
-                    if(amount > currentBal) {
-                        alert("Insufficient balance!");
-                        return;
-                    }
-
-                    await supabase.from('profiles').update({ 
-                        balance: currentBal - amount,
-                        total_withdraw: parseFloat(data.total_withdraw || 0) + amount
-                    }).eq('id', USER_ID);
-                } catch(e) { console.log(e); }
+            if(amount > wallet.balance) {
+                alert("Insufficient balance available!");
+                return;
             }
 
+            wallet.balance -= amount;
+            wallet.total_withdraw += amount;
+            
+            localStorage.setItem('w_balance', wallet.balance);
+            localStorage.setItem('w_withdraw', wallet.total_withdraw);
+            
             alert(`Withdrawal request of Rs ${amount} submitted via ${method} to ${number}! 🚀`);
             document.getElementById('acc-num').value = "";
             document.getElementById('amount').value = "";
             switchView('homeView');
         }
 
-        document.addEventListener('DOMContentLoaded', loadUserData);
+        document.addEventListener('DOMContentLoaded', updateUI);
     </script>
 </body>
 </html>
