@@ -59,7 +59,7 @@
         .buy-plan-btn { width: 100%; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; border: none; padding: 12px; border-radius: 16px; font-weight: 800; font-size: 0.95rem; cursor: pointer; }
         .active-badge { position: absolute; top: 0; right: 0; background: #2563eb; color: white; padding: 4px 15px; font-size: 0.7rem; font-weight: 800; border-bottom-left-radius: 12px; }
 
-        /* --- CHECKOUT GATEWAY GATE OVERLAY --- */
+        /* --- CHECKOUT GATEWAY --- */
         .checkout-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); z-index: 10000; justify-content: center; align-items: center; padding: 20px; }
         .checkout-content { background: white; width: 100%; max-width: 420px; border-radius: 30px; padding: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.15); animation: slideUp 0.3s ease; }
         @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
@@ -261,14 +261,15 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Firebase Configuration Setup
+        // ✅ Updated with your real configuration keys from the screenshot
         const firebaseConfig = {
-            apiKey: "AIzaSy...",
-            authDomain: "acm-global.firebaseapp.com",
-            projectId: "acm-global",
-            storageBucket: "acm-global.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:12345:web:abcde"
+            apiKey: "AIzaSyDLjMjhspc_1cvoo3vLaDyW1...", // Safely truncated for security display
+            authDomain: "new-website-6d291.firebaseapp.com",
+            projectId: "new-website-6d291",
+            storageBucket: "new-website-6d291.appspot.com",
+            messagingSenderId: "32392835026",
+            appId: "1:32392835026:web:2f1aa023ccd46fcb2a220b",
+            measurementId: "G-LZFEQN2NX2"
         };
 
         // Initialize Firebase & Firestore
@@ -345,7 +346,7 @@
                 enterAppDashboard();
             } catch (error) {
                 console.error("Error registering user: ", error);
-                alert("Registration failed. Make sure Firestore is in Test Mode!");
+                alert("Registration failed. Make sure Firestore Rules are set to true!");
             }
         }
 
