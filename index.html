@@ -81,11 +81,21 @@
         .claim-btn { width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 16px; border-radius: 16px; font-weight: 800; font-size: 1.05rem; cursor: pointer; display: none; box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3); }
 
         /* --- ADMIN STYLES --- */
+        .admin-section-title { font-size: 1.1rem; font-weight: 800; color: #1e293b; margin: 20px 0 10px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; }
         .admin-card { background: white; border-radius: 20px; padding: 15px; margin-bottom: 12px; border: 1px solid #cbd5e1; }
         .admin-user-title { font-weight: 800; color: #1e293b; font-size: 1rem; }
         .admin-action-row { display: flex; gap: 8px; margin-top: 10px; }
         .admin-input-small { padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1; width: 60%; font-size: 0.85rem; }
         .admin-btn-action { background: #2563eb; color: white; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; }
+        .admin-btn-success { background: #10b981 !important; }
+        .admin-btn-danger { background: #ef4444 !important; }
+
+        /* --- LOG LIST FOR USER --- */
+        .log-item { background: white; padding: 12px; border-radius: 14px; margin-top: 8px; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+        .status-badge { padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; }
+        .status-pending { background: #fef3c7; color: #d97706; }
+        .status-approved { background: #d1fae5; color: #059669; }
+        .status-rejected { background: #fee2e2; color: #dc2626; }
 
         /* --- FORM CONTROLS --- */
         .input-group { margin-bottom: 18px; }
@@ -108,7 +118,7 @@
         <div id="registerView" class="app-view active">
             <div class="auth-container">
                 <div class="auth-logo"><h2>ACM <span>Global</span></h2><p style="font-size:0.8rem; color:#64748b;">Create Your Earning Account</p></div>
-                <div class="input-group"><label>EMAIL OR PHONE NUMBER</label><input type="text" id="reg-phone" placeholder="e.g. 03001234567 or admin@gmail.com"></div>
+                <div class="input-group"><label>MOBILE NUMBER</label><input type="text" id="reg-phone" placeholder="e.g. 03001234567"></div>
                 <div class="input-group"><label>USER NAME</label><input type="text" id="reg-username" placeholder="Enter full name"></div>
                 <div class="input-group"><label>PASSWORD</label><input type="password" id="reg-pass" placeholder="Enter password"></div>
                 <button class="submit-btn" onclick="handleRegister()">Register Account</button>
@@ -119,7 +129,7 @@
         <div id="loginView" class="app-view">
             <div class="auth-container">
                 <div class="auth-logo"><h2>Welcome <span>Back</span></h2><p style="font-size:0.8rem; color:#64748b;">Login to continue journey</p></div>
-                <div class="input-group"><label>EMAIL OR PHONE NUMBER</label><input type="text" id="login-phone" placeholder="Enter number or email"></div>
+                <div class="input-group"><label>MOBILE NUMBER</label><input type="text" id="login-phone" placeholder="e.g. 03001234567"></div>
                 <div class="input-group"><label>PASSWORD</label><input type="password" id="login-pass" placeholder="Enter account password"></div>
                 <button class="submit-btn" onclick="handleLogin()">Login Account</button>
                 <div class="auth-toggle">Don't have an account? <span onclick="switchAuth('registerView')">Register Here</span></div>
@@ -145,6 +155,9 @@
                 <div class="action-card bg-withdraw" onclick="switchView('withdrawView')"><i class="fa-solid fa-money-bill-transfer"></i><span>WITHDRAW</span></div>
                 <div class="action-card bg-task" onclick="checkPlanBeforeTasks()"><i class="fa-solid fa-circle-play"></i><span>TASK VIDEO</span></div>
             </div>
+
+            <h3 style="font-size: 0.95rem; font-weight: 800; color: #1e293b; margin-top: 10px;">Transaction Status Logs</h3>
+            <div id="user-history-logs-box"></div>
         </div>
 
         <div id="plansView" class="app-view">
@@ -210,13 +223,13 @@
                 </div>
 
                 <div style="background:#f8fafc; border-radius:12px; padding:10px; margin-bottom:15px; font-size:0.75rem; color:#64748b; font-weight:600;">
-                    ⚠️ Is number par payment send karein aur neechay exact amount likh kar screenshot attach karein. Kam payment par account active nahi hoga.
+                    ⚠️ Payment send karke screenshot upload karein. Admin verification ke baad aapka plan active ho jayega.
                 </div>
 
                 <div class="input-group"><label>SENT AMOUNT (PKR)</label><input type="number" id="pay-amount" placeholder="Enter exact plan amount"></div>
                 <div class="input-group"><label>TRANSACTION SCREENSHOT</label><input type="file" id="pay-screenshot" accept="image/*" style="padding:10px;"></div>
 
-                <button class="submit-btn" style="background:linear-gradient(135deg, #ea580c 0%, #c2410c 100%);" onclick="validateAndActivatePlan()">Submit Verification</button>
+                <button class="submit-btn" style="background:linear-gradient(135deg, #ea580c 0%, #c2410c 100%);" onclick="submitDepositToAdminQueue()">Submit Verification</button>
                 <button class="close-modal-btn" onclick="closeCheckoutGateway()">Cancel</button>
             </div>
         </div>
@@ -245,19 +258,24 @@
                 </div>
                 <div class="input-group"><label>ACCOUNT NUMBER</label><input type="number" id="acc-num" placeholder="e.g. 03001234567"></div>
                 <div class="input-group"><label>WITHDRAW AMOUNT (PKR)</label><input type="number" id="amount" placeholder="Minimum Rs 500"></div>
-                <button class="submit-btn" onclick="submitWithdrawal()">Submit Request</button>
+                <button class="submit-btn" onclick="submitWithdrawToAdminQueue()">Submit Request</button>
             </div>
         </div>
 
         <div id="adminPanelView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
-                <h1 class="screen-title" style="color: #ea580c;"><i class="fa-solid fa-user-shield"></i> Security Admin</h1>
+                <h1 class="screen-title" style="color: #ea580c;"><i class="fa-solid fa-user-shield"></i> Master Panel</h1>
             </div>
-            <p style="font-size:0.85rem; color:#64748b; margin-bottom:15px; font-weight:600;">Welcome Master. Below is the active users database stream:</p>
             
-            <div id="admin-users-list-container">
-                </div>
+            <div class="admin-section-title"><i class="fa-solid fa-hourglass-half"></i> Pending Plan Deposits</div>
+            <div id="admin-deposits-queue"></div>
+
+            <div class="admin-section-title"><i class="fa-solid fa-money-bill-wave"></i> Pending Withdrawals</div>
+            <div id="admin-withdrawals-queue"></div>
+
+            <div class="admin-section-title"><i class="fa-solid fa-users"></i> Users Database Balance Configuration</div>
+            <div id="admin-users-list-container"></div>
         </div>
 
         <div class="bottom-nav-bar" id="appNavigation" style="display: none;">
@@ -275,7 +293,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs, addDoc, query, where } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDLjMjhspc_1cvoo3vLaDyW1...", 
@@ -302,11 +320,14 @@
         window.checkPlanBeforeTasks = checkPlanBeforeTasks;
         window.openCheckoutGateway = openCheckoutGateway;
         window.closeCheckoutGateway = closeCheckoutGateway;
-        window.validateAndActivatePlan = validateAndActivatePlan;
+        window.submitDepositToAdminQueue = submitDepositToAdminQueue;
         window.claimRewardAndNext = claimRewardAndNext;
-        window.submitWithdrawal = submitWithdrawal;
+        window.submitWithdrawToAdminQueue = submitWithdrawToAdminQueue;
         window.handleLogout = handleLogout;
         window.adminUpdateUserBalance = adminUpdateUserBalance;
+        
+        window.adminProcessDeposit = adminProcessDeposit;
+        window.adminProcessWithdrawal = adminProcessWithdrawal;
 
         function updateUI() {
             if(!currentSession) return;
@@ -316,13 +337,13 @@
             document.getElementById('total-withdraw').innerText = currentSession.total_withdraw.toFixed(2);
             document.getElementById('total-deposit').innerText = currentSession.total_deposit.toFixed(2);
             
-            // Check Admin Rights for visibility injection
             if(currentSession.phone === ADMIN_GATEWAY_EMAIL) {
                 document.getElementById('nav-admin-link').style.display = 'flex';
             } else {
                 document.getElementById('nav-admin-link').style.display = 'none';
             }
             renderPlansHighlight();
+            loadUserTransactionLogs();
         }
 
         function switchAuth(targetView) {
@@ -343,7 +364,7 @@
                 const userSnap = await getDoc(userRef);
 
                 if (userSnap.exists()) {
-                    alert("Yeh credential pehle se registered hai!");
+                    alert("Yeh account pehle se registered hai!");
                     return;
                 }
 
@@ -381,14 +402,14 @@
                 const userSnap = await getDoc(userRef);
 
                 if(!userSnap.exists() || userSnap.data().password !== pass) {
-                    alert("Wrong Credentials or Password!");
+                    alert("Wrong Mobile Number or Password!");
                     return;
                 }
 
                 currentSession = userSnap.data();
                 sessionStorage.setItem('acm_user_phone', phone);
                 
-                alert(`Welcome, ${currentSession.username}! 👋`);
+                alert(`Welcome back! 👋`);
                 enterAppDashboard();
             } catch (error) {
                 alert("Login Error!");
@@ -403,9 +424,7 @@
         }
 
         function handleLogout() {
-            const confirmLogout = confirm("Kya aap sach mein logout karna chahte hain?");
-            if (!confirmLogout) return;
-            
+            if (!confirm("Kya aap logout karna chahte hain?")) return;
             sessionStorage.removeItem('acm_user_phone');
             currentSession = null;
             document.getElementById('appNavigation').style.display = 'none';
@@ -442,12 +461,12 @@
             if(viewId === 'homeView') { document.getElementById('nav-home').classList.add('active'); updateUI(); }
             if(viewId === 'plansView') { document.getElementById('nav-plans').classList.add('active'); renderPlansHighlight(); }
             if(viewId === 'withdrawView') document.getElementById('nav-withdraw').classList.add('active');
-            if(viewId === 'adminPanelView') { document.getElementById('nav-admin-link').classList.add('active'); loadAdminUsersDashboard(); }
+            if(viewId === 'adminPanelView') { document.getElementById('nav-admin-link').classList.add('active'); loadAdminMasterDashboard(); }
         }
 
         function checkPlanBeforeTasks() {
             if(!currentSession.activePlanName || currentSession.activePlanPrice === 0) {
-                alert("Pehle koi plan buy karein!");
+                alert("Pehle koi plan buy karein ya approval ka wait karein!");
                 switchView('plansView');
             } else {
                 currentVideoIndex = 1;
@@ -469,29 +488,33 @@
             pendingCheckout = null;
         }
 
-        async function validateAndActivatePlan() {
+        // Send Plan Application to Admin Database Queue
+        async function submitDepositToAdminQueue() {
             const enteredAmount = parseFloat(document.getElementById('pay-amount').value);
-            const screenshotFile = document.getElementById('pay-screenshot').files[0];
+            const screenshotFile = document.getElementById('pay-screenshot').value;
 
             if(!enteredAmount || !screenshotFile) {
-                alert("Meherbani karke screenshot upload karein aur sent amount enter karein!");
+                alert("Meherbani karke saari details complete fill karein!");
                 return;
             }
 
-            if(enteredAmount < pendingCheckout.price) {
-                alert(`Transaction Rejected! Kam payment par account active nahi hoga.`);
-                return;
+            try {
+                await addDoc(collection(db, "deposits"), {
+                    userPhone: currentSession.phone,
+                    username: currentSession.username,
+                    planName: pendingCheckout.name,
+                    planPrice: pendingCheckout.price,
+                    videosCount: pendingCheckout.videosCount,
+                    amountSent: enteredAmount,
+                    status: "pending"
+                });
+
+                closeCheckoutGateway();
+                alert(`🎉 Deposit request submitted! Admin approval ke baad plan active ho jayega.`);
+                switchView('homeView');
+            } catch (e) {
+                alert("Failed to submit request.");
             }
-
-            currentSession.activePlanPrice = pendingCheckout.price;
-            currentSession.activePlanName = pendingCheckout.name;
-            currentSession.dailyVideosLimit = pendingCheckout.videosCount;
-            currentSession.total_deposit += pendingCheckout.price;
-
-            await saveCurrentSessionToDatabase();
-            closeCheckoutGateway();
-            alert(`🎉 ${currentSession.activePlanName} successfully activated!`);
-            switchView('homeView');
         }
 
         function renderPlansHighlight() {
@@ -531,7 +554,6 @@
             }
 
             progressStatus.innerText = `Video: ${currentVideoIndex} / ${currentSession.dailyVideosLimit}`;
-            
             const youtubePool = ["dQw4w9WgXcQ", "3JZ_D3ELwOQ", "tgbNymZ7vqY", "2Vv-BfVoq4g", "kJQP7kiw5Fk"];
             let randomVidId = youtubePool[currentVideoIndex % youtubePool.length];
 
@@ -548,7 +570,6 @@
                     <button class="claim-btn" id="claimRewardActionBtn" onclick="claimRewardAndNext()">CLAIM RS 50.00 REWARD 🎉</button>
                 </div>
             `;
-
             startTaskTimer();
         }
 
@@ -560,7 +581,6 @@
             const countdownInterval = setInterval(() => {
                 timeRemaining--;
                 if(badge) badge.innerText = timeRemaining + "s";
-
                 if (timeRemaining <= 0) {
                     clearInterval(countdownInterval);
                     if(badge) badge.style.display = 'none';
@@ -572,94 +592,232 @@
         async function claimRewardAndNext() {
             currentSession.balance += 50.00;
             await saveCurrentSessionToDatabase();
-            
             alert(`Rs 50.00 successfully added to your wallet! 💰`);
             currentVideoIndex++;
             loadSingleVideoTask();
         }
 
-        async function submitWithdrawal() {
+        // Send Withdrawal Request to Admin Database Queue
+        async function submitWithdrawToAdminQueue() {
             const method = document.getElementById('method').value;
-            const number = document.getElementById('acc-num').value;
+            const number = document.getElementById('acc-num').value.trim();
             const amount = parseFloat(document.getElementById('amount').value);
 
             if(!number || !amount) { alert("Please fill all details completely."); return; }
             if(amount < 500) { alert("Minimum withdrawal amount is Rs 500."); return; }
             if(amount > currentSession.balance) { alert("Insufficient balance available!"); return; }
 
-            currentSession.balance -= amount;
-            currentSession.total_withdraw += amount;
-            await saveCurrentSessionToDatabase();
+            try {
+                // Deduct temporary/holding from user interface balance
+                currentSession.balance -= amount;
+                await saveCurrentSessionToDatabase();
 
-            alert(`Withdrawal request of Rs ${amount} submitted via ${method} to ${number}! 🚀`);
-            document.getElementById('acc-num').value = "";
-            document.getElementById('amount').value = "";
-            switchView('homeView');
+                await addDoc(collection(db, "withdrawals"), {
+                    userPhone: currentSession.phone,
+                    username: currentSession.username,
+                    method: method,
+                    accountNumber: number,
+                    amount: amount,
+                    status: "pending"
+                });
+
+                alert(`Withdrawal request of Rs ${amount} submitted! Approval pending.`);
+                document.getElementById('acc-num').value = "";
+                document.getElementById('amount').value = "";
+                switchView('homeView');
+            } catch (e) {
+                alert("Withdrawal execution failed.");
+            }
         }
 
-        // ================= SECURE ADMIN FETCH & ENGINE DATA =================
-        async function loadAdminUsersDashboard() {
-            if(currentSession.phone !== ADMIN_GATEWAY_EMAIL) return;
-            const listContainer = document.getElementById('admin-users-list-container');
-            listContainer.innerHTML = `<p style='text-align:center; color:#64748b;'>Streaming database documents...</p>`;
+        // User Interface Logs Engine Fetch
+        async function loadUserTransactionLogs() {
+            const container = document.getElementById('user-history-logs-box');
+            container.innerHTML = "";
 
             try {
-                const querySnapshot = await getDocs(collection(db, "users"));
-                listContainer.innerHTML = "";
-                
-                querySnapshot.forEach((userDoc) => {
-                    const data = userDoc.data();
-                    // Skip showing admin email inside data stream node for extreme security
-                    if(data.phone === ADMIN_GATEWAY_EMAIL) return;
+                const depSnap = await getDocs(collection(db, "deposits"));
+                depSnap.forEach(d => {
+                    const data = d.data();
+                    if(data.userPhone === currentSession.phone) {
+                        container.innerHTML += `
+                            <div class="log-item">
+                                <div><b>${data.planName} Deposit</b><br><small>Amount: Rs ${data.amountSent}</small></div>
+                                <span class="status-badge status-${data.status}">${data.status.toUpperCase()}</span>
+                            </div>
+                        `;
+                    }
+                });
 
-                    const card = document.createElement('div');
-                    card.className = 'admin-card';
-                    card.innerHTML = `
+                const witSnap = await getDocs(collection(db, "withdrawals"));
+                witSnap.forEach(w => {
+                    const data = w.data();
+                    if(data.userPhone === currentSession.phone) {
+                        container.innerHTML += `
+                            <div class="log-item">
+                                <div><b>${data.method} Withdraw</b><br><small>Amount: Rs ${data.amount}</small></div>
+                                <span class="status-badge status-${data.status}">${data.status.toUpperCase()}</span>
+                            </div>
+                        `;
+                    }
+                });
+            } catch (err) {}
+        }
+
+        // ================= MASTER ARCHITECTURE ADMIN CORE ENGINE =================
+        async function loadAdminMasterDashboard() {
+            if(currentSession.phone !== ADMIN_GATEWAY_EMAIL) return;
+            
+            // 1. Load User Database
+            const listContainer = document.getElementById('admin-users-list-container');
+            listContainer.innerHTML = "";
+            const querySnapshot = await getDocs(collection(db, "users"));
+            querySnapshot.forEach((userDoc) => {
+                const data = userDoc.data();
+                if(data.phone === ADMIN_GATEWAY_EMAIL) return;
+                listContainer.innerHTML += `
+                    <div class="admin-card">
                         <div class="admin-user-title">${data.username}</div>
-                        <div style="font-size:0.8rem; color:#64748b; margin-top:2px;">Phone/ID: <b>${data.phone}</b></div>
-                        <div style="font-size:0.85rem; color:#10b981; font-weight:700; margin-top:4px;">Wallet Balance: Rs ${data.balance.toFixed(2)}</div>
+                        <div style="font-size:0.8rem; color:#64748b;">Phone: <b>${data.phone}</b></div>
+                        <div style="font-size:0.85rem; color:#10b981; font-weight:700;">Wallet: Rs ${data.balance.toFixed(2)}</div>
                         <div class="admin-action-row">
-                            <input type="number" class="admin-input-small" id="input-balance-${data.phone}" placeholder="New Balance Amount">
+                            <input type="number" class="admin-input-small" id="input-balance-${data.phone}" placeholder="New Balance">
                             <button class="admin-btn-action" onclick="adminUpdateUserBalance('${data.phone}')">Update</button>
                         </div>
+                    </div>
+                `;
+            });
+
+            // 2. Load Pending Deposits Queue
+            const depContainer = document.getElementById('admin-deposits-queue');
+            depContainer.innerHTML = "";
+            const depSnapshot = await getDocs(collection(db, "deposits"));
+            let highDepCheck = false;
+            depSnapshot.forEach((docObj) => {
+                const data = docObj.data();
+                if(data.status === "pending") {
+                    highDepCheck = true;
+                    depContainer.innerHTML += `
+                        <div class="admin-card" style="border-left: 4px solid #d97706;">
+                            <div><b>User:</b> ${data.username} (${data.userPhone})</div>
+                            <div><b>Requested Plan:</b> ${data.planName} (Cost: Rs ${data.planPrice})</div>
+                            <div><b>User Claims Sent:</b> <span style="color:#2563eb; font-weight:700;">Rs ${data.amountSent}</span></div>
+                            <div class="admin-action-row">
+                                <button class="admin-btn-action admin-btn-success" onclick="adminProcessDeposit('${docObj.id}', 'approved')">Accept</button>
+                                <button class="admin-btn-action admin-btn-danger" onclick="adminProcessDeposit('${docObj.id}', 'rejected')">Reject</button>
+                            </div>
+                        </div>
                     `;
-                    listContainer.appendChild(card);
-                });
-            } catch (error) {
-                listContainer.innerHTML = `<p style='color:red;'>Error streaming database rows.</p>`;
-            }
+                }
+            });
+            if(!highDepCheck) depContainer.innerHTML = "<p style='font-size:0.8rem; color:#64748b;'>No pending deposit requests.</p>";
+
+            // 3. Load Pending Withdrawals Queue
+            const witContainer = document.getElementById('admin-withdrawals-queue');
+            witContainer.innerHTML = "";
+            const witSnapshot = await getDocs(collection(db, "withdrawals"));
+            let highWitCheck = false;
+            witSnapshot.forEach((docObj) => {
+                const data = docObj.data();
+                if(data.status === "pending") {
+                    highWitCheck = true;
+                    witContainer.innerHTML += `
+                        <div class="admin-card" style="border-left: 4px solid #ef4444;">
+                            <div><b>User:</b> ${data.username} (${data.userPhone})</div>
+                            <div><b>Payout Gateway:</b> ${data.method} -> <b>${data.accountNumber}</b></div>
+                            <div><b>Withdraw Amount:</b> <span style="color:#dc2626; font-weight:700;">Rs ${data.amount}</span></div>
+                            <div class="admin-action-row">
+                                <button class="admin-btn-action admin-btn-success" onclick="adminProcessWithdrawal('${docObj.id}', 'approved')">Accept & Send</button>
+                                <button class="admin-btn-action admin-btn-danger" onclick="adminProcessWithdrawal('${docObj.id}', 'rejected')">Reject</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+            if(!highWitCheck) witContainer.innerHTML = "<p style='font-size:0.8rem; color:#64748b;'>No pending withdrawal requests.</p>";
+        }
+
+        // Action Core Processes for Deposit Queue Approval Nodes
+        async function adminProcessDeposit(id, actionStatus) {
+            try {
+                const depRef = doc(db, "deposits", id);
+                const depSnap = await getDoc(depRef);
+                const depData = depSnap.data();
+
+                await updateDoc(depRef, { status: actionStatus });
+
+                if(actionStatus === "approved") {
+                    const userRef = doc(db, "users", depData.userPhone);
+                    const userSnap = await getDoc(userRef);
+                    const userData = userSnap.data();
+
+                    await updateDoc(userRef, {
+                        activePlanName: depData.planName,
+                        activePlanPrice: depData.planPrice,
+                        dailyVideosLimit: depData.videosCount,
+                        total_deposit: userData.total_deposit + depData.planPrice
+                    });
+                    alert("Deposit request accepted! User's premium plan is now live.");
+                } else {
+                    alert("Deposit transaction rejected.");
+                }
+                loadAdminMasterDashboard();
+            } catch(e) { alert("Error processing action."); }
+        }
+
+        // Action Core Processes for Withdrawal Approval Nodes
+        async function adminProcessWithdrawal(id, actionStatus) {
+            try {
+                const witRef = doc(db, "withdrawals", id);
+                const witSnap = await getDoc(witRef);
+                const witData = witSnap.data();
+
+                await updateDoc(witRef, { status: actionStatus });
+
+                if(actionStatus === "approved") {
+                    const userRef = doc(db, "users", witData.userPhone);
+                    const userSnap = await getDoc(userRef);
+                    const userData = userSnap.data();
+
+                    await updateDoc(userRef, {
+                        total_withdraw: userData.total_withdraw + witData.amount
+                    });
+                    alert("Withdrawal successfully approved!");
+                } else {
+                    // Revert cash balance back to user account document if rejected
+                    const userRef = doc(db, "users", witData.userPhone);
+                    const userSnap = await getDoc(userRef);
+                    const userData = userSnap.data();
+                    await updateDoc(userRef, {
+                        balance: userData.balance + witData.amount
+                    });
+                    alert("Withdrawal rejected. Cash reversed to user wallet.");
+                }
+                loadAdminMasterDashboard();
+            } catch(e) { alert("Error processing withdrawal node action."); }
         }
 
         async function adminUpdateUserBalance(userPhoneId) {
-            if(currentSession.phone !== ADMIN_GATEWAY_EMAIL) return;
             const targetVal = parseFloat(document.getElementById(`input-balance-${userPhoneId}`).value);
-            
             if(isNaN(targetVal)) { alert("Sahi amount enter karein!"); return; }
-
             try {
-                const targetUserRef = doc(db, "users", userPhoneId);
-                await updateDoc(targetUserRef, { balance: targetVal });
-                alert(`User (${userPhoneId}) ka balance successfully updated to Rs ${targetVal}!`);
-                loadAdminUsersDashboard(); // Hot reloads users stream list seamlessly
-            } catch (error) {
-                alert("Failed to modify target document block.");
-            }
+                await updateDoc(doc(db, "users", userPhoneId), { balance: targetVal });
+                alert("Balance updated successfully!");
+                loadAdminMasterDashboard();
+            } catch (error) { alert("Failed to modify data."); }
         }
 
         window.addEventListener('DOMContentLoaded', async () => {
             const savedPhone = sessionStorage.getItem('acm_user_phone');
             if (savedPhone) {
                 try {
-                    const userRef = doc(db, "users", savedPhone);
-                    const userSnap = await getDoc(userRef);
+                    const userSnap = await getDoc(doc(db, "users", savedPhone));
                     if (userSnap.exists()) {
                         currentSession = userSnap.data();
                         enterAppDashboard();
                         return;
                     }
-                } catch (e) {
-                    console.error(e);
-                }
+                } catch (e) {}
             }
             switchAuth('registerView');
         });
