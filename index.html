@@ -35,11 +35,11 @@
         .auth-toggle span { color: #2563eb; font-weight: 700; cursor: pointer; }
 
         /* --- LIVE STATUS COUNTERS --- */
-        .live-counters-box { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border-radius: 24px; padding: 14px 18px; margin-bottom: 15px; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15); display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.08); }
-        .counter-item { display: flex; flex-direction: column; gap: 2px; }
-        .counter-label { font-size: 0.68rem; font-weight: 700; color: #94a3b8; letter-spacing: 0.5px; text-transform: uppercase; }
-        .counter-value { font-size: 1.1rem; font-weight: 800; color: #ffffff; }
-        .live-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 10px #10b981; animation: pulse-live 1.5s infinite; }
+        .live-counters-box { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border-radius: 30px; padding: 10px 18px; margin-top: 10px; margin-bottom: 18px; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15); display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.08); }
+        .counter-item { display: flex; flex-direction: column; gap: 1px; }
+        .counter-label { font-size: 0.62rem; font-weight: 800; color: #94a3b8; letter-spacing: 0.5px; text-transform: uppercase; }
+        .counter-value { font-size: 0.95rem; font-weight: 800; color: #ffffff; }
+        .live-dot { width: 6px; height: 6px; background: #10b981; border-radius: 50%; display: inline-block; margin-right: 4px; box-shadow: 0 0 10px #10b981; animation: pulse-live 1.5s infinite; vertical-align: middle; }
         @keyframes pulse-live { 0% { transform: scale(0.9); opacity: 0.6; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(0.9); opacity: 0.6; } }
 
         /* --- HOME SCREEN --- */
@@ -59,12 +59,15 @@
         .bg-withdraw { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
         .bg-task { background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); }
 
-        /* --- LIVE WITHDRAWAL FEED --- */
-        .live-feed-box { background: white; border-radius: 24px; padding: 16px; margin-bottom: 22px; box-shadow: 0 8px 25px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; overflow: hidden; position: relative; height: 180px; }
-        .live-feed-title { font-size: 0.95rem; font-weight: 800; color: #0f172a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-        .live-feed-title i { color: #10b981; }
-        .feed-container { display: flex; flex-direction: column; gap: 10px; position: absolute; width: calc(100% - 32px); animation: scrollFeed 12s linear infinite; }
-        .feed-item { background: #f8fafc; border-radius: 16px; padding: 10px 12px; border: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
+        /* --- CLICKABLE LIVE WITHDRAWAL FEED --- */
+        .live-feed-box { background: white; border-radius: 24px; padding: 16px; margin-bottom: 22px; box-shadow: 0 8px 25px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; overflow: hidden; position: relative; height: 160px; transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+        .live-feed-box.expanded { height: 480px; overflow-y: auto; padding-bottom: 30px; }
+        .live-feed-title { font-size: 0.95rem; font-weight: 800; color: #0f172a; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+        .live-feed-title-left { display: flex; align-items: center; gap: 8px; }
+        .live-feed-title-left i { color: #10b981; }
+        .expand-indicator { font-size: 0.75rem; color: #2563eb; background: #eff6ff; padding: 4px 10px; border-radius: 10px; font-weight: 700; }
+        .feed-container { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+        .feed-item { background: #f8fafc; border-radius: 16px; padding: 12px 14px; border: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
         .feed-user-details h5 { font-size: 0.85rem; font-weight: 700; color: #1e293b; }
         .feed-user-details p { font-size: 0.72rem; color: #64748b; font-weight: 500; margin-top: 1px; }
         .feed-amount-details { text-align: right; }
@@ -73,7 +76,7 @@
         .badge-jc { background: #fee2e2; color: #dc2626; }
         .badge-ep { background: #ecfdf5; color: #059669; }
 
-        /* Error/Lock Banner Dashboard Clickable */
+        /* Error/Lock Banner Dashboard */
         .error-lock-banner { background: #fef2f2; border: 2px solid #fca5a5; border-radius: 20px; padding: 16px; margin-bottom: 20px; display: none; cursor: pointer; transition: transform 0.2s; }
         .error-lock-banner:active { transform: scale(0.98); }
         .error-lock-banner h4 { color: #dc2626; font-size: 1rem; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
@@ -222,11 +225,14 @@
                 <div class="action-card bg-task" onclick="checkPlanBeforeTasks()"><i class="fa-solid fa-circle-play"></i><span>TASK VIDEO</span></div>
             </div>
 
-            <!-- LIVE WITHDRAWALS SYSTEM FEED -->
-            <div class="live-feed-box">
-                <div class="live-feed-title"><i class="fa-solid fa-bolt-lightning"></i> Live Withdrawals Feed</div>
+            <!-- LIVE WITHDRAWALS SYSTEM FEED (Mukammal Clickable & 15 Names Expandable List) -->
+            <div class="live-feed-box" id="live-feed-card" onclick="toggleLiveFeedExpand()">
+                <div class="live-feed-title">
+                    <div class="live-feed-title-left"><i class="fa-solid fa-bolt-lightning"></i> Live Withdrawals Feed</div>
+                    <div class="expand-indicator" id="feed-expand-text">Click to View All</div>
+                </div>
                 <div class="feed-container" id="live-withdrawals-ticker">
-                    <!-- Dynamic live data injects here via Javascript algorithm -->
+                    <!-- 15 Dynamic live data names inject via JavaScript logic -->
                 </div>
             </div>
 
@@ -405,6 +411,7 @@
         window.adminProcessWithdrawal = adminProcessWithdrawal;
         window.viewProofImage = viewProofImage;
         window.adminClearUserRestriction = adminClearUserRestriction;
+        window.toggleLiveFeedExpand = toggleLiveFeedExpand;
 
         function updateUI() {
             if(!currentSession) return;
@@ -431,7 +438,21 @@
             }
             renderPlansHighlight();
             loadUserTransactionLogs();
-            initSocialProofEngine(); // Home aane par counters reset/update honge
+            initSocialProofEngine();
+        }
+
+        // ================= EXPANDABLE LIVE FEED CONTROLLER =================
+        function toggleLiveFeedExpand() {
+            const feedCard = document.getElementById('live-feed-card');
+            const indicator = document.getElementById('feed-expand-text');
+            
+            if (feedCard.classList.contains('expanded')) {
+                feedCard.classList.remove('expanded');
+                indicator.innerText = "Click to View All";
+            } else {
+                feedCard.classList.add('expanded');
+                indicator.innerText = "Click to Close";
+            }
         }
 
         // ================= AUTOMATIC SOCIAL PROOF LOGIC ENGINE =================
@@ -440,24 +461,23 @@
             const onlineUsersElement = document.getElementById('live-online-users');
 
             // 1. Every 2-3 days base value increment calculation
-            const epochStart = 1710000000000; // Reference timestamp
+            const epochStart = 1710000000000;
             const daysPassed = Math.floor((Date.now() - epochStart) / (1000 * 60 * 60 * 24));
             const calculatedMembers = 670000 + (Math.floor(daysPassed / 2) * 1420); 
             totalMembersElement.innerText = calculatedMembers.toLocaleString();
 
-            // 2. Day-Time dynamic user load dispatcher
+            // 2. Day-Time dynamic user load dispatcher (Peak Target ~4 Lakh)
             const currentHour = new Date().getHours();
             let baseOnline = 120000;
             
-            // Shaam ka waqt (5 PM se 10 PM) aur Subah ka waqt (8 AM se 11 AM) auto peak to ~4 Lakh
             if ((currentHour >= 17 && currentHour <= 22) || (currentHour >= 8 && currentHour <= 11)) {
-                baseOnline = 385000 + Math.floor(Math.random() * 28000); // 3.8L to 4.1L
+                baseOnline = 385000 + Math.floor(Math.random() * 28000); 
             } else {
-                baseOnline = 115000 + Math.floor(Math.random() * 15000); // Normal times around 1.2L
+                baseOnline = 115000 + Math.floor(Math.random() * 15000); 
             }
             onlineUsersElement.innerText = baseOnline.toLocaleString();
 
-            // 3. Continuous Live Withdrawal Generation Algorithm
+            // 3. Continuous Live Withdrawal Generation
             generateLiveMockWithdrawals();
         }
 
@@ -465,22 +485,28 @@
             const ticker = document.getElementById('live-withdrawals-ticker');
             if(!ticker) return;
 
-            const firstNames = ["Muhammad", "Ali", "Zain", "Hamza", "Asif", "Bilal", "Sana", "Ayesha", "Irfan", "Kashif", "Sajid", "Noman", "Osama", "Raza"];
-            const lastNames = ["Khan", "Ahmed", "Hassan", "Malik", "Sheikh", "Raza", "Javed", "Iqbal", "Zafar", "Abbasi", "Ghafoor"];
+            // Mixed Pakistani Common Names
+            const firstNames = ["Muhammad", "Ali", "Zain", "Hamza", "Asif", "Bilal", "Sana", "Ayesha", "Irfan", "Kashif", "Sajid", "Noman", "Osama", "Raza", "Yasir", "Waqas", "Faisal", "Tayyab", "Zeeshan", "Imran", "Kamran", "Farhan", "Nadia", "Kiran", "Saba"];
+            const lastNames = ["Khan", "Ahmed", "Hassan", "Malik", "Sheikh", "Raza", "Javed", "Iqbal", "Zafar", "Abbasi", "Ghafoor", "Bhatti", "Siddiqui", "Mehmood", "Rasheed"];
             const methods = ["JazzCash", "EasyPaisa"];
             
-            ticker.innerHTML = ""; // Container clear krein
+            ticker.innerHTML = ""; 
 
-            // 5 real-looking loops instantly load down-to-up scroll stream
-            for(let i=0; i<6; i++) {
+            // Generates exactly 15 high-fidelity user logs with real account numbers and names
+            for(let i=0; i<15; i++) {
                 const randomName = firstNames[Math.floor(Math.random() * firstNames.length)] + " " + lastNames[Math.floor(Math.random() * lastNames.length)];
-                const randomPhone = "03" + Math.floor(Math.random() * 9) + Math.floor(Math.random() * 10) + "*****" + Math.floor(Math.random() * 9) + Math.floor(Math.random() * 9);
-                const randomAmount = Math.floor(Math.random() * 8) * 1000 + 2000; // Range: Rs 2000 - Rs 9000
+                
+                // Real-looking Pakistani network codes
+                const netCodes = ["0300", "0301", "0302", "0303", "0304", "0306", "0312", "0313", "0315", "0321", "0333", "0334", "0345", "0346"];
+                const randomCode = netCodes[Math.floor(Math.random() * netCodes.length)];
+                const randomPhone = randomCode + "*****" + Math.floor(10 + Math.random() * 90);
+                
+                // Random dynamic withdrawal amounts
+                const randomAmount = Math.floor(2000 + Math.random() * 13000); 
                 const selectedMethod = methods[Math.floor(Math.random() * methods.length)];
                 
-                // Real-time local formatted date & dynamic delay hours
                 const timeNow = new Date();
-                timeNow.setMinutes(timeNow.getMinutes() - (i * 4) - Math.floor(Math.random() * 3));
+                timeNow.setMinutes(timeNow.getMinutes() - (i * 2) - Math.floor(Math.random() * 3));
                 const timeString = timeNow.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + " | " + timeNow.toLocaleDateString([], {month:'short', day:'numeric'});
 
                 const itemHTML = `
@@ -499,12 +525,12 @@
             }
         }
 
-        // Live Feed Updates Ticker loop state every 15 seconds
+        // Live Feed Updates Ticker loop state every 20 seconds
         setInterval(() => {
             if(document.getElementById('homeView').style.display === 'block') {
                 generateLiveMockWithdrawals();
             }
-        }, 15000);
+        }, 20000);
 
 
         function switchAuth(targetView) {
@@ -982,7 +1008,6 @@
             switchAuth('registerView');
         });
 
-        // ================= PWA SERVICE WORKER REGISTRATION CODE =================
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
