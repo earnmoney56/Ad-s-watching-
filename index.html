@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ACM Global - Earning App</title>
+    
+    <!-- PWA Manifest & Mobile Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="ACM Global">
+
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
@@ -315,7 +323,7 @@
 
     </div>
 
-    <!-- ================= FIREBASE SDK INTEGRATION ================= -->
+    <!-- ================= FIREBASE & PWA SCRIPT SYSTEM ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -857,6 +865,19 @@
             }
             switchAuth('registerView');
         });
+
+        // ================= PWA SERVICE WORKER REGISTRATION CODE =================
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then((reg) => {
+                        console.log('PWA Service Worker registered successfully:', reg.scope);
+                    })
+                    .catch((err) => {
+                        console.log('PWA Service Worker registration failed:', err);
+                    });
+            });
+        }
     </script>
 </body>
 </html>
