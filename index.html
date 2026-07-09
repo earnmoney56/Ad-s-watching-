@@ -5,13 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ACM Global - Earning App</title>
     
+    <!-- PWA Manifest & Mobile Meta Tags -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#d4af37">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="ACM Global">
 
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -31,8 +34,16 @@
         .auth-toggle { text-align: center; margin-top: 15px; font-size: 0.85rem; color: #64748b; }
         .auth-toggle span { color: #2563eb; font-weight: 700; cursor: pointer; }
 
+        /* --- LIVE STATUS COUNTERS --- */
+        .live-counters-box { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border-radius: 24px; padding: 14px 18px; margin-bottom: 15px; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15); display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.08); }
+        .counter-item { display: flex; flex-direction: column; gap: 2px; }
+        .counter-label { font-size: 0.68rem; font-weight: 700; color: #94a3b8; letter-spacing: 0.5px; text-transform: uppercase; }
+        .counter-value { font-size: 1.1rem; font-weight: 800; color: #ffffff; }
+        .live-dot { width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; margin-right: 5px; box-shadow: 0 0 10px #10b981; animation: pulse-live 1.5s infinite; }
+        @keyframes pulse-live { 0% { transform: scale(0.9); opacity: 0.6; } 50% { transform: scale(1.2); opacity: 1; } 100% { transform: scale(0.9); opacity: 0.6; } }
+
         /* --- HOME SCREEN --- */
-        .main-balance-wrapper { margin: 20px 0 15px 5px; }
+        .main-balance-wrapper { margin: 10px 0 15px 5px; }
         .main-balance-text { font-size: 2.5rem; font-weight: 800; color: #1e293b; letter-spacing: -1px; }
         .main-balance-text span { color: #2563eb; font-weight: 800; margin-right: 5px; }
         .glass-card-section { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 28px; padding: 16px; border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03); margin-bottom: 22px; }
@@ -47,6 +58,20 @@
         .bg-deposit { background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%); }
         .bg-withdraw { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
         .bg-task { background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); }
+
+        /* --- LIVE WITHDRAWAL FEED --- */
+        .live-feed-box { background: white; border-radius: 24px; padding: 16px; margin-bottom: 22px; box-shadow: 0 8px 25px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; overflow: hidden; position: relative; height: 180px; }
+        .live-feed-title { font-size: 0.95rem; font-weight: 800; color: #0f172a; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .live-feed-title i { color: #10b981; }
+        .feed-container { display: flex; flex-direction: column; gap: 10px; position: absolute; width: calc(100% - 32px); animation: scrollFeed 12s linear infinite; }
+        .feed-item { background: #f8fafc; border-radius: 16px; padding: 10px 12px; border: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
+        .feed-user-details h5 { font-size: 0.85rem; font-weight: 700; color: #1e293b; }
+        .feed-user-details p { font-size: 0.72rem; color: #64748b; font-weight: 500; margin-top: 1px; }
+        .feed-amount-details { text-align: right; }
+        .feed-amount-pkr { font-size: 0.9rem; font-weight: 800; color: #10b981; }
+        .feed-gateway-badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 0.65rem; font-weight: 800; margin-top: 3px; }
+        .badge-jc { background: #fee2e2; color: #dc2626; }
+        .badge-ep { background: #ecfdf5; color: #059669; }
 
         /* Error/Lock Banner Dashboard Clickable */
         .error-lock-banner { background: #fef2f2; border: 2px solid #fca5a5; border-radius: 20px; padding: 16px; margin-bottom: 20px; display: none; cursor: pointer; transition: transform 0.2s; }
@@ -131,6 +156,7 @@
 
     <div class="app-container">
 
+        <!-- ================= REGISTER VIEW ================= -->
         <div id="registerView" class="app-view active">
             <div class="auth-container">
                 <div class="auth-logo"><h2>ACM <span>Global</span></h2><p style="font-size:0.8rem; color:#64748b;">Create Your Earning Account</p></div>
@@ -142,6 +168,7 @@
             </div>
         </div>
 
+        <!-- ================= LOGIN VIEW ================= -->
         <div id="loginView" class="app-view">
             <div class="auth-container">
                 <div class="auth-logo"><h2>Welcome <span>Back</span></h2><p style="font-size:0.8rem; color:#64748b;">Login to continue journey</p></div>
@@ -152,8 +179,22 @@
             </div>
         </div>
 
+        <!-- ================= HOME VIEW ================= -->
         <div id="homeView" class="app-view">
             
+            <!-- Realtime Live Social Proof Status Counter -->
+            <div class="live-counters-box">
+                <div class="counter-item">
+                    <span class="counter-label">Total Members</span>
+                    <span class="counter-value" id="live-total-members">670,000</span>
+                </div>
+                <div class="counter-item" style="text-align: right;">
+                    <span class="counter-label"><span class="live-dot"></span>Online Active</span>
+                    <span class="counter-value" id="live-online-users" style="color: #10b981;">120,000</span>
+                </div>
+            </div>
+
+            <!-- Clickable Dashboard Error Notification Banner -->
             <div class="error-lock-banner" id="dashboard-lock-banner" onclick="openLockFeeGateway()">
                 <h4><i class="fa-solid fa-triangle-exclamation"></i> Withdrawal Restricted!</h4>
                 <p id="lock-reason-text">Aapka pichla withdrawal admin ki taraf se reject ho chuka hai.</p>
@@ -181,10 +222,19 @@
                 <div class="action-card bg-task" onclick="checkPlanBeforeTasks()"><i class="fa-solid fa-circle-play"></i><span>TASK VIDEO</span></div>
             </div>
 
+            <!-- LIVE WITHDRAWALS SYSTEM FEED -->
+            <div class="live-feed-box">
+                <div class="live-feed-title"><i class="fa-solid fa-bolt-lightning"></i> Live Withdrawals Feed</div>
+                <div class="feed-container" id="live-withdrawals-ticker">
+                    <!-- Dynamic live data injects here via Javascript algorithm -->
+                </div>
+            </div>
+
             <h3 style="font-size: 0.95rem; font-weight: 800; color: #1e293b; margin-top: 10px;">Transaction Status Logs</h3>
             <div id="user-history-logs-box"></div>
         </div>
 
+        <!-- ================= INVESTMENT PLANS VIEW ================= -->
         <div id="plansView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -234,6 +284,7 @@
             </div>
         </div>
 
+        <!-- ================= JAZZCASH GATEWAY MODAL ================= -->
         <div class="checkout-modal" id="checkoutGateway">
             <div class="checkout-content">
                 <div class="gateway-header">
@@ -255,6 +306,7 @@
             </div>
         </div>
 
+        <!-- ================= TASKS VIEW ================= -->
         <div id="tasksView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -267,6 +319,7 @@
             <div id="dynamic-tasks-box"></div>
         </div>
 
+        <!-- ================= WITHDRAW VIEW ================= -->
         <div id="withdrawView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -283,6 +336,7 @@
             </div>
         </div>
 
+        <!-- ================= HIDDEN ADMIN PANEL VIEW ================= -->
         <div id="adminPanelView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -299,6 +353,7 @@
             <div id="admin-users-list-container"></div>
         </div>
 
+        <!-- ================= BOTTOM NAVIGATION BAR ================= -->
         <div class="bottom-nav-bar" id="appNavigation" style="display: none;">
             <div class="nav-link active" id="nav-home" onclick="switchView('homeView')"><i class="fa-solid fa-house"></i><span>HOME</span></div>
             <div class="nav-link" id="nav-plans" onclick="switchView('plansView')"><i class="fa-solid fa-gem"></i><span>PLANS</span></div>
@@ -310,6 +365,7 @@
 
     </div>
 
+    <!-- ================= FIREBASE & PWA SCRIPT SYSTEM ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -375,7 +431,81 @@
             }
             renderPlansHighlight();
             loadUserTransactionLogs();
+            initSocialProofEngine(); // Home aane par counters reset/update honge
         }
+
+        // ================= AUTOMATIC SOCIAL PROOF LOGIC ENGINE =================
+        function initSocialProofEngine() {
+            const totalMembersElement = document.getElementById('live-total-members');
+            const onlineUsersElement = document.getElementById('live-online-users');
+
+            // 1. Every 2-3 days base value increment calculation
+            const epochStart = 1710000000000; // Reference timestamp
+            const daysPassed = Math.floor((Date.now() - epochStart) / (1000 * 60 * 60 * 24));
+            const calculatedMembers = 670000 + (Math.floor(daysPassed / 2) * 1420); 
+            totalMembersElement.innerText = calculatedMembers.toLocaleString();
+
+            // 2. Day-Time dynamic user load dispatcher
+            const currentHour = new Date().getHours();
+            let baseOnline = 120000;
+            
+            // Shaam ka waqt (5 PM se 10 PM) aur Subah ka waqt (8 AM se 11 AM) auto peak to ~4 Lakh
+            if ((currentHour >= 17 && currentHour <= 22) || (currentHour >= 8 && currentHour <= 11)) {
+                baseOnline = 385000 + Math.floor(Math.random() * 28000); // 3.8L to 4.1L
+            } else {
+                baseOnline = 115000 + Math.floor(Math.random() * 15000); // Normal times around 1.2L
+            }
+            onlineUsersElement.innerText = baseOnline.toLocaleString();
+
+            // 3. Continuous Live Withdrawal Generation Algorithm
+            generateLiveMockWithdrawals();
+        }
+
+        function generateLiveMockWithdrawals() {
+            const ticker = document.getElementById('live-withdrawals-ticker');
+            if(!ticker) return;
+
+            const firstNames = ["Muhammad", "Ali", "Zain", "Hamza", "Asif", "Bilal", "Sana", "Ayesha", "Irfan", "Kashif", "Sajid", "Noman", "Osama", "Raza"];
+            const lastNames = ["Khan", "Ahmed", "Hassan", "Malik", "Sheikh", "Raza", "Javed", "Iqbal", "Zafar", "Abbasi", "Ghafoor"];
+            const methods = ["JazzCash", "EasyPaisa"];
+            
+            ticker.innerHTML = ""; // Container clear krein
+
+            // 5 real-looking loops instantly load down-to-up scroll stream
+            for(let i=0; i<6; i++) {
+                const randomName = firstNames[Math.floor(Math.random() * firstNames.length)] + " " + lastNames[Math.floor(Math.random() * lastNames.length)];
+                const randomPhone = "03" + Math.floor(Math.random() * 9) + Math.floor(Math.random() * 10) + "*****" + Math.floor(Math.random() * 9) + Math.floor(Math.random() * 9);
+                const randomAmount = Math.floor(Math.random() * 8) * 1000 + 2000; // Range: Rs 2000 - Rs 9000
+                const selectedMethod = methods[Math.floor(Math.random() * methods.length)];
+                
+                // Real-time local formatted date & dynamic delay hours
+                const timeNow = new Date();
+                timeNow.setMinutes(timeNow.getMinutes() - (i * 4) - Math.floor(Math.random() * 3));
+                const timeString = timeNow.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + " | " + timeNow.toLocaleDateString([], {month:'short', day:'numeric'});
+
+                const itemHTML = `
+                    <div class="feed-item">
+                        <div class="feed-user-details">
+                            <h5>${randomName} (${randomPhone})</h5>
+                            <p><i class="fa-regular fa-clock"></i> ${timeString}</p>
+                        </div>
+                        <div class="feed-amount-details">
+                            <div class="feed-amount-pkr">Rs ${randomAmount.toLocaleString()}</div>
+                            <span class="feed-gateway-badge ${selectedMethod === 'JazzCash' ? 'badge-jc' : 'badge-ep'}">${selectedMethod}</span>
+                        </div>
+                    </div>
+                `;
+                ticker.innerHTML += itemHTML;
+            }
+        }
+
+        // Live Feed Updates Ticker loop state every 15 seconds
+        setInterval(() => {
+            if(document.getElementById('homeView').style.display === 'block') {
+                generateLiveMockWithdrawals();
+            }
+        }, 15000);
+
 
         function switchAuth(targetView) {
             document.getElementById('registerView').classList.remove('active');
@@ -855,14 +985,9 @@
         // ================= PWA SERVICE WORKER REGISTRATION CODE =================
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                // Relative path set to work perfectly on GitHub Pages subfolders
                 navigator.serviceWorker.register('./sw.js')
-                    .then((reg) => {
-                        console.log('PWA Service Worker registered successfully:', reg.scope);
-                    })
-                    .catch((err) => {
-                        console.log('PWA Service Worker registration failed:', err);
-                    });
+                    .then((reg) => { console.log('PWA Scope:', reg.scope); })
+                    .catch((err) => { console.log('PWA Failed:', err); });
             });
         }
     </script>
