@@ -71,14 +71,14 @@
         .acc-info-row span:last-child { color: #1e293b; font-weight: 800; }
         .close-modal-btn { background: #f1f5f9; color: #64748b; border: none; width: 100%; padding: 12px; border-radius: 14px; font-weight: 700; cursor: pointer; margin-top: 8px; }
 
-        /* --- VIDEO TASKS CARDS --- */
-        .task-card { background: white; border-radius: 24px; padding: 16px; margin-bottom: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; }
-        .task-info h3 { font-size: 1rem; color: #1e293b; font-weight: 700; margin-bottom: 4px; }
-        .task-info p { font-size: 0.75rem; color: #10b981; font-weight: 700; margin-bottom: 12px; }
-        .video-wrapper { width: 100%; height: 220px; background: #000; border-radius: 18px; overflow: hidden; position: relative; }
+        /* --- VIDEO TASKS CARDS (OPTIMIZED ONE BY ONE) --- */
+        .task-card { background: white; border-radius: 24px; padding: 20px; margin-bottom: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; text-align: center; }
+        .task-info h3 { font-size: 1.2rem; color: #1e293b; font-weight: 800; margin-bottom: 6px; }
+        .task-info p { font-size: 0.9rem; color: #10b981; font-weight: 700; margin-bottom: 15px; }
+        .video-wrapper { width: 100%; height: 240px; background: #000; border-radius: 20px; overflow: hidden; position: relative; margin-bottom: 15px; }
         iframe { width: 100%; height: 100%; border: none; }
-        .timer-badge { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.8); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; z-index: 5; }
-        .claim-btn { width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 14px; border-radius: 16px; font-weight: 800; font-size: 1rem; cursor: pointer; margin-top: 12px; display: none; }
+        .timer-badge { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.85); color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; z-index: 5; border: 1px solid rgba(255,255,255,0.2); }
+        .claim-btn { width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 16px; border-radius: 16px; font-weight: 800; font-size: 1.05rem; cursor: pointer; display: none; box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3); }
 
         /* --- FORM CONTROLS --- */
         .input-group { margin-bottom: 18px; }
@@ -153,7 +153,7 @@
                         <div class="plan-row"><p class="p-label">Daily Videos</p><p class="p-val">30 Videos</p></div>
                         <div class="plan-row"><p class="p-label">Plan Duration</p><p class="p-val">30 Days</p></div>
                     </div>
-                    <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 1', 1000, 1500, 30)">BUY PLAN</button>
+                    <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 1', 1000, 30)">BUY PLAN</button>
                 </div>
 
                 <div class="plan-card" id="p2">
@@ -163,7 +163,7 @@
                         <div class="plan-row"><p class="p-label">Daily Videos</p><p class="p-val">40 Videos</p></div>
                         <div class="plan-row"><p class="p-label">Plan Duration</p><p class="p-val">30 Days</p></div>
                     </div>
-                    <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 2', 1500, 2000, 40)">BUY PLAN</button>
+                    <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 2', 1500, 40)">BUY PLAN</button>
                 </div>
 
                 <div class="plan-card" id="p3">
@@ -173,7 +173,7 @@
                         <div class="plan-row"><p class="p-label">Daily Videos</p><p class="p-val">60 Videos</p></div>
                         <div class="plan-row"><p class="p-label">Plan Duration</p><p class="p-val">30 Days</p></div>
                     </div>
-                    <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 3', 2000, 3000, 60)">BUY PLAN</button>
+                    <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 3', 2000, 60)">BUY PLAN</button>
                 </div>
 
                 <div class="plan-card" id="p4">
@@ -183,7 +183,7 @@
                         <div class="plan-row"><p class="p-label">Daily Videos</p><p class="p-val">80 Videos</p></div>
                         <div class="plan-row"><p class="p-label">Plan Duration</p><p class="p-val">30 Days</p></div>
                     </div>
-                    <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 4', 3000, 4000, 80)">BUY PLAN</button>
+                    <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 4', 3000, 80)">BUY PLAN</button>
                 </div>
             </div>
         </div>
@@ -224,7 +224,11 @@
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
                 <h1 class="screen-title">Daily Video Tasks</h1>
             </div>
-            <div style="margin-bottom: 12px; font-weight:700; color:#2563eb; font-size:0.9rem;" id="task-limit-status"></div>
+            
+            <div style="margin-bottom: 15px; display: flex; justify-content: space-between; font-weight:700; color:#2563eb; font-size:0.9rem;">
+                <span id="task-progress-status">Video: 0/0</span>
+                <span>Reward: Rs 50.00</span>
+            </div>
 
             <div id="dynamic-tasks-box">
                 </div>
@@ -261,9 +265,8 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // ✅ Updated with your real configuration keys from the screenshot
         const firebaseConfig = {
-            apiKey: "AIzaSyDLjMjhspc_1cvoo3vLaDyW1...", // Safely truncated for security display
+            apiKey: "AIzaSyDLjMjhspc_1cvoo3vLaDyW1...", 
             authDomain: "new-website-6d291.firebaseapp.com",
             projectId: "new-website-6d291",
             storageBucket: "new-website-6d291.appspot.com",
@@ -272,14 +275,13 @@
             measurementId: "G-LZFEQN2NX2"
         };
 
-        // Initialize Firebase & Firestore
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
         let currentSession = null;
         let pendingCheckout = null;
+        let currentVideoIndex = 1; // Tracks current individual video active
 
-        // Global functions binding for HTML inline events
         window.switchAuth = switchAuth;
         window.handleRegister = handleRegister;
         window.handleLogin = handleLogin;
@@ -288,7 +290,7 @@
         window.openCheckoutGateway = openCheckoutGateway;
         window.closeCheckoutGateway = closeCheckoutGateway;
         window.validateAndActivatePlan = validateAndActivatePlan;
-        window.claimDynamicReward = claimDynamicReward;
+        window.claimRewardAndNext = claimRewardAndNext;
         window.submitWithdrawal = submitWithdrawal;
         window.handleLogout = handleLogout;
 
@@ -308,7 +310,6 @@
             document.getElementById(targetView).classList.add('active');
         }
 
-        // --- Firebase Registration ---
         async function handleRegister() {
             const user = document.getElementById('reg-username').value.trim();
             const phone = document.getElementById('reg-phone').value.trim();
@@ -333,7 +334,6 @@
                     activePlanPrice: 0, 
                     activePlanName: "", 
                     dailyVideosLimit: 0, 
-                    rewardPerVideo: 0, 
                     total_withdraw: 0, 
                     total_deposit: 0 
                 };
@@ -345,12 +345,10 @@
                 alert("Account registered successfully! 🎉");
                 enterAppDashboard();
             } catch (error) {
-                console.error("Error registering user: ", error);
-                alert("Registration failed. Make sure Firestore Rules are set to true!");
+                alert("Registration failed. Make sure Firestore Rules are published to true!");
             }
         }
 
-        // --- Firebase Login ---
         async function handleLogin() {
             const phone = document.getElementById('login-phone').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
@@ -372,7 +370,6 @@
                 alert(`Welcome back, ${currentSession.username}! 👋`);
                 enterAppDashboard();
             } catch (error) {
-                console.error("Error logging in: ", error);
                 alert("Login Error!");
             }
         }
@@ -402,7 +399,7 @@
                 const userRef = doc(db, "users", currentSession.phone);
                 await updateDoc(userRef, currentSession);
             } catch (error) {
-                console.error("Error updating database: ", error);
+                console.error(error);
             }
         }
 
@@ -423,15 +420,17 @@
 
         function checkPlanBeforeTasks() {
             if(!currentSession.activePlanName || currentSession.activePlanPrice === 0) {
+                alert("Pehle koi plan buy karein!");
                 switchView('plansView');
             } else {
+                currentVideoIndex = 1; // Reset to first video when view opens
                 switchView('tasksView');
-                buildDynamicTaskCards();
+                loadSingleVideoTask();
             }
         }
 
-        function openCheckoutGateway(name, price, totalEarning, videosCount) {
-            pendingCheckout = { name: name, price: price, totalEarning: totalEarning, videosCount: videosCount };
+        function openCheckoutGateway(name, price, videosCount) {
+            pendingCheckout = { name: name, price: price, videosCount: videosCount };
             document.getElementById('checkout-plan-name').innerText = `Activate ${name} - Rs ${price}`;
             document.getElementById('pay-amount').value = "";
             document.getElementById('pay-screenshot').value = "";
@@ -453,19 +452,18 @@
             }
 
             if(enteredAmount < pendingCheckout.price) {
-                alert(`Transaction Rejected! Aapne Rs ${enteredAmount} enter kiya jo ke kam hai. Is plan ki poori payment Rs ${pendingCheckout.price} banti hai.`);
+                alert(`Transaction Rejected! Kam payment par account active nahi hoga.`);
                 return;
             }
 
             currentSession.activePlanPrice = pendingCheckout.price;
             currentSession.activePlanName = pendingCheckout.name;
             currentSession.dailyVideosLimit = pendingCheckout.videosCount;
-            currentSession.rewardPerVideo = parseFloat(pendingCheckout.totalEarning / pendingCheckout.videosCount / 30);
             currentSession.total_deposit += pendingCheckout.price;
 
             await saveCurrentSessionToDatabase();
             closeCheckoutGateway();
-            alert(`🎉 Screenshot Submitted! Aapka ${currentSession.activePlanName} active ho gaya hai.`);
+            alert(`🎉 ${currentSession.activePlanName} successfully activated!`);
             switchView('homeView');
         }
 
@@ -489,65 +487,76 @@
             }
         }
 
-        function buildDynamicTaskCards() {
+        // ================= FAST ONE-BY-ONE VIDEO LOGIC =================
+        function loadSingleVideoTask() {
             const container = document.getElementById('dynamic-tasks-box');
-            container.innerHTML = ""; 
+            const progressStatus = document.getElementById('task-progress-status');
             
-            document.getElementById('task-limit-status').innerText = `Your Current Plan Limit: ${currentSession.dailyVideosLimit} Daily Tasks Video`;
-            const youtubePool = ["dQw4w9WgXcQ", "3JZ_D3ELwOQ", "tgbNymZ7vqY", "2Vv-BfVoq4g", "kJQP7kiw5Fk"];
-
-            for (let i = 1; i <= currentSession.dailyVideosLimit; i++) {
-                let randomVid = youtubePool[i % youtubePool.length];
-                let reward = currentSession.rewardPerVideo.toFixed(2);
-
-                let cardHtml = `
-                    <div class="task-card" id="dynamicCard${i}">
-                        <div class="task-info">
-                            <h3>Premium Video Task #${i}</h3>
-                            <p>Reward: Rs ${reward}</p>
-                        </div>
-                        <div class="video-wrapper">
-                            <div class="timer-badge" id="dynBadge${i}">30s</div>
-                            <iframe id="dynVideo${i}" src="https://www.youtube.com/embed/${randomVid}?enablejsapi=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-                        </div>
-                        <button class="claim-btn" id="dynClaimBtn${i}" onclick="claimDynamicReward('dynamicCard${i}', ${reward})">CLAIM RS ${reward} 🎉</button>
+            // Check if user has finished all videos for the day
+            if (currentVideoIndex > currentSession.dailyVideosLimit) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding: 40px 10px; color:#64748b;">
+                        <i class="fa-solid fa-circle-check" style="font-size:3.5rem; color:#10b981; margin-bottom:15px;"></i>
+                        <h2 style="color:#0f172a; margin-bottom:8px;">All Tasks Completed!</h2>
+                        <p>Aapke aaj ke plan ki saari videos khatam ho chuki hain. Kal dubara check karein!</p>
                     </div>
                 `;
-                container.innerHTML += cardHtml;
+                progressStatus.innerText = `Completed: All Done!`;
+                return;
             }
 
-            for (let i = 1; i <= currentSession.dailyVideosLimit; i++) {
-                setTimeout(() => { startYouTubeTimer(`dynBadge${i}`, `dynClaimBtn${i}`); }, 400);
-            }
+            progressStatus.innerText = `Video: ${currentVideoIndex} / ${currentSession.dailyVideosLimit}`;
+            
+            // Pool of premium random educational/marketing youtube videos
+            const youtubePool = ["dQw4w9WgXcQ", "3JZ_D3ELwOQ", "tgbNymZ7vqY", "2Vv-BfVoq4g", "kJQP7kiw5Fk"];
+            let randomVidId = youtubePool[currentVideoIndex % youtubePool.length];
+
+            // Render EXACTLY 1 single video item to optimize mobile performance
+            container.innerHTML = `
+                <div class="task-card">
+                    <div class="task-info">
+                        <h3>Premium Task Video #${currentVideoIndex}</h3>
+                        <p style="color: #2563eb;">Reward On Complete: Rs 50.00</p>
+                    </div>
+                    <div class="video-wrapper">
+                        <div class="timer-badge" id="videoTimerCountdown">30s</div>
+                        <iframe src="https://www.youtube.com/embed/${randomVidId}?autoplay=1&controls=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                    </div>
+                    <button class="claim-btn" id="claimRewardActionBtn" onclick="claimRewardAndNext()">CLAIM RS 50.00 REWARD 🎉</button>
+                </div>
+            `;
+
+            // Trigger the 30 second countdown
+            startTaskTimer();
         }
 
-        function startYouTubeTimer(badgeId, claimBtnId) {
-            const bElement = document.getElementById(badgeId);
-            const cElement = document.getElementById(claimBtnId);
-            
-            if (!bElement || bElement.getAttribute('data-started') === 'true') return;
-            bElement.setAttribute('data-started', 'true');
-
+        function startTaskTimer() {
             let timeRemaining = 30;
-            const timer = setInterval(() => {
+            const badge = document.getElementById('videoTimerCountdown');
+            const claimBtn = document.getElementById('claimRewardActionBtn');
+
+            const countdownInterval = setInterval(() => {
                 timeRemaining--;
-                if(bElement) bElement.innerText = timeRemaining + "s";
-                
+                if(badge) badge.innerText = timeRemaining + "s";
+
                 if (timeRemaining <= 0) {
-                    clearInterval(timer);
-                    if(bElement) bElement.style.display = 'none';
-                    if(cElement) cElement.style.display = 'block'; 
+                    clearInterval(countdownInterval);
+                    if(badge) badge.style.display = 'none';
+                    if(claimBtn) claimBtn.style.display = 'block'; // Shows reward button exactly after 30 seconds
                 }
             }, 1000);
         }
 
-        async function claimDynamicReward(cardId, prizeAmount) {
-            currentSession.balance += parseFloat(prizeAmount);
+        async function claimRewardAndNext() {
+            // Add Rs 50 straight to account wallet balance
+            currentSession.balance += 50.00;
             await saveCurrentSessionToDatabase();
-            updateUI();
-            alert(`Rs ${parseFloat(prizeAmount).toFixed(2)} wallet mein successfully credit ho gaye! 🎉`);
-            const element = document.getElementById(cardId);
-            if(element) element.remove();
+            
+            alert(`Rs 50.00 successfully added to your wallet! 💰`);
+            
+            // Move onto next video logic seamlessly
+            currentVideoIndex++;
+            loadSingleVideoTask();
         }
 
         async function submitWithdrawal() {
@@ -569,7 +578,6 @@
             switchView('homeView');
         }
 
-        // Auto Login Session Verification from Firestore Database
         window.addEventListener('DOMContentLoaded', async () => {
             const savedPhone = sessionStorage.getItem('acm_user_phone');
             if (savedPhone) {
@@ -582,7 +590,7 @@
                         return;
                     }
                 } catch (e) {
-                    console.error("Auto-login failed:", e);
+                    console.error(e);
                 }
             }
             switchAuth('registerView');
