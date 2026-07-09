@@ -132,6 +132,14 @@
         select, input { width: 100%; padding: 14px; border-radius: 16px; border: 1px solid #cbd5e1; font-size: 0.95rem; font-weight: 600; color: #1e293b; background: #f8fafc; outline: none; }
         .submit-btn { width: 100%; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; border: none; padding: 16px; border-radius: 18px; font-size: 1rem; font-weight: 800; cursor: pointer; margin-top: 10px; }
 
+        /* TRANSACTION LOGS STYLING FIX */
+        #user-history-logs-box { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+        .log-item { background: white; padding: 14px; border-radius: 16px; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+        .status-badge { padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; }
+        .status-pending { background: #fef3c7; color: #d97706; }
+        .status-approved { background: #dcfce7; color: #15803d; }
+        .status-rejected { background: #fee2e2; color: #b91c1c; }
+
         /* --- BOTTOM NAVIGATION BAR --- */
         .bottom-nav-bar { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 440px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-radius: 35px; display: flex; justify-content: space-between; align-items: center; padding: 10px 24px; box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08); z-index: 9999; border: 1px solid rgba(255, 255, 255, 0.8); }
         .nav-link { display: flex; flex-direction: column; align-items: center; color: #94a3b8; font-size: 0.65rem; font-weight: 700; cursor: pointer; }
@@ -278,7 +286,11 @@
                     <div class="acc-info-row"><span>Account Name:</span><span>Muhammad Israr khan</span></div>
                 </div>
                 <div class="input-group"><label id="payment-amount-label">SENT AMOUNT (PKR)</label><input type="number" id="pay-amount"></div>
-                <div class="input-group"><label>TRANSACTION SCREENSHOT</label><input type="file" id="pay-screenshot" accept="image/*"></div>
+                <div class="input-group">
+                    <label>TRANSACTION SCREENSHOT</label>
+                    <input type="file" id="pay-screenshot" accept="image/*" onchange="document.getElementById('file-chosen-alert').innerText = 'File selected: ' + this.files[0].name">
+                    <p id="file-chosen-alert" style="font-size: 0.75rem; color: #2563eb; margin-top: 4px; font-weight: 600;"></p>
+                </div>
                 <button class="submit-btn" style="background:linear-gradient(135deg, #ea580c 0%, #c2410c 100%);" onclick="submitDepositToAdminQueue()">Submit Verification</button>
                 <button class="close-modal-btn" onclick="closeCheckoutGateway()">Cancel</button>
             </div>
@@ -351,11 +363,11 @@
 
         function updateUI() {
             if(!currentSession) return;
-            document.getElementById('rs-balance').innerText = currentSession.balance.toFixed(2);
-            document.getElementById('acc-balance').innerText = currentSession.balance.toFixed(2);
+            document.getElementById('rs-balance').innerText = parseFloat(currentSession.balance || 0).toFixed(2);
+            document.getElementById('acc-balance').innerText = parseFloat(currentSession.balance || 0).toFixed(2);
             document.getElementById('active-plans').innerText = currentSession.activePlanName ? currentSession.activePlanName : "None";
-            document.getElementById('total-withdraw').innerText = currentSession.total_withdraw.toFixed(2);
-            document.getElementById('total-deposit').innerText = currentSession.total_deposit.toFixed(2);
+            document.getElementById('total-withdraw').innerText = parseFloat(currentSession.total_withdraw || 0).toFixed(2);
+            document.getElementById('total-deposit').innerText = parseFloat(currentSession.total_deposit || 0).toFixed(2);
             
             const banner = document.getElementById('dashboard-lock-banner');
             if(currentSession.isLocked === true) {
@@ -374,7 +386,6 @@
             return Math.floor(1000 + Math.random() * 9000).toString();
         }
 
-        // ================= REGISTER FLOW =================
         async function triggerRegisterOTPFlow() {
             const phone = document.getElementById('reg-phone').value.trim();
             const user = document.getElementById('reg-username').value.trim();
@@ -416,7 +427,6 @@
             } catch (error) { alert("Registration failed!"); }
         }
 
-        // ================= LOGIN FLOW =================
         async function triggerLoginOTPFlow() {
             const phone = document.getElementById('login-phone').value.trim();
             const enteredName = document.getElementById('login-username').value.trim();
@@ -461,7 +471,6 @@
             } catch (error) { alert("Login Error!"); }
         }
 
-        // ================= FORGOT PASSWORD FLOW =================
         async function triggerForgotOTPFlow() {
             const phone = document.getElementById('forgot-phone').value.trim();
 
@@ -515,15 +524,9 @@
 
         function switchAuth(targetView) {
             resetAuthStates();
-            document.getElementById('registerView').classList.remove('active');
-            document.getElementById('loginView').classList.remove('active');
-            document.getElementById('forgotView').classList.remove('active');
-            
             document.getElementById('registerView').style.display = 'none';
             document.getElementById('loginView').style.display = 'none';
             document.getElementById('forgotView').style.display = 'none';
-
-            document.getElementById(targetView).classList.add('active');
             document.getElementById(targetView).style.display = 'block';
         }
 
@@ -636,6 +639,8 @@
             document.getElementById('checkout-plan-name').innerText = `Activate ${name} - Rs ${price}`;
             document.getElementById('pay-amount').value = price;
             document.getElementById('checkoutGateway').style.display = 'flex';
+            document.getElementById('file-chosen-alert').innerText = ""; 
+            document.getElementById('pay-screenshot').value = "";
         }
 
         function openLockFeeGateway() {
@@ -644,6 +649,8 @@
             document.getElementById('checkout-plan-name').innerText = `Solve Error - Pay Rs ${currentSession.lockFee}`;
             document.getElementById('pay-amount').value = currentSession.lockFee;
             document.getElementById('checkoutGateway').style.display = 'flex';
+            document.getElementById('file-chosen-alert').innerText = "";
+            document.getElementById('pay-screenshot').value = "";
         }
 
         function closeCheckoutGateway() {
@@ -654,7 +661,7 @@
         async function submitDepositToAdminQueue() {
             const enteredAmount = parseFloat(document.getElementById('pay-amount').value);
             const fileInput = document.getElementById('pay-screenshot').files[0];
-            if(!enteredAmount || !fileInput) { alert("Meherbani karke screenshot attach karein!"); return; }
+            if(!enteredAmount || !fileInput) { alert("Meherbani karke screenshot attach karein aur amount verify karein!"); return; }
 
             const reader = new FileReader();
             reader.onloadend = async function () {
@@ -668,12 +675,15 @@
                         amountSent: enteredAmount,
                         screenshotData: reader.result,
                         type: pendingCheckout.type,
-                        status: "pending"
+                        status: "pending",
+                        timestamp: new Date().getTime()
                     });
                     closeCheckoutGateway();
                     alert(`🎉 Verification screenshot submitted successfully! Review ka wait karein.`);
                     switchView('homeView');
-                } catch (e) {}
+                } catch (e) {
+                    alert("Submission failed. Code/Database connection check karein.");
+                }
             }
             reader.readAsDataURL(fileInput);
         }
@@ -733,7 +743,7 @@
         }
 
         async function claimRewardAndNext() {
-            currentSession.balance += 50.00;
+            currentSession.balance = parseFloat(currentSession.balance || 0) + 50.00;
             await saveCurrentSessionToDatabase();
             alert(`Rs 50.00 added!`);
             currentVideoIndex++;
@@ -741,30 +751,67 @@
         }
 
         async function submitWithdrawToAdminQueue() {
-            if(currentSession.isLocked === true) { alert(`⚠️ Restriction active.`); return; }
+            if(currentSession.isLocked === true) { alert(`⚠️ Withdrawal Restriction active.`); return; }
             const method = document.getElementById('method').value;
             const number = document.getElementById('acc-num').value.trim();
             const amount = parseFloat(document.getElementById('amount').value);
 
-            if(!number || !amount || amount < 2000 || amount > currentSession.balance) { alert("Check fields or balance!"); return; }
+            if(!number || !amount || amount < 2000) { alert("Minimum withdrawal Rs 2000 hona chahiye!"); return; }
+            if(amount > currentSession.balance) { alert("Aapka balance itna nahi hai!"); return; }
+
             try {
                 currentSession.balance -= amount;
+                currentSession.total_withdraw = parseFloat(currentSession.total_withdraw || 0) + amount;
                 await saveCurrentSessionToDatabase();
-                await addDoc(collection(db, "withdrawals"), { userPhone: currentSession.phone, username: currentSession.username, method: method, accountNumber: number, amount: amount, status: "pending" });
-                alert(`Request submitted!`);
+                await addDoc(collection(db, "withdrawals"), { 
+                    userPhone: currentSession.phone, 
+                    username: currentSession.username, 
+                    method: method, 
+                    accountNumber: number, 
+                    amount: amount, 
+                    status: "pending",
+                    timestamp: new Date().getTime()
+                });
+                alert(`Request submitted successfully!`);
                 switchView('homeView');
-            } catch (e) {}
+            } catch (e) {
+                alert("Withdrawal request error.");
+            }
         }
 
         async function loadUserTransactionLogs() {
             const container = document.getElementById('user-history-logs-box');
-            container.innerHTML = "";
+            container.innerHTML = "<p style='font-size:0.8rem;color:#64748b;'>Loading history logs...</p>";
             try {
                 const depSnap = await getDocs(collection(db, "deposits"));
+                let logsHtml = "";
                 depSnap.forEach(d => {
-                    if(d.data().userPhone === currentSession.phone) container.innerHTML += `<div class="log-item"><div><b>${d.data().planName}</b><br><small>Rs ${d.data().amountSent}</small></div><span class="status-badge status-${d.data().status}">${d.data().status.toUpperCase()}</span></div>`;
+                    const data = d.data();
+                    if(data.userPhone === currentSession.phone) {
+                        logsHtml += `
+                            <div class="log-item">
+                                <div><b>${data.planName || 'Deposit'}</b><br><small>Rs ${data.amountSent}</small></div>
+                                <span class="status-badge status-${data.status}">${data.status}</span>
+                            </div>`;
+                    }
                 });
-            } catch (err) {}
+                
+                const withSnap = await getDocs(collection(db, "withdrawals"));
+                withSnap.forEach(w => {
+                    const data = w.data();
+                    if(data.userPhone === currentSession.phone) {
+                        logsHtml += `
+                            <div class="log-item">
+                                <div><b>Withdraw (${data.method})</b><br><small>Rs ${data.amount}</small></div>
+                                <span class="status-badge status-${data.status}">${data.status}</span>
+                            </div>`;
+                    }
+                });
+
+                container.innerHTML = logsHtml ? logsHtml : "<p style='font-size:0.8rem;color:#64748b;padding:10px;'>No logs found.</p>";
+            } catch (err) {
+                container.innerHTML = "<p style='font-size:0.8rem;color:#ef4444;'>Error loading history logs.</p>";
+            }
         }
 
         window.addEventListener('DOMContentLoaded', async () => {
@@ -772,7 +819,11 @@
             if (savedPhone) {
                 try {
                     const userSnap = await getDoc(doc(db, "users", savedPhone));
-                    if (userSnap.exists()) { currentSession = userSnap.data(); enterAppDashboard(); return; }
+                    if (userSnap.exists()) { 
+                        currentSession = userSnap.data(); 
+                        enterAppDashboard(); 
+                        return; 
+                    }
                 } catch (e) {}
             }
             switchAuth('registerView');
