@@ -5,16 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ACM Global - Earning App</title>
     
-    <!-- PWA Manifest & Mobile Meta Tags -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#d4af37">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="ACM Global">
 
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -44,7 +41,7 @@
 
         /* --- HOME SCREEN --- */
         .main-balance-wrapper { margin: 10px 0 15px 5px; }
-        .main-balance-text { font-size: 2.5rem; font-weight: 800; color: #1e293b; letter-spacing: -1px; }
+        .main-balance-text { font-size: 2.5rem; font-weight: 800; color: #2563eb; letter-spacing: -1px; }
         .main-balance-text span { color: #2563eb; font-weight: 800; margin-right: 5px; }
         .glass-card-section { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-radius: 28px; padding: 16px; border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03); margin-bottom: 22px; }
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -60,7 +57,21 @@
         .bg-task { background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); }
 
         /* --- CLICKABLE LIVE WITHDRAWAL FEED --- */
-        .live-feed-box { background: white; border-radius: 24px; padding: 16px; margin-bottom: 22px; box-shadow: 0 8px 25px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; overflow: hidden; position: relative; height: 160px; transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+        .live-feed-box { 
+            background: #ffffff !important; 
+            border-radius: 24px; 
+            padding: 16px; 
+            margin: 20px 0; 
+            box-shadow: 0 8px 25px rgba(0,0,0,0.04); 
+            border: 1px solid #e2e8f0; 
+            overflow: hidden; 
+            position: relative; 
+            height: 160px; 
+            transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            cursor: pointer;
+            display: block !important;
+            width: 100%;
+        }
         .live-feed-box.expanded { height: 480px; overflow-y: auto; padding-bottom: 30px; }
         .live-feed-title { font-size: 0.95rem; font-weight: 800; color: #0f172a; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
         .live-feed-title-left { display: flex; align-items: center; gap: 8px; }
@@ -159,7 +170,6 @@
 
     <div class="app-container">
 
-        <!-- ================= REGISTER VIEW ================= -->
         <div id="registerView" class="app-view active">
             <div class="auth-container">
                 <div class="auth-logo"><h2>ACM <span>Global</span></h2><p style="font-size:0.8rem; color:#64748b;">Create Your Earning Account</p></div>
@@ -171,7 +181,6 @@
             </div>
         </div>
 
-        <!-- ================= LOGIN VIEW ================= -->
         <div id="loginView" class="app-view">
             <div class="auth-container">
                 <div class="auth-logo"><h2>Welcome <span>Back</span></h2><p style="font-size:0.8rem; color:#64748b;">Login to continue journey</p></div>
@@ -182,22 +191,19 @@
             </div>
         </div>
 
-        <!-- ================= HOME VIEW ================= -->
         <div id="homeView" class="app-view">
             
-            <!-- Realtime Live Social Proof Status Counter -->
             <div class="live-counters-box">
                 <div class="counter-item">
                     <span class="counter-label">Total Members</span>
-                    <span class="counter-value" id="live-total-members">670,000</span>
+                    <span class="counter-value" id="live-total-members">1,273,500</span>
                 </div>
                 <div class="counter-item" style="text-align: right;">
                     <span class="counter-label"><span class="live-dot"></span>Online Active</span>
-                    <span class="counter-value" id="live-online-users" style="color: #10b981;">120,000</span>
+                    <span class="counter-value" id="live-online-users" style="color: #10b981;">402,859</span>
                 </div>
             </div>
 
-            <!-- Clickable Dashboard Error Notification Banner -->
             <div class="error-lock-banner" id="dashboard-lock-banner" onclick="openLockFeeGateway()">
                 <h4><i class="fa-solid fa-triangle-exclamation"></i> Withdrawal Restricted!</h4>
                 <p id="lock-reason-text">Aapka pichla withdrawal admin ki taraf se reject ho chuka hai.</p>
@@ -225,22 +231,19 @@
                 <div class="action-card bg-task" onclick="checkPlanBeforeTasks()"><i class="fa-solid fa-circle-play"></i><span>TASK VIDEO</span></div>
             </div>
 
-            <!-- LIVE WITHDRAWALS SYSTEM FEED (Mukammal Clickable & 15 Names Expandable List) -->
             <div class="live-feed-box" id="live-feed-card" onclick="toggleLiveFeedExpand()">
                 <div class="live-feed-title">
                     <div class="live-feed-title-left"><i class="fa-solid fa-bolt-lightning"></i> Live Withdrawals Feed</div>
                     <div class="expand-indicator" id="feed-expand-text">Click to View All</div>
                 </div>
                 <div class="feed-container" id="live-withdrawals-ticker">
-                    <!-- 15 Dynamic live data names inject via JavaScript logic -->
-                </div>
+                    </div>
             </div>
 
-            <h3 style="font-size: 0.95rem; font-weight: 800; color: #1e293b; margin-top: 10px;">Transaction Status Logs</h3>
+            <h3 style="font-size: 0.95rem; font-weight: 800; color: #1e293b; margin-top: 15px; margin-bottom: 5px;">Transaction Status Logs</h3>
             <div id="user-history-logs-box"></div>
         </div>
 
-        <!-- ================= INVESTMENT PLANS VIEW ================= -->
         <div id="plansView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -290,7 +293,6 @@
             </div>
         </div>
 
-        <!-- ================= JAZZCASH GATEWAY MODAL ================= -->
         <div class="checkout-modal" id="checkoutGateway">
             <div class="checkout-content">
                 <div class="gateway-header">
@@ -312,7 +314,6 @@
             </div>
         </div>
 
-        <!-- ================= TASKS VIEW ================= -->
         <div id="tasksView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -325,7 +326,6 @@
             <div id="dynamic-tasks-box"></div>
         </div>
 
-        <!-- ================= WITHDRAW VIEW ================= -->
         <div id="withdrawView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -342,7 +342,6 @@
             </div>
         </div>
 
-        <!-- ================= HIDDEN ADMIN PANEL VIEW ================= -->
         <div id="adminPanelView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -359,7 +358,6 @@
             <div id="admin-users-list-container"></div>
         </div>
 
-        <!-- ================= BOTTOM NAVIGATION BAR ================= -->
         <div class="bottom-nav-bar" id="appNavigation" style="display: none;">
             <div class="nav-link active" id="nav-home" onclick="switchView('homeView')"><i class="fa-solid fa-house"></i><span>HOME</span></div>
             <div class="nav-link" id="nav-plans" onclick="switchView('plansView')"><i class="fa-solid fa-gem"></i><span>PLANS</span></div>
@@ -371,7 +369,6 @@
 
     </div>
 
-    <!-- ================= FIREBASE & PWA SCRIPT SYSTEM ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -463,17 +460,17 @@
             // 1. Every 2-3 days base value increment calculation
             const epochStart = 1710000000000;
             const daysPassed = Math.floor((Date.now() - epochStart) / (1000 * 60 * 60 * 24));
-            const calculatedMembers = 670000 + (Math.floor(daysPassed / 2) * 1420); 
+            const calculatedMembers = 1273500 + (Math.floor(daysPassed / 2) * 1420); 
             totalMembersElement.innerText = calculatedMembers.toLocaleString();
 
-            // 2. Day-Time dynamic user load dispatcher (Peak Target ~4 Lakh)
+            // 2. Day-Time dynamic user load dispatcher
             const currentHour = new Date().getHours();
-            let baseOnline = 120000;
+            let baseOnline = 402859;
             
             if ((currentHour >= 17 && currentHour <= 22) || (currentHour >= 8 && currentHour <= 11)) {
-                baseOnline = 385000 + Math.floor(Math.random() * 28000); 
+                baseOnline = 402859 + Math.floor(Math.random() * 28000); 
             } else {
-                baseOnline = 115000 + Math.floor(Math.random() * 15000); 
+                baseOnline = 155000 + Math.floor(Math.random() * 15000); 
             }
             onlineUsersElement.innerText = baseOnline.toLocaleString();
 
@@ -497,7 +494,7 @@
                 const randomName = firstNames[Math.floor(Math.random() * firstNames.length)] + " " + lastNames[Math.floor(Math.random() * lastNames.length)];
                 
                 // Real-looking Pakistani network codes
-                const netCodes = ["0300", "0301", "0302", "0303", "0304", "0306", "0312", "0313", "0315", "0321", "0333", "0334", "0345", "0346"];
+                const netCodes = ["0300", "0301", "0302", "0303", "0304", "0306", "0312", "0313", "0315", "0321", "0333", "0334", "0345", "0346", "0327"];
                 const randomCode = netCodes[Math.floor(Math.random() * netCodes.length)];
                 const randomPhone = randomCode + "*****" + Math.floor(10 + Math.random() * 90);
                 
