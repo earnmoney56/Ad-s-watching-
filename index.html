@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ACM Global - Earning App</title>
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -82,6 +80,13 @@
         .timer-badge { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.85); color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; z-index: 5; border: 1px solid rgba(255,255,255,0.2); }
         .claim-btn { width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 16px; border-radius: 16px; font-weight: 800; font-size: 1.05rem; cursor: pointer; display: none; box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3); }
 
+        /* --- ADMIN STYLES --- */
+        .admin-card { background: white; border-radius: 20px; padding: 15px; margin-bottom: 12px; border: 1px solid #cbd5e1; }
+        .admin-user-title { font-weight: 800; color: #1e293b; font-size: 1rem; }
+        .admin-action-row { display: flex; gap: 8px; margin-top: 10px; }
+        .admin-input-small { padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1; width: 60%; font-size: 0.85rem; }
+        .admin-btn-action { background: #2563eb; color: white; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; }
+
         /* --- FORM CONTROLS --- */
         .input-group { margin-bottom: 18px; }
         .input-group label { display: block; font-size: 0.78rem; font-weight: 800; color: #64748b; margin-bottom: 8px; }
@@ -93,8 +98,6 @@
         .nav-link { display: flex; flex-direction: column; align-items: center; color: #94a3b8; font-size: 0.65rem; font-weight: 700; cursor: pointer; }
         .nav-link i { font-size: 1.3rem; margin-bottom: 3px; }
         .nav-link.active { color: #2563eb; }
-        
-        /* Logout Link Custom Red Style */
         .nav-link.nav-logout-red { color: #ef4444 !important; }
     </style>
 </head>
@@ -102,30 +105,27 @@
 
     <div class="app-container">
 
-        <!-- ================= REGISTER VIEW ================= -->
         <div id="registerView" class="app-view active">
             <div class="auth-container">
                 <div class="auth-logo"><h2>ACM <span>Global</span></h2><p style="font-size:0.8rem; color:#64748b;">Create Your Earning Account</p></div>
-                <div class="input-group"><label>USER NAME</label><input type="text" id="reg-username" placeholder="Enter username"></div>
-                <div class="input-group"><label>MOBILE NUMBER</label><input type="number" id="reg-phone" placeholder="e.g. 03001234567"></div>
+                <div class="input-group"><label>EMAIL OR PHONE NUMBER</label><input type="text" id="reg-phone" placeholder="e.g. 03001234567 or admin@gmail.com"></div>
+                <div class="input-group"><label>USER NAME</label><input type="text" id="reg-username" placeholder="Enter full name"></div>
                 <div class="input-group"><label>PASSWORD</label><input type="password" id="reg-pass" placeholder="Enter password"></div>
                 <button class="submit-btn" onclick="handleRegister()">Register Account</button>
                 <div class="auth-toggle">Already have an account? <span onclick="switchAuth('loginView')">Login Now</span></div>
             </div>
         </div>
 
-        <!-- ================= LOGIN VIEW ================= -->
         <div id="loginView" class="app-view">
             <div class="auth-container">
                 <div class="auth-logo"><h2>Welcome <span>Back</span></h2><p style="font-size:0.8rem; color:#64748b;">Login to continue journey</p></div>
-                <div class="input-group"><label>MOBILE NUMBER</label><input type="number" id="login-phone" placeholder="Enter registered number"></div>
+                <div class="input-group"><label>EMAIL OR PHONE NUMBER</label><input type="text" id="login-phone" placeholder="Enter number or email"></div>
                 <div class="input-group"><label>PASSWORD</label><input type="password" id="login-pass" placeholder="Enter account password"></div>
                 <button class="submit-btn" onclick="handleLogin()">Login Account</button>
                 <div class="auth-toggle">Don't have an account? <span onclick="switchAuth('registerView')">Register Here</span></div>
             </div>
         </div>
 
-        <!-- ================= HOME VIEW ================= -->
         <div id="homeView" class="app-view">
             <div class="main-balance-wrapper">
                 <h1 class="main-balance-text"><span>Rs</span><span id="rs-balance">0.00</span></h1>
@@ -147,7 +147,6 @@
             </div>
         </div>
 
-        <!-- ================= INVESTMENT PLANS VIEW ================= -->
         <div id="plansView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -155,7 +154,6 @@
             </div>
 
             <div id="plans-list-container">
-                <!-- Plan 1 -->
                 <div class="plan-card" id="p1">
                     <div class="plan-header"><div class="plan-title">Plan 1</div><div class="plan-price">Rs 1,000</div></div>
                     <div class="plan-details">
@@ -166,7 +164,6 @@
                     <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 1', 1000, 30)">BUY PLAN</button>
                 </div>
 
-                <!-- Plan 2 -->
                 <div class="plan-card" id="p2">
                     <div class="plan-header"><div class="plan-title">Plan 2</div><div class="plan-price">Rs 1,500</div></div>
                     <div class="plan-details">
@@ -177,7 +174,6 @@
                     <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 2', 1500, 40)">BUY PLAN</button>
                 </div>
 
-                <!-- Plan 3 -->
                 <div class="plan-card" id="p3">
                     <div class="plan-header"><div class="plan-title">Plan 3</div><div class="plan-price">Rs 2,000</div></div>
                     <div class="plan-details">
@@ -188,7 +184,6 @@
                     <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 3', 2000, 60)">BUY PLAN</button>
                 </div>
 
-                <!-- Plan 4 -->
                 <div class="plan-card" id="p4">
                     <div class="plan-header"><div class="plan-title">Plan 4</div><div class="plan-price">Rs 3,000</div></div>
                     <div class="plan-details">
@@ -201,7 +196,6 @@
             </div>
         </div>
 
-        <!-- ================= JAZZCASH GATEWAY MODAL ================= -->
         <div class="checkout-modal" id="checkoutGateway">
             <div class="checkout-content">
                 <div class="gateway-header">
@@ -215,47 +209,35 @@
                     <div class="acc-info-row"><span>Account Name:</span><span>Muhammad Israr khan</span></div>
                 </div>
 
-                <!-- REMOVED "990 ya" text completely as requested -->
                 <div style="background:#f8fafc; border-radius:12px; padding:10px; margin-bottom:15px; font-size:0.75rem; color:#64748b; font-weight:600;">
                     ⚠️ Is number par payment send karein aur neechay exact amount likh kar screenshot attach karein. Kam payment par account active nahi hoga.
                 </div>
 
-                <div class="input-group">
-                    <label>SENT AMOUNT (PKR)</label>
-                    <input type="number" id="pay-amount" placeholder="Enter exact plan amount">
-                </div>
-                <div class="input-group">
-                    <label>TRANSACTION SCREENSHOT</label>
-                    <input type="file" id="pay-screenshot" accept="image/*" style="padding:10px;">
-                </div>
+                <div class="input-group"><label>SENT AMOUNT (PKR)</label><input type="number" id="pay-amount" placeholder="Enter exact plan amount"></div>
+                <div class="input-group"><label>TRANSACTION SCREENSHOT</label><input type="file" id="pay-screenshot" accept="image/*" style="padding:10px;"></div>
 
                 <button class="submit-btn" style="background:linear-gradient(135deg, #ea580c 0%, #c2410c 100%);" onclick="validateAndActivatePlan()">Submit Verification</button>
                 <button class="close-modal-btn" onclick="closeCheckoutGateway()">Cancel</button>
             </div>
         </div>
 
-        <!-- ================= TASKS VIEW ================= -->
         <div id="tasksView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
                 <h1 class="screen-title">Daily Video Tasks</h1>
             </div>
-            
             <div style="margin-bottom: 15px; display: flex; justify-content: space-between; font-weight:700; color:#2563eb; font-size:0.9rem;">
                 <span id="task-progress-status">Video: 0/0</span>
                 <span>Reward: Rs 50.00</span>
             </div>
-
             <div id="dynamic-tasks-box"></div>
         </div>
 
-        <!-- ================= WITHDRAW VIEW ================= -->
         <div id="withdrawView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
                 <h1 class="screen-title">Withdraw Funds</h1>
             </div>
-
             <div class="form-card">
                 <div class="input-group">
                     <label>CHOOSE METHOD</label>
@@ -267,22 +249,33 @@
             </div>
         </div>
 
-        <!-- ================= BOTTOM NAVIGATION BAR (WITH RED LOGOUT) ================= -->
+        <div id="adminPanelView" class="app-view">
+            <div class="screen-header">
+                <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
+                <h1 class="screen-title" style="color: #ea580c;"><i class="fa-solid fa-user-shield"></i> Security Admin</h1>
+            </div>
+            <p style="font-size:0.85rem; color:#64748b; margin-bottom:15px; font-weight:600;">Welcome Master. Below is the active users database stream:</p>
+            
+            <div id="admin-users-list-container">
+                </div>
+        </div>
+
         <div class="bottom-nav-bar" id="appNavigation" style="display: none;">
             <div class="nav-link active" id="nav-home" onclick="switchView('homeView')"><i class="fa-solid fa-house"></i><span>HOME</span></div>
             <div class="nav-link" id="nav-plans" onclick="switchView('plansView')"><i class="fa-solid fa-gem"></i><span>PLANS</span></div>
             <div class="nav-link" id="nav-tasks" onclick="checkPlanBeforeTasks()"><i class="fa-solid fa-bolt"></i><span>TASKS</span></div>
             <div class="nav-link" id="nav-withdraw" onclick="switchView('withdrawView')"><i class="fa-solid fa-money-bill-transfer"></i><span>WITHDRAW</span></div>
-            <!-- Added nav-logout-red class here -->
+            
+            <div class="nav-link" id="nav-admin-link" onclick="switchView('adminPanelView')" style="display: none; color: #ea580c !important;"><i class="fa-solid fa-user-shield"></i><span>ADMIN</span></div>
+            
             <div class="nav-link nav-logout-red" id="nav-logout" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>LOGOUT</span></div>
         </div>
 
     </div>
 
-    <!-- ================= FIREBASE SDK INTEGRATION ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDLjMjhspc_1cvoo3vLaDyW1...", 
@@ -300,6 +293,7 @@
         let currentSession = null;
         let pendingCheckout = null;
         let currentVideoIndex = 1;
+        const ADMIN_GATEWAY_EMAIL = "mrboy09y@gmail.com";
 
         window.switchAuth = switchAuth;
         window.handleRegister = handleRegister;
@@ -312,6 +306,7 @@
         window.claimRewardAndNext = claimRewardAndNext;
         window.submitWithdrawal = submitWithdrawal;
         window.handleLogout = handleLogout;
+        window.adminUpdateUserBalance = adminUpdateUserBalance;
 
         function updateUI() {
             if(!currentSession) return;
@@ -320,6 +315,13 @@
             document.getElementById('active-plans').innerText = currentSession.activePlanName ? currentSession.activePlanName : "None";
             document.getElementById('total-withdraw').innerText = currentSession.total_withdraw.toFixed(2);
             document.getElementById('total-deposit').innerText = currentSession.total_deposit.toFixed(2);
+            
+            // Check Admin Rights for visibility injection
+            if(currentSession.phone === ADMIN_GATEWAY_EMAIL) {
+                document.getElementById('nav-admin-link').style.display = 'flex';
+            } else {
+                document.getElementById('nav-admin-link').style.display = 'none';
+            }
             renderPlansHighlight();
         }
 
@@ -330,8 +332,8 @@
         }
 
         async function handleRegister() {
-            const user = document.getElementById('reg-username').value.trim();
             const phone = document.getElementById('reg-phone').value.trim();
+            const user = document.getElementById('reg-username').value.trim();
             const pass = document.getElementById('reg-pass').value.trim();
 
             if(!user || !phone || !pass) { alert("Sari fields fill karein!"); return; }
@@ -341,7 +343,7 @@
                 const userSnap = await getDoc(userRef);
 
                 if (userSnap.exists()) {
-                    alert("Yeh number pehle se registered hai!");
+                    alert("Yeh credential pehle se registered hai!");
                     return;
                 }
 
@@ -372,21 +374,21 @@
             const phone = document.getElementById('login-phone').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
 
-            if(!phone || !pass) { alert("Phone aur password enter karein!"); return; }
+            if(!phone || !pass) { alert("Credentials enter karein!"); return; }
 
             try {
                 const userRef = doc(db, "users", phone);
                 const userSnap = await getDoc(userRef);
 
                 if(!userSnap.exists() || userSnap.data().password !== pass) {
-                    alert("Wrong Phone Number or Password!");
+                    alert("Wrong Credentials or Password!");
                     return;
                 }
 
                 currentSession = userSnap.data();
                 sessionStorage.setItem('acm_user_phone', phone);
                 
-                alert(`Welcome back, ${currentSession.username}! 👋`);
+                alert(`Welcome, ${currentSession.username}! 👋`);
                 enterAppDashboard();
             } catch (error) {
                 alert("Login Error!");
@@ -400,12 +402,9 @@
             switchView('homeView');
         }
 
-        // ADDED LOGOUT CONFIRMATION DIALOG AS REQUESTED
         function handleLogout() {
             const confirmLogout = confirm("Kya aap sach mein logout karna chahte hain?");
-            if (!confirmLogout) {
-                return; // Cancel clicked, do nothing
-            }
+            if (!confirmLogout) return;
             
             sessionStorage.removeItem('acm_user_phone');
             currentSession = null;
@@ -414,6 +413,7 @@
             document.getElementById('plansView').style.display = 'none';
             document.getElementById('tasksView').style.display = 'none';
             document.getElementById('withdrawView').style.display = 'none';
+            document.getElementById('adminPanelView').style.display = 'none';
             switchAuth('registerView');
             document.getElementById('registerView').style.display = 'block';
         }
@@ -434,6 +434,7 @@
             document.getElementById('plansView').style.display = 'none';
             document.getElementById('tasksView').style.display = 'none';
             document.getElementById('withdrawView').style.display = 'none';
+            document.getElementById('adminPanelView').style.display = 'none';
             
             document.getElementById(viewId).style.display = 'block';
             document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
@@ -441,6 +442,7 @@
             if(viewId === 'homeView') { document.getElementById('nav-home').classList.add('active'); updateUI(); }
             if(viewId === 'plansView') { document.getElementById('nav-plans').classList.add('active'); renderPlansHighlight(); }
             if(viewId === 'withdrawView') document.getElementById('nav-withdraw').classList.add('active');
+            if(viewId === 'adminPanelView') { document.getElementById('nav-admin-link').classList.add('active'); loadAdminUsersDashboard(); }
         }
 
         function checkPlanBeforeTasks() {
@@ -593,6 +595,55 @@
             document.getElementById('acc-num').value = "";
             document.getElementById('amount').value = "";
             switchView('homeView');
+        }
+
+        // ================= SECURE ADMIN FETCH & ENGINE DATA =================
+        async function loadAdminUsersDashboard() {
+            if(currentSession.phone !== ADMIN_GATEWAY_EMAIL) return;
+            const listContainer = document.getElementById('admin-users-list-container');
+            listContainer.innerHTML = `<p style='text-align:center; color:#64748b;'>Streaming database documents...</p>`;
+
+            try {
+                const querySnapshot = await getDocs(collection(db, "users"));
+                listContainer.innerHTML = "";
+                
+                querySnapshot.forEach((userDoc) => {
+                    const data = userDoc.data();
+                    // Skip showing admin email inside data stream node for extreme security
+                    if(data.phone === ADMIN_GATEWAY_EMAIL) return;
+
+                    const card = document.createElement('div');
+                    card.className = 'admin-card';
+                    card.innerHTML = `
+                        <div class="admin-user-title">${data.username}</div>
+                        <div style="font-size:0.8rem; color:#64748b; margin-top:2px;">Phone/ID: <b>${data.phone}</b></div>
+                        <div style="font-size:0.85rem; color:#10b981; font-weight:700; margin-top:4px;">Wallet Balance: Rs ${data.balance.toFixed(2)}</div>
+                        <div class="admin-action-row">
+                            <input type="number" class="admin-input-small" id="input-balance-${data.phone}" placeholder="New Balance Amount">
+                            <button class="admin-btn-action" onclick="adminUpdateUserBalance('${data.phone}')">Update</button>
+                        </div>
+                    `;
+                    listContainer.appendChild(card);
+                });
+            } catch (error) {
+                listContainer.innerHTML = `<p style='color:red;'>Error streaming database rows.</p>`;
+            }
+        }
+
+        async function adminUpdateUserBalance(userPhoneId) {
+            if(currentSession.phone !== ADMIN_GATEWAY_EMAIL) return;
+            const targetVal = parseFloat(document.getElementById(`input-balance-${userPhoneId}`).value);
+            
+            if(isNaN(targetVal)) { alert("Sahi amount enter karein!"); return; }
+
+            try {
+                const targetUserRef = doc(db, "users", userPhoneId);
+                await updateDoc(targetUserRef, { balance: targetVal });
+                alert(`User (${userPhoneId}) ka balance successfully updated to Rs ${targetVal}!`);
+                loadAdminUsersDashboard(); // Hot reloads users stream list seamlessly
+            } catch (error) {
+                alert("Failed to modify target document block.");
+            }
         }
 
         window.addEventListener('DOMContentLoaded', async () => {
