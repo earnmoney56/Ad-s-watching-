@@ -5,16 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ACM Global - Earning App</title>
     
-    <!-- PWA Manifest & Mobile Meta Tags -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2563eb">
+    <meta name="theme-color" content="#d4af37">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="ACM Global">
 
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -134,7 +131,6 @@
 
     <div class="app-container">
 
-        <!-- ================= REGISTER VIEW ================= -->
         <div id="registerView" class="app-view active">
             <div class="auth-container">
                 <div class="auth-logo"><h2>ACM <span>Global</span></h2><p style="font-size:0.8rem; color:#64748b;">Create Your Earning Account</p></div>
@@ -146,7 +142,6 @@
             </div>
         </div>
 
-        <!-- ================= LOGIN VIEW ================= -->
         <div id="loginView" class="app-view">
             <div class="auth-container">
                 <div class="auth-logo"><h2>Welcome <span>Back</span></h2><p style="font-size:0.8rem; color:#64748b;">Login to continue journey</p></div>
@@ -157,10 +152,8 @@
             </div>
         </div>
 
-        <!-- ================= HOME VIEW ================= -->
         <div id="homeView" class="app-view">
             
-            <!-- Clickable Dashboard Error Notification Banner -->
             <div class="error-lock-banner" id="dashboard-lock-banner" onclick="openLockFeeGateway()">
                 <h4><i class="fa-solid fa-triangle-exclamation"></i> Withdrawal Restricted!</h4>
                 <p id="lock-reason-text">Aapka pichla withdrawal admin ki taraf se reject ho chuka hai.</p>
@@ -192,7 +185,6 @@
             <div id="user-history-logs-box"></div>
         </div>
 
-        <!-- ================= INVESTMENT PLANS VIEW ================= -->
         <div id="plansView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -242,7 +234,6 @@
             </div>
         </div>
 
-        <!-- ================= JAZZCASH GATEWAY MODAL ================= -->
         <div class="checkout-modal" id="checkoutGateway">
             <div class="checkout-content">
                 <div class="gateway-header">
@@ -264,7 +255,6 @@
             </div>
         </div>
 
-        <!-- ================= TASKS VIEW ================= -->
         <div id="tasksView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -277,7 +267,6 @@
             <div id="dynamic-tasks-box"></div>
         </div>
 
-        <!-- ================= WITHDRAW VIEW ================= -->
         <div id="withdrawView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -294,7 +283,6 @@
             </div>
         </div>
 
-        <!-- ================= HIDDEN ADMIN PANEL VIEW ================= -->
         <div id="adminPanelView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -311,7 +299,6 @@
             <div id="admin-users-list-container"></div>
         </div>
 
-        <!-- ================= BOTTOM NAVIGATION BAR ================= -->
         <div class="bottom-nav-bar" id="appNavigation" style="display: none;">
             <div class="nav-link active" id="nav-home" onclick="switchView('homeView')"><i class="fa-solid fa-house"></i><span>HOME</span></div>
             <div class="nav-link" id="nav-plans" onclick="switchView('plansView')"><i class="fa-solid fa-gem"></i><span>PLANS</span></div>
@@ -323,7 +310,6 @@
 
     </div>
 
-    <!-- ================= FIREBASE & PWA SCRIPT SYSTEM ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -869,7 +855,8 @@
         // ================= PWA SERVICE WORKER REGISTRATION CODE =================
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
+                // Relative path set to work perfectly on GitHub Pages subfolders
+                navigator.serviceWorker.register('./sw.js')
                     .then((reg) => {
                         console.log('PWA Service Worker registered successfully:', reg.scope);
                     })
