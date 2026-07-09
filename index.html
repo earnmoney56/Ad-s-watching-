@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ACM Global - Earning App</title>
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -71,7 +73,7 @@
         .acc-info-row span:last-child { color: #1e293b; font-weight: 800; }
         .close-modal-btn { background: #f1f5f9; color: #64748b; border: none; width: 100%; padding: 12px; border-radius: 14px; font-weight: 700; cursor: pointer; margin-top: 8px; }
 
-        /* --- VIDEO TASKS CARDS (OPTIMIZED ONE BY ONE) --- */
+        /* --- VIDEO TASKS CARDS --- */
         .task-card { background: white; border-radius: 24px; padding: 20px; margin-bottom: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.04); border: 1px solid #e2e8f0; text-align: center; }
         .task-info h3 { font-size: 1.2rem; color: #1e293b; font-weight: 800; margin-bottom: 6px; }
         .task-info p { font-size: 0.9rem; color: #10b981; font-weight: 700; margin-bottom: 15px; }
@@ -91,12 +93,16 @@
         .nav-link { display: flex; flex-direction: column; align-items: center; color: #94a3b8; font-size: 0.65rem; font-weight: 700; cursor: pointer; }
         .nav-link i { font-size: 1.3rem; margin-bottom: 3px; }
         .nav-link.active { color: #2563eb; }
+        
+        /* Logout Link Custom Red Style */
+        .nav-link.nav-logout-red { color: #ef4444 !important; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
 
+        <!-- ================= REGISTER VIEW ================= -->
         <div id="registerView" class="app-view active">
             <div class="auth-container">
                 <div class="auth-logo"><h2>ACM <span>Global</span></h2><p style="font-size:0.8rem; color:#64748b;">Create Your Earning Account</p></div>
@@ -108,6 +114,7 @@
             </div>
         </div>
 
+        <!-- ================= LOGIN VIEW ================= -->
         <div id="loginView" class="app-view">
             <div class="auth-container">
                 <div class="auth-logo"><h2>Welcome <span>Back</span></h2><p style="font-size:0.8rem; color:#64748b;">Login to continue journey</p></div>
@@ -118,6 +125,7 @@
             </div>
         </div>
 
+        <!-- ================= HOME VIEW ================= -->
         <div id="homeView" class="app-view">
             <div class="main-balance-wrapper">
                 <h1 class="main-balance-text"><span>Rs</span><span id="rs-balance">0.00</span></h1>
@@ -139,6 +147,7 @@
             </div>
         </div>
 
+        <!-- ================= INVESTMENT PLANS VIEW ================= -->
         <div id="plansView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -146,6 +155,7 @@
             </div>
 
             <div id="plans-list-container">
+                <!-- Plan 1 -->
                 <div class="plan-card" id="p1">
                     <div class="plan-header"><div class="plan-title">Plan 1</div><div class="plan-price">Rs 1,000</div></div>
                     <div class="plan-details">
@@ -156,6 +166,7 @@
                     <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 1', 1000, 30)">BUY PLAN</button>
                 </div>
 
+                <!-- Plan 2 -->
                 <div class="plan-card" id="p2">
                     <div class="plan-header"><div class="plan-title">Plan 2</div><div class="plan-price">Rs 1,500</div></div>
                     <div class="plan-details">
@@ -166,6 +177,7 @@
                     <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 2', 1500, 40)">BUY PLAN</button>
                 </div>
 
+                <!-- Plan 3 -->
                 <div class="plan-card" id="p3">
                     <div class="plan-header"><div class="plan-title">Plan 3</div><div class="plan-price">Rs 2,000</div></div>
                     <div class="plan-details">
@@ -176,6 +188,7 @@
                     <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 3', 2000, 60)">BUY PLAN</button>
                 </div>
 
+                <!-- Plan 4 -->
                 <div class="plan-card" id="p4">
                     <div class="plan-header"><div class="plan-title">Plan 4</div><div class="plan-price">Rs 3,000</div></div>
                     <div class="plan-details">
@@ -188,6 +201,7 @@
             </div>
         </div>
 
+        <!-- ================= JAZZCASH GATEWAY MODAL ================= -->
         <div class="checkout-modal" id="checkoutGateway">
             <div class="checkout-content">
                 <div class="gateway-header">
@@ -201,8 +215,9 @@
                     <div class="acc-info-row"><span>Account Name:</span><span>Muhammad Israr khan</span></div>
                 </div>
 
+                <!-- REMOVED "990 ya" text completely as requested -->
                 <div style="background:#f8fafc; border-radius:12px; padding:10px; margin-bottom:15px; font-size:0.75rem; color:#64748b; font-weight:600;">
-                    ⚠️ Is number par payment send karein aur neechay exact amount likh kar screenshot attach karein. 990 ya kam payment par account active nahi hoga.
+                    ⚠️ Is number par payment send karein aur neechay exact amount likh kar screenshot attach karein. Kam payment par account active nahi hoga.
                 </div>
 
                 <div class="input-group">
@@ -219,6 +234,7 @@
             </div>
         </div>
 
+        <!-- ================= TASKS VIEW ================= -->
         <div id="tasksView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -230,10 +246,10 @@
                 <span>Reward: Rs 50.00</span>
             </div>
 
-            <div id="dynamic-tasks-box">
-                </div>
+            <div id="dynamic-tasks-box"></div>
         </div>
 
+        <!-- ================= WITHDRAW VIEW ================= -->
         <div id="withdrawView" class="app-view">
             <div class="screen-header">
                 <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
@@ -251,16 +267,19 @@
             </div>
         </div>
 
+        <!-- ================= BOTTOM NAVIGATION BAR (WITH RED LOGOUT) ================= -->
         <div class="bottom-nav-bar" id="appNavigation" style="display: none;">
             <div class="nav-link active" id="nav-home" onclick="switchView('homeView')"><i class="fa-solid fa-house"></i><span>HOME</span></div>
             <div class="nav-link" id="nav-plans" onclick="switchView('plansView')"><i class="fa-solid fa-gem"></i><span>PLANS</span></div>
             <div class="nav-link" id="nav-tasks" onclick="checkPlanBeforeTasks()"><i class="fa-solid fa-bolt"></i><span>TASKS</span></div>
             <div class="nav-link" id="nav-withdraw" onclick="switchView('withdrawView')"><i class="fa-solid fa-money-bill-transfer"></i><span>WITHDRAW</span></div>
-            <div class="nav-link" id="nav-logout" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>LOGOUT</span></div>
+            <!-- Added nav-logout-red class here -->
+            <div class="nav-link nav-logout-red" id="nav-logout" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>LOGOUT</span></div>
         </div>
 
     </div>
 
+    <!-- ================= FIREBASE SDK INTEGRATION ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -280,7 +299,7 @@
 
         let currentSession = null;
         let pendingCheckout = null;
-        let currentVideoIndex = 1; // Tracks current individual video active
+        let currentVideoIndex = 1;
 
         window.switchAuth = switchAuth;
         window.handleRegister = handleRegister;
@@ -345,7 +364,7 @@
                 alert("Account registered successfully! 🎉");
                 enterAppDashboard();
             } catch (error) {
-                alert("Registration failed. Make sure Firestore Rules are published to true!");
+                alert("Registration failed!");
             }
         }
 
@@ -381,7 +400,13 @@
             switchView('homeView');
         }
 
+        // ADDED LOGOUT CONFIRMATION DIALOG AS REQUESTED
         function handleLogout() {
+            const confirmLogout = confirm("Kya aap sach mein logout karna chahte hain?");
+            if (!confirmLogout) {
+                return; // Cancel clicked, do nothing
+            }
+            
             sessionStorage.removeItem('acm_user_phone');
             currentSession = null;
             document.getElementById('appNavigation').style.display = 'none';
@@ -423,7 +448,7 @@
                 alert("Pehle koi plan buy karein!");
                 switchView('plansView');
             } else {
-                currentVideoIndex = 1; // Reset to first video when view opens
+                currentVideoIndex = 1;
                 switchView('tasksView');
                 loadSingleVideoTask();
             }
@@ -487,12 +512,10 @@
             }
         }
 
-        // ================= FAST ONE-BY-ONE VIDEO LOGIC =================
         function loadSingleVideoTask() {
             const container = document.getElementById('dynamic-tasks-box');
             const progressStatus = document.getElementById('task-progress-status');
             
-            // Check if user has finished all videos for the day
             if (currentVideoIndex > currentSession.dailyVideosLimit) {
                 container.innerHTML = `
                     <div style="text-align:center; padding: 40px 10px; color:#64748b;">
@@ -507,11 +530,9 @@
 
             progressStatus.innerText = `Video: ${currentVideoIndex} / ${currentSession.dailyVideosLimit}`;
             
-            // Pool of premium random educational/marketing youtube videos
             const youtubePool = ["dQw4w9WgXcQ", "3JZ_D3ELwOQ", "tgbNymZ7vqY", "2Vv-BfVoq4g", "kJQP7kiw5Fk"];
             let randomVidId = youtubePool[currentVideoIndex % youtubePool.length];
 
-            // Render EXACTLY 1 single video item to optimize mobile performance
             container.innerHTML = `
                 <div class="task-card">
                     <div class="task-info">
@@ -526,7 +547,6 @@
                 </div>
             `;
 
-            // Trigger the 30 second countdown
             startTaskTimer();
         }
 
@@ -542,19 +562,16 @@
                 if (timeRemaining <= 0) {
                     clearInterval(countdownInterval);
                     if(badge) badge.style.display = 'none';
-                    if(claimBtn) claimBtn.style.display = 'block'; // Shows reward button exactly after 30 seconds
+                    if(claimBtn) claimBtn.style.display = 'block';
                 }
             }, 1000);
         }
 
         async function claimRewardAndNext() {
-            // Add Rs 50 straight to account wallet balance
             currentSession.balance += 50.00;
             await saveCurrentSessionToDatabase();
             
             alert(`Rs 50.00 successfully added to your wallet! 💰`);
-            
-            // Move onto next video logic seamlessly
             currentVideoIndex++;
             loadSingleVideoTask();
         }
