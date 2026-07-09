@@ -1,20 +1,20 @@
 {
-  "short_name": "MyWebsite",
-  "name": "My Complete Website Name",
+  "short_name": "ACM Global",
+  "name": "ACM Global Earning App",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "https://i.ibb.co/V93V7Lwz/icon-192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "icon-512.png",
+      "src": "https://i.ibb.co/v6XgKjPZ/icon-512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
   ],
-  "start_url": "/",
-  "background_color": "#ffffff",
+  "start_url": "./index.html",
+  "background_color": "#000000",
   "display": "standalone",
-  "theme_color": "#000000"
+  "theme_color": "#d4af37"
 }
