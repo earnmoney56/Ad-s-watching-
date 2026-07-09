@@ -5,16 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ACM Global - Earning App</title>
     
-    <!-- PWA Manifest & Mobile Meta Tags -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#d4af37">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="ACM Global">
 
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -33,8 +30,14 @@
         .auth-logo span { color: #2563eb; }
         .auth-toggle { text-align: center; margin-top: 15px; font-size: 0.85rem; color: #64748b; }
         .auth-toggle span { color: #2563eb; font-weight: 700; cursor: pointer; }
+        .forgot-link { text-align: right; margin-top: -10px; margin-bottom: 15px; font-size: 0.8rem; font-weight: 700; color: #ef4444; cursor: pointer; }
+        
+        /* OTP Overlay UI Sections */
+        .otp-verification-section { background: #f0fdf4; border: 1px dashed #22c55e; padding: 15px; border-radius: 20px; margin-bottom: 18px; display: none; }
+        .otp-verification-section label { color: #166534 !important; font-weight: 800; }
+        .otp-verification-section input { border-color: #bbf7d0; background: white; text-align: center; font-size: 1.3rem; letter-spacing: 8px; }
 
-        /* --- LIVE STATUS COUNTERS (Chota Aur Compact Layout) --- */
+        /* --- LIVE STATUS COUNTERS --- */
         .live-counters-box { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: white; border-radius: 30px; padding: 10px 18px; margin-top: 10px; margin-bottom: 18px; box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15); display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255,255,255,0.08); }
         .counter-item { display: flex; flex-direction: column; gap: 1px; }
         .counter-label { font-size: 0.62rem; font-weight: 800; color: #94a3b8; letter-spacing: 0.5px; text-transform: uppercase; }
@@ -59,7 +62,7 @@
         .bg-withdraw { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
         .bg-task { background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); }
 
-        /* --- CLICKABLE LIVE WITHDRAWAL FEED (Expandable System) --- */
+        /* --- LIVE WITHDRAWAL FEED --- */
         .live-feed-box { background: white; border-radius: 24px; padding: 16px; margin-bottom: 22px; box-shadow: 0 8px 25px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; overflow: hidden; position: relative; height: 160px; transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
         .live-feed-box.expanded { height: 480px; overflow-y: auto; padding-bottom: 30px; }
         .live-feed-title { font-size: 0.95rem; font-weight: 800; color: #0f172a; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
@@ -76,7 +79,7 @@
         .badge-jc { background: #fee2e2; color: #dc2626; }
         .badge-ep { background: #ecfdf5; color: #059669; }
 
-        /* Error/Lock Banner Dashboard Clickable */
+        /* Error/Lock Banner Dashboard */
         .error-lock-banner { background: #fef2f2; border: 2px solid #fca5a5; border-radius: 20px; padding: 16px; margin-bottom: 20px; display: none; cursor: pointer; transition: transform 0.2s; }
         .error-lock-banner:active { transform: scale(0.98); }
         .error-lock-banner h4 { color: #dc2626; font-size: 1rem; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
@@ -123,24 +126,6 @@
         .timer-badge { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.85); color: white; padding: 6px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; z-index: 5; border: 1px solid rgba(255,255,255,0.2); }
         .claim-btn { width: 100%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 16px; border-radius: 16px; font-weight: 800; font-size: 1.05rem; cursor: pointer; display: none; box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3); }
 
-        /* --- ADMIN STYLES --- */
-        .admin-section-title { font-size: 1.1rem; font-weight: 800; color: #1e293b; margin: 20px 0 10px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; }
-        .admin-card { background: white; border-radius: 20px; padding: 15px; margin-bottom: 12px; border: 1px solid #cbd5e1; }
-        .admin-user-title { font-weight: 800; color: #1e293b; font-size: 1rem; }
-        .admin-action-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-        .admin-input-small { padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1; width: 60%; font-size: 0.85rem; }
-        .admin-btn-action { background: #2563eb; color: white; border: none; padding: 8px 12px; border-radius: 8px; font-weight: 700; font-size: 0.8rem; cursor: pointer; }
-        .admin-btn-success { background: #10b981 !important; }
-        .admin-btn-danger { background: #ef4444 !important; }
-        .view-proof-link { display: inline-block; color: #2563eb; font-size: 0.8rem; font-weight: 700; text-decoration: underline; margin-top: 5px; cursor: pointer; }
-
-        /* --- LOG LIST FOR USER --- */
-        .log-item { background: white; padding: 12px; border-radius: 14px; margin-top: 8px; border: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
-        .status-badge { padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 800; }
-        .status-pending { background: #fef3c7; color: #d97706; }
-        .status-approved { background: #d1fae5; color: #059669; }
-        .status-rejected { background: #fee2e2; color: #dc2626; }
-
         /* --- FORM CONTROLS --- */
         .input-group { margin-bottom: 18px; }
         .input-group label { display: block; font-size: 0.78rem; font-weight: 800; color: #64748b; margin-bottom: 8px; }
@@ -159,56 +144,79 @@
 
     <div class="app-container">
 
-        <!-- ================= REGISTER VIEW ================= -->
         <div id="registerView" class="app-view active">
             <div class="auth-container">
                 <div class="auth-logo"><h2>ACM <span>Global</span></h2><p style="font-size:0.8rem; color:#64748b;">Create Your Earning Account</p></div>
-                <div class="input-group"><label>MOBILE NUMBER</label><input type="text" id="reg-phone" placeholder="e.g. 03001234567"></div>
-                <div class="input-group"><label>USER NAME</label><input type="text" id="reg-username" placeholder="Enter full name"></div>
-                <div class="input-group"><label>PASSWORD</label><input type="password" id="reg-pass" placeholder="Enter password"></div>
-                <button class="submit-btn" onclick="handleRegister()">Register Account</button>
+                
+                <div class="input-group"><label>MOBILE / SIM NUMBER</label><input type="text" id="reg-phone" placeholder="e.g. 03001234567"></div>
+                
+                <div class="otp-verification-section" id="reg-otp-block">
+                    <label><i class="fa-solid fa-shield-halved"></i> ENTER 4-DIGIT SIM OTP</label>
+                    <input type="text" id="reg-otp-input" maxlength="4" placeholder="••••">
+                    <p style="font-size:0.75rem; color:#156534; margin-top:5px; font-weight:600;">SMS verification simulation code sent successfully.</p>
+                </div>
+
+                <div class="input-group"><label>USER FULL NAME</label><input type="text" id="reg-username" placeholder="Enter your full name"></div>
+                <div class="input-group"><label>CREATE PASSWORD</label><input type="password" id="reg-pass" placeholder="Enter password"></div>
+                
+                <button class="submit-btn" id="reg-main-btn" onclick="triggerRegisterOTPFlow()">Request Registration OTP</button>
                 <div class="auth-toggle">Already have an account? <span onclick="switchAuth('loginView')">Login Now</span></div>
             </div>
         </div>
 
-        <!-- ================= LOGIN VIEW ================= -->
         <div id="loginView" class="app-view">
             <div class="auth-container">
-                <div class="auth-logo"><h2>Welcome <span>Back</span></h2><p style="font-size:0.8rem; color:#64748b;">Login to continue journey</p></div>
-                <div class="input-group"><label>MOBILE NUMBER</label><input type="text" id="login-phone" placeholder="e.g. 03001234567"></div>
-                <div class="input-group"><label>PASSWORD</label><input type="password" id="login-pass" placeholder="Enter account password"></div>
-                <button class="submit-btn" onclick="handleLogin()">Login Account</button>
+                <div class="auth-logo"><h2>Welcome <span>Back</span></h2><p style="font-size:0.8rem; color:#64748b;">Secure Login Authentication</p></div>
+                
+                <div class="input-group"><label>MOBILE / SIM NUMBER</label><input type="text" id="login-phone" placeholder="e.g. 03001234567"></div>
+                
+                <div class="otp-verification-section" id="login-otp-block">
+                    <label><i class="fa-solid fa-key"></i> ENTER 4-DIGIT SIM OTP</label>
+                    <input type="text" id="login-otp-input" maxlength="4" placeholder="••••">
+                    <p style="font-size:0.75rem; color:#156534; margin-top:5px; font-weight:600;">SMS OTP verification gateway active.</p>
+                </div>
+
+                <div class="input-group" id="login-name-group"><label>CONFIRM FULL NAME</label><input type="text" id="login-username" placeholder="Enter registered full name"></div>
+                <div class="input-group" id="login-pass-group"><label>PASSWORD</label><input type="password" id="login-pass" placeholder="Enter account password"></div>
+                
+                <div class="forgot-link" onclick="switchAuth('forgotView')">Forgot Password?</div>
+
+                <button class="submit-btn" id="login-main-btn" onclick="triggerLoginOTPFlow()">Request Security OTP</button>
                 <div class="auth-toggle">Don't have an account? <span onclick="switchAuth('registerView')">Register Here</span></div>
             </div>
         </div>
 
-        <!-- ================= HOME VIEW ================= -->
+        <div id="forgotView" class="app-view">
+            <div class="auth-container">
+                <div class="auth-logo"><h2>Reset <span>Password</span></h2><p style="font-size:0.8rem; color:#64748b;">Recover Account Access via SIM Code</p></div>
+                
+                <div class="input-group"><label>ENTER REGISTERED MOBILE NUMBER</label><input type="text" id="forgot-phone" placeholder="e.g. 03001234567"></div>
+                
+                <div class="otp-verification-section" id="forgot-otp-block">
+                    <label><i class="fa-solid fa-unlock-keyhole"></i> ENTER 4-DIGIT PASSWORD RESET OTP</label>
+                    <input type="text" id="forgot-otp-input" maxlength="4" placeholder="••••">
+                    <p style="font-size:0.75rem; color:#b45309; margin-top:5px; font-weight:600;">Account verification OTP code generated.</p>
+                </div>
+
+                <button class="submit-btn" id="forgot-main-btn" onclick="triggerForgotOTPFlow()">Request Recovery Code</button>
+                <div class="auth-toggle">Remembered credentials? <span onclick="switchAuth('loginView')">Back to Login</span></div>
+            </div>
+        </div>
+
         <div id="homeView" class="app-view">
-            
-            <!-- Realtime Live Social Proof Status Counter (Chota aur Compact Box) -->
             <div class="live-counters-box">
-                <div class="counter-item">
-                    <span class="counter-label">Total Members</span>
-                    <span class="counter-value" id="live-total-members">670,000</span>
-                </div>
-                <div class="counter-item" style="text-align: right;">
-                    <span class="counter-label"><span class="live-dot"></span>Online Active</span>
-                    <span class="counter-value" id="live-online-users" style="color: #10b981;">120,000</span>
-                </div>
+                <div class="counter-item"><span class="counter-label">Total Members</span><span class="counter-value" id="live-total-members">670,000</span></div>
+                <div class="counter-item" style="text-align: right;"><span class="counter-label"><span class="live-dot"></span>Online Active</span><span class="counter-value" id="live-online-users" style="color: #10b981;">120,000</span></div>
             </div>
 
-            <!-- Clickable Dashboard Error Notification Banner -->
             <div class="error-lock-banner" id="dashboard-lock-banner" onclick="openLockFeeGateway()">
                 <h4><i class="fa-solid fa-triangle-exclamation"></i> Withdrawal Restricted!</h4>
-                <p id="lock-reason-text">Aapka pichla withdrawal admin ki taraf se reject ho chuka hai.</p>
+                <p id="lock-reason-text">Reason Text...</p>
                 <div class="fee-highlight" id="lock-fee-text">Required Activation Fee: Rs 0.00</div>
-                <p style="margin-top:6px; font-size:0.85rem; color:#7f1d1d; font-weight:700;">Jab tak aap yeh masla solve nahi karenge tab tak aap naya withdrawal nahi kar sakte.</p>
                 <div class="click-instruction"><i class="fa-solid fa-hand-pointer"></i> Abhi masla hal karne ke liye yahan click karein</div>
             </div>
 
-            <div class="main-balance-wrapper">
-                <h1 class="main-balance-text"><span>Rs</span><span id="rs-balance">0.00</span></h1>
-            </div>
+            <div class="main-balance-wrapper"><h1 class="main-balance-text"><span>Rs</span><span id="rs-balance">0.00</span></h1></div>
 
             <div class="glass-card-section">
                 <div class="stats-grid">
@@ -225,28 +233,20 @@
                 <div class="action-card bg-task" onclick="checkPlanBeforeTasks()"><i class="fa-solid fa-circle-play"></i><span>TASK VIDEO</span></div>
             </div>
 
-            <!-- LIVE WITHDRAWALS SYSTEM FEED (Mukammal Clickable & 15 Names Expandable List) -->
             <div class="live-feed-box" id="live-feed-card" onclick="toggleLiveFeedExpand()">
                 <div class="live-feed-title">
                     <div class="live-feed-title-left"><i class="fa-solid fa-bolt-lightning"></i> Live Withdrawals Feed</div>
                     <div class="expand-indicator" id="feed-expand-text">Click to View All</div>
                 </div>
-                <div class="feed-container" id="live-withdrawals-ticker">
-                    <!-- 15 Dynamic live data names inject via JavaScript logic -->
-                </div>
+                <div class="feed-container" id="live-withdrawals-ticker"></div>
             </div>
 
             <h3 style="font-size: 0.95rem; font-weight: 800; color: #1e293b; margin-top: 10px;">Transaction Status Logs</h3>
             <div id="user-history-logs-box"></div>
         </div>
 
-        <!-- ================= INVESTMENT PLANS VIEW ================= -->
         <div id="plansView" class="app-view">
-            <div class="screen-header">
-                <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
-                <h1 class="screen-title">Investment Plans</h1>
-            </div>
-
+            <div class="screen-header"><button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button><h1 class="screen-title">Investment Plans</h1></div>
             <div id="plans-list-container">
                 <div class="plan-card" id="p1">
                     <div class="plan-header"><div class="plan-title">Plan 1</div><div class="plan-price">Rs 1,000</div></div>
@@ -257,7 +257,6 @@
                     </div>
                     <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 1', 1000, 30)">BUY PLAN</button>
                 </div>
-
                 <div class="plan-card" id="p2">
                     <div class="plan-header"><div class="plan-title">Plan 2</div><div class="plan-price">Rs 1,500</div></div>
                     <div class="plan-details">
@@ -267,111 +266,50 @@
                     </div>
                     <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 2', 1500, 40)">BUY PLAN</button>
                 </div>
-
-                <div class="plan-card" id="p3">
-                    <div class="plan-header"><div class="plan-title">Plan 3</div><div class="plan-price">Rs 2,000</div></div>
-                    <div class="plan-details">
-                        <div class="plan-row"><p class="p-label">Daily Earning</p><p class="p-val">Rs 3000</p></div>
-                        <div class="plan-row"><p class="p-label">Daily Videos</p><p class="p-val">60 Videos</p></div>
-                        <div class="plan-row"><p class="p-label">Plan Duration</p><p class="p-val">30 Days</p></div>
-                    </div>
-                    <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 3', 2000, 60)">BUY PLAN</button>
-                </div>
-
-                <div class="plan-card" id="p4">
-                    <div class="plan-header"><div class="plan-title">Plan 4</div><div class="plan-price">Rs 3,000</div></div>
-                    <div class="plan-details">
-                        <div class="plan-row"><p class="p-label">Daily Earning</p><p class="p-val">Rs 4000</p></div>
-                        <div class="plan-row"><p class="p-label">Daily Videos</p><p class="p-val">80 Videos</p></div>
-                        <div class="plan-row"><p class="p-label">Plan Duration</p><p class="p-val">30 Days</p></div>
-                    </div>
-                    <button class="buy-plan-btn" onclick="openCheckoutGateway('Plan 4', 3000, 80)">BUY PLAN</button>
-                </div>
             </div>
         </div>
 
-        <!-- ================= JAZZCASH GATEWAY MODAL ================= -->
         <div class="checkout-modal" id="checkoutGateway">
             <div class="checkout-content">
-                <div class="gateway-header">
-                    <div class="gateway-badge"><i class="fa-solid fa-building-columns"></i> JazzCash Merchant</div>
-                    <h3 id="checkout-plan-name" style="color:#0f172a; font-weight:800;">Plan Activation</h3>
-                </div>
-                
+                <div class="gateway-header"><div class="gateway-badge"><i class="fa-solid fa-building-columns"></i> JazzCash Merchant</div><h3 id="checkout-plan-name">Plan Activation</h3></div>
                 <div class="account-details-box">
                     <div class="acc-info-row"><span>Bank / Wallet:</span><span>JazzCash</span></div>
                     <div class="acc-info-row"><span>Account Number:</span><span style="color:#ea580c; font-size:1.05rem;">03173944967</span></div>
                     <div class="acc-info-row"><span>Account Name:</span><span>Muhammad Israr khan</span></div>
                 </div>
-
-                <div class="input-group"><label id="payment-amount-label">SENT AMOUNT (PKR)</label><input type="number" id="pay-amount" placeholder="Enter exact required amount"></div>
-                <div class="input-group"><label>TRANSACTION SCREENSHOT</label><input type="file" id="pay-screenshot" accept="image/*" style="padding:10px;"></div>
-
+                <div class="input-group"><label id="payment-amount-label">SENT AMOUNT (PKR)</label><input type="number" id="pay-amount"></div>
+                <div class="input-group"><label>TRANSACTION SCREENSHOT</label><input type="file" id="pay-screenshot" accept="image/*"></div>
                 <button class="submit-btn" style="background:linear-gradient(135deg, #ea580c 0%, #c2410c 100%);" onclick="submitDepositToAdminQueue()">Submit Verification</button>
                 <button class="close-modal-btn" onclick="closeCheckoutGateway()">Cancel</button>
             </div>
         </div>
 
-        <!-- ================= TASKS VIEW ================= -->
         <div id="tasksView" class="app-view">
-            <div class="screen-header">
-                <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
-                <h1 class="screen-title">Daily Video Tasks</h1>
-            </div>
-            <div style="margin-bottom: 15px; display: flex; justify-content: space-between; font-weight:700; color:#2563eb; font-size:0.9rem;">
-                <span id="task-progress-status">Video: 0/0</span>
-                <span>Reward: Rs 50.00</span>
-            </div>
+            <div class="screen-header"><button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button><h1 class="screen-title">Daily Tasks</h1></div>
+            <div style="margin-bottom:15px; display:flex; justify-content:space-between; font-weight:700; color:#2563eb; font-size:0.9rem;"><span id="task-progress-status">Video: 0/0</span><span>Reward: Rs 50.00</span></div>
             <div id="dynamic-tasks-box"></div>
         </div>
 
-        <!-- ================= WITHDRAW VIEW ================= -->
         <div id="withdrawView" class="app-view">
-            <div class="screen-header">
-                <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
-                <h1 class="screen-title">Withdraw Funds</h1>
-            </div>
+            <div class="screen-header"><button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button><h1 class="screen-title">Withdraw Funds</h1></div>
             <div class="form-card">
-                <div class="input-group">
-                    <label>CHOOSE METHOD</label>
-                    <select id="method"><option value="JazzCash">JazzCash</option><option value="EasyPaisa">EasyPaisa</option></select>
-                </div>
+                <div class="input-group"><label>CHOOSE METHOD</label><select id="method"><option value="JazzCash">JazzCash</option><option value="EasyPaisa">EasyPaisa</option></select></div>
                 <div class="input-group"><label>ACCOUNT NUMBER</label><input type="number" id="acc-num" placeholder="e.g. 03001234567"></div>
                 <div class="input-group"><label>WITHDRAW AMOUNT (PKR)</label><input type="number" id="amount" placeholder="Minimum Rs 2000"></div>
                 <button class="submit-btn" onclick="submitWithdrawToAdminQueue()">Submit Request</button>
             </div>
         </div>
 
-        <!-- ================= HIDDEN ADMIN PANEL VIEW ================= -->
-        <div id="adminPanelView" class="app-view">
-            <div class="screen-header">
-                <button class="back-btn" onclick="switchView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
-                <h1 class="screen-title" style="color: #ea580c;"><i class="fa-solid fa-user-shield"></i> Master Panel</h1>
-            </div>
-            
-            <div class="admin-section-title"><i class="fa-solid fa-hourglass-half"></i> Pending Plan Deposits / Restriction Fees</div>
-            <div id="admin-deposits-queue"></div>
-
-            <div class="admin-section-title"><i class="fa-solid fa-money-bill-wave"></i> Pending Withdrawals</div>
-            <div id="admin-withdrawals-queue"></div>
-
-            <div class="admin-section-title"><i class="fa-solid fa-users"></i> Users Control Node</div>
-            <div id="admin-users-list-container"></div>
-        </div>
-
-        <!-- ================= BOTTOM NAVIGATION BAR ================= -->
         <div class="bottom-nav-bar" id="appNavigation" style="display: none;">
             <div class="nav-link active" id="nav-home" onclick="switchView('homeView')"><i class="fa-solid fa-house"></i><span>HOME</span></div>
             <div class="nav-link" id="nav-plans" onclick="switchView('plansView')"><i class="fa-solid fa-gem"></i><span>PLANS</span></div>
             <div class="nav-link" id="nav-tasks" onclick="checkPlanBeforeTasks()"><i class="fa-solid fa-bolt"></i><span>TASKS</span></div>
             <div class="nav-link" id="nav-withdraw" onclick="switchView('withdrawView')"><i class="fa-solid fa-money-bill-transfer"></i><span>WITHDRAW</span></div>
-            <div class="nav-link" id="nav-admin-link" onclick="switchView('adminPanelView')" style="display: none; color: #ea580c !important;"><i class="fa-solid fa-user-shield"></i><span>ADMIN</span></div>
             <div class="nav-link nav-logout-red" id="nav-logout" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i><span>LOGOUT</span></div>
         </div>
 
     </div>
 
-    <!-- ================= FIREBASE & PWA SCRIPT SYSTEM ================= -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -392,11 +330,14 @@
         let currentSession = null;
         let pendingCheckout = null;
         let currentVideoIndex = 1;
-        const ADMIN_GATEWAY_EMAIL = "mrboy09y@gmail.com";
+        
+        let systemGeneratedOTP = null;
+        let isOtpRequested = false;
 
         window.switchAuth = switchAuth;
-        window.handleRegister = handleRegister;
-        window.handleLogin = handleLogin;
+        window.triggerRegisterOTPFlow = triggerRegisterOTPFlow;
+        window.triggerLoginOTPFlow = triggerLoginOTPFlow;
+        window.triggerForgotOTPFlow = triggerForgotOTPFlow;
         window.switchView = switchView;
         window.checkPlanBeforeTasks = checkPlanBeforeTasks;
         window.openCheckoutGateway = openCheckoutGateway;
@@ -406,11 +347,6 @@
         window.claimRewardAndNext = claimRewardAndNext;
         window.submitWithdrawToAdminQueue = submitWithdrawToAdminQueue;
         window.handleLogout = handleLogout;
-        window.adminUpdateUserBalance = adminUpdateUserBalance;
-        window.adminProcessDeposit = adminProcessDeposit;
-        window.adminProcessWithdrawal = adminProcessWithdrawal;
-        window.viewProofImage = viewProofImage;
-        window.adminClearUserRestriction = adminClearUserRestriction;
         window.toggleLiveFeedExpand = toggleLiveFeedExpand;
 
         function updateUI() {
@@ -421,7 +357,6 @@
             document.getElementById('total-withdraw').innerText = currentSession.total_withdraw.toFixed(2);
             document.getElementById('total-deposit').innerText = currentSession.total_deposit.toFixed(2);
             
-            // Lock Rules Check
             const banner = document.getElementById('dashboard-lock-banner');
             if(currentSession.isLocked === true) {
                 banner.style.display = 'block';
@@ -430,22 +365,171 @@
             } else {
                 banner.style.display = 'none';
             }
-
-            if(currentSession.phone === ADMIN_GATEWAY_EMAIL) {
-                document.getElementById('nav-admin-link').style.display = 'flex';
-            } else {
-                document.getElementById('nav-admin-link').style.display = 'none';
-            }
             renderPlansHighlight();
             loadUserTransactionLogs();
             initSocialProofEngine();
         }
 
-        // ================= EXPANDABLE LIVE FEED CONTROLLER =================
+        function generateRandom4DigitOTP() {
+            return Math.floor(1000 + Math.random() * 9000).toString();
+        }
+
+        // ================= REGISTER FLOW =================
+        async function triggerRegisterOTPFlow() {
+            const phone = document.getElementById('reg-phone').value.trim();
+            const user = document.getElementById('reg-username').value.trim();
+            const pass = document.getElementById('reg-pass').value.trim();
+
+            if(!phone) { alert("Pehle apna mobile number likhein!"); return; }
+
+            if(!isOtpRequested) {
+                systemGeneratedOTP = generateRandom4DigitOTP();
+                isOtpRequested = true;
+                document.getElementById('reg-otp-block').style.display = 'block';
+                document.getElementById('reg-main-btn').innerText = "Verify OTP & Register Account";
+                alert(`📱 Security Code: [ ${systemGeneratedOTP} ]\n\nAapke SIM number par 4-digit code bheja gaya hai.`);
+                return;
+            }
+
+            const enteredOtp = document.getElementById('reg-otp-input').value.trim();
+            if(enteredOtp !== systemGeneratedOTP) { alert("Ghalat OTP Code! Sahi verification code dalein."); return; }
+
+            if(!user || !pass) { alert("OTP verified! Ab apna Full Name aur Password dalein registration complete karne ke liye."); return; }
+
+            try {
+                const userRef = doc(db, "users", phone);
+                const userSnap = await getDoc(userRef);
+
+                if (userSnap.exists()) { alert("Yeh mobile number pehle se registered hai!"); resetAuthStates(); return; }
+
+                let newUser = { 
+                    username: user, phone: phone, password: pass, balance: 0.00, 
+                    activePlanPrice: 0, activePlanName: "", dailyVideosLimit: 0, 
+                    total_withdraw: 0, total_deposit: 0, isLocked: false, lockReason: "", lockFee: 0 
+                };
+
+                await setDoc(userRef, newUser);
+                currentSession = newUser;
+                sessionStorage.setItem('acm_user_phone', phone);
+                resetAuthStates();
+                enterAppDashboard();
+            } catch (error) { alert("Registration failed!"); }
+        }
+
+        // ================= LOGIN FLOW =================
+        async function triggerLoginOTPFlow() {
+            const phone = document.getElementById('login-phone').value.trim();
+            const enteredName = document.getElementById('login-username').value.trim();
+            const pass = document.getElementById('login-pass').value.trim();
+
+            if(!phone) { alert("Pehle apna registered mobile number likhein!"); return; }
+
+            if(!isOtpRequested) {
+                try {
+                    const userRef = doc(db, "users", phone);
+                    const userSnap = await getDoc(userRef);
+                    if(!userSnap.exists()) { alert("Yeh Mobile Number registered nahi hai!"); return; }
+                } catch(e) { return; }
+
+                systemGeneratedOTP = generateRandom4DigitOTP();
+                isOtpRequested = true;
+                document.getElementById('login-otp-block').style.display = 'block';
+                document.getElementById('login-main-btn').innerText = "Verify Security Code & Login";
+                alert(`🔐 Login Secure OTP: [ ${systemGeneratedOTP} ]\n\nSIM confirmation ke liye code enter karein.`);
+                return;
+            }
+
+            const enteredOtp = document.getElementById('login-otp-input').value.trim();
+            if(enteredOtp !== systemGeneratedOTP) { alert("Ghalat OTP Code enter kiya hai!"); return; }
+
+            if(!enteredName || !pass) { alert("OTP match ho gaya! Dashboard open karne ke liye apna Full Name aur Password dalein."); return; }
+
+            try {
+                const userRef = doc(db, "users", phone);
+                const userSnap = await getDoc(userRef);
+                const userData = userSnap.data();
+
+                if(userData.password !== pass || userData.username.toLowerCase() !== enteredName.toLowerCase()) {
+                    alert("Ghalat Full Name ya Password! Dono correct match hona lazmi hain.");
+                    return;
+                }
+                
+                currentSession = userData;
+                sessionStorage.setItem('acm_user_phone', phone);
+                resetAuthStates();
+                enterAppDashboard();
+            } catch (error) { alert("Login Error!"); }
+        }
+
+        // ================= FORGOT PASSWORD FLOW =================
+        async function triggerForgotOTPFlow() {
+            const phone = document.getElementById('forgot-phone').value.trim();
+
+            if(!phone) { alert("Pehle apna registered mobile number enter karein!"); return; }
+
+            if(!isOtpRequested) {
+                try {
+                    const userRef = doc(db, "users", phone);
+                    const userSnap = await getDoc(userRef);
+                    if(!userSnap.exists()) { alert("Yeh mobile number system mein registered nahi hai!"); return; }
+                    
+                    systemGeneratedOTP = generateRandom4DigitOTP();
+                    isOtpRequested = true;
+                    document.getElementById('forgot-otp-block').style.display = 'block';
+                    document.getElementById('forgot-main-btn').innerText = "Verify OTP & Recover Account";
+                    alert(`🔑 Recovery OTP Code: [ ${systemGeneratedOTP} ]\n\nAapki identity verify karne ke liye code enter karein.`);
+                } catch (e) { alert("Database error!"); }
+                return;
+            }
+
+            const enteredOtp = document.getElementById('forgot-otp-input').value.trim();
+            if(enteredOtp !== systemGeneratedOTP) { alert("Ghalat Verification Code! Sahi OTP dalein."); return; }
+
+            try {
+                const userRef = doc(db, "users", phone);
+                const userSnap = await getDoc(userRef);
+                const userData = userSnap.data();
+
+                alert(`🎉 Verification Success!\n\nYour Full Name: ${userData.username}\nYour Password: ${userData.password}\n\nAapko auto-login kiya ja raha hai...`);
+                
+                currentSession = userData;
+                sessionStorage.setItem('acm_user_phone', phone);
+                resetAuthStates();
+                enterAppDashboard();
+            } catch (error) { alert("Recovery error!"); }
+        }
+
+        function resetAuthStates() {
+            systemGeneratedOTP = null;
+            isOtpRequested = false;
+            document.getElementById('reg-otp-block').style.display = 'none';
+            document.getElementById('login-otp-block').style.display = 'none';
+            document.getElementById('forgot-otp-block').style.display = 'none';
+            document.getElementById('reg-main-btn').innerText = "Request Registration OTP";
+            document.getElementById('login-main-btn').innerText = "Request Security OTP";
+            document.getElementById('forgot-main-btn').innerText = "Request Recovery Code";
+            document.getElementById('reg-otp-input').value = "";
+            document.getElementById('login-otp-input').value = "";
+            document.getElementById('forgot-otp-input').value = "";
+        }
+
+        function switchAuth(targetView) {
+            resetAuthStates();
+            document.getElementById('registerView').classList.remove('active');
+            document.getElementById('loginView').classList.remove('active');
+            document.getElementById('forgotView').classList.remove('active');
+            
+            document.getElementById('registerView').style.display = 'none';
+            document.getElementById('loginView').style.display = 'none';
+            document.getElementById('forgotView').style.display = 'none';
+
+            document.getElementById(targetView).classList.add('active');
+            document.getElementById(targetView).style.display = 'block';
+        }
+
         function toggleLiveFeedExpand() {
             const feedCard = document.getElementById('live-feed-card');
             const indicator = document.getElementById('feed-expand-text');
-            
             if (feedCard.classList.contains('expanded')) {
                 feedCard.classList.remove('expanded');
                 indicator.innerText = "Click to View All";
@@ -455,134 +539,55 @@
             }
         }
 
-        // ================= AUTOMATIC SOCIAL PROOF LOGIC ENGINE =================
         function initSocialProofEngine() {
             const totalMembersElement = document.getElementById('live-total-members');
             const onlineUsersElement = document.getElementById('live-online-users');
-
-            // 1. Every 2-3 days base value increment calculation
             const epochStart = 1710000000000;
             const daysPassed = Math.floor((Date.now() - epochStart) / (1000 * 60 * 60 * 24));
             const calculatedMembers = 670000 + (Math.floor(daysPassed / 2) * 1420); 
             totalMembersElement.innerText = calculatedMembers.toLocaleString();
 
-            // 2. Day-Time dynamic user load dispatcher (Peak Target ~4 Lakh)
             const currentHour = new Date().getHours();
             let baseOnline = 120000;
-            
             if ((currentHour >= 17 && currentHour <= 22) || (currentHour >= 8 && currentHour <= 11)) {
                 baseOnline = 385000 + Math.floor(Math.random() * 28000); 
             } else {
                 baseOnline = 115000 + Math.floor(Math.random() * 15000); 
             }
             onlineUsersElement.innerText = baseOnline.toLocaleString();
-
-            // 3. Continuous Live Withdrawal Generation (Generates exactly 15 Names)
             generateLiveMockWithdrawals();
         }
 
         function generateLiveMockWithdrawals() {
             const ticker = document.getElementById('live-withdrawals-ticker');
             if(!ticker) return;
-
-            const firstNames = ["Muhammad", "Ali", "Zain", "Hamza", "Asif", "Bilal", "Sana", "Ayesha", "Irfan", "Kashif", "Sajid", "Noman", "Osama", "Raza", "Yasir", "Waqas", "Faisal", "Tayyab", "Zeeshan"];
-            const lastNames = ["Khan", "Ahmed", "Hassan", "Malik", "Sheikh", "Raza", "Javed", "Iqbal", "Zafar", "Abbasi", "Ghafoor", "Bhatti", "Siddiqui"];
+            const firstNames = ["Muhammad", "Ali", "Zain", "Hamza", "Asif", "Bilal", "Sana", "Ayesha", "Irfan", "Kashif"];
+            const lastNames = ["Khan", "Ahmed", "Hassan", "Malik", "Sheikh", "Raza"];
             const methods = ["JazzCash", "EasyPaisa"];
-            
             ticker.innerHTML = ""; 
 
-            // Generates exactly 15 high-fidelity user logs
             for(let i=0; i<15; i++) {
                 const randomName = firstNames[Math.floor(Math.random() * firstNames.length)] + " " + lastNames[Math.floor(Math.random() * lastNames.length)];
-                const randomPhone = "03" + Math.floor(Math.random() * 9) + Math.floor(Math.random() * 10) + "*****" + Math.floor(Math.random() * 9) + Math.floor(Math.random() * 9);
+                const randomPhone = "03" + Math.floor(Math.random() * 9) + Math.floor(Math.random() * 10) + "*****" + Math.floor(Math.random() * 9);
                 const randomAmount = Math.floor(Math.random() * 8) * 1000 + 2000; 
                 const selectedMethod = methods[Math.floor(Math.random() * methods.length)];
-                
                 const timeNow = new Date();
-                timeNow.setMinutes(timeNow.getMinutes() - (i * 3) - Math.floor(Math.random() * 2));
+                timeNow.setMinutes(timeNow.getMinutes() - (i * 3));
                 const timeString = timeNow.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) + " | " + timeNow.toLocaleDateString([], {month:'short', day:'numeric'});
 
-                const itemHTML = `
+                ticker.innerHTML += `
                     <div class="feed-item">
-                        <div class="feed-user-details">
-                            <h5>${randomName} (${randomPhone})</h5>
-                            <p><i class="fa-regular fa-clock"></i> ${timeString}</p>
-                        </div>
-                        <div class="feed-amount-details">
-                            <div class="feed-amount-pkr">Rs ${randomAmount.toLocaleString()}</div>
-                            <span class="feed-gateway-badge ${selectedMethod === 'JazzCash' ? 'badge-jc' : 'badge-ep'}">${selectedMethod}</span>
-                        </div>
+                        <div class="feed-user-details"><h5>${randomName} (${randomPhone})</h5><p><i class="fa-regular fa-clock"></i> ${timeString}</p></div>
+                        <div class="feed-amount-details"><div class="feed-amount-pkr">Rs ${randomAmount.toLocaleString()}</div><span class="feed-gateway-badge ${selectedMethod === 'JazzCash' ? 'badge-jc' : 'badge-ep'}">${selectedMethod}</span></div>
                     </div>
                 `;
-                ticker.innerHTML += itemHTML;
             }
-        }
-
-        // Live Feed Updates Ticker loop state every 20 seconds
-        setInterval(() => {
-            if(document.getElementById('homeView').style.display === 'block') {
-                generateLiveMockWithdrawals();
-            }
-        }, 20000);
-
-
-        function switchAuth(targetView) {
-            document.getElementById('registerView').classList.remove('active');
-            document.getElementById('loginView').classList.remove('active');
-            document.getElementById(targetView).classList.add('active');
-        }
-
-        async function handleRegister() {
-            const phone = document.getElementById('reg-phone').value.trim();
-            const user = document.getElementById('reg-username').value.trim();
-            const pass = document.getElementById('reg-pass').value.trim();
-
-            if(!user || !phone || !pass) { alert("Sari fields fill karein!"); return; }
-
-            try {
-                const userRef = doc(db, "users", phone);
-                const userSnap = await getDoc(userRef);
-
-                if (userSnap.exists()) {
-                    alert("Yeh account pehle se registered hai!");
-                    return;
-                }
-
-                let newUser = { 
-                    username: user, phone: phone, password: pass, balance: 0.00, 
-                    activePlanPrice: 0, activePlanName: "", dailyVideosLimit: 0, 
-                    total_withdraw: 0, total_deposit: 0,
-                    isLocked: false, lockReason: "", lockFee: 0 
-                };
-
-                await setDoc(userRef, newUser);
-                currentSession = newUser;
-                sessionStorage.setItem('acm_user_phone', phone);
-                enterAppDashboard();
-            } catch (error) { alert("Registration failed!"); }
-        }
-
-        async function handleLogin() {
-            const phone = document.getElementById('login-phone').value.trim();
-            const pass = document.getElementById('login-pass').value.trim();
-            if(!phone || !pass) { alert("Credentials enter karein!"); return; }
-
-            try {
-                const userRef = doc(db, "users", phone);
-                const userSnap = await getDoc(userRef);
-                if(!userSnap.exists() || userSnap.data().password !== pass) {
-                    alert("Wrong Mobile Number or Password!");
-                    return;
-                }
-                currentSession = userSnap.data();
-                sessionStorage.setItem('acm_user_phone', phone);
-                enterAppDashboard();
-            } catch (error) { alert("Login Error!"); }
         }
 
         function enterAppDashboard() {
             document.getElementById('registerView').style.display = 'none';
             document.getElementById('loginView').style.display = 'none';
+            document.getElementById('forgotView').style.display = 'none';
             document.getElementById('appNavigation').style.display = 'flex';
             switchView('homeView');
         }
@@ -592,20 +597,12 @@
             sessionStorage.removeItem('acm_user_phone');
             currentSession = null;
             document.getElementById('appNavigation').style.display = 'none';
-            document.getElementById('homeView').style.display = 'none';
-            document.getElementById('plansView').style.display = 'none';
-            document.getElementById('tasksView').style.display = 'none';
-            document.getElementById('withdrawView').style.display = 'none';
-            document.getElementById('adminPanelView').style.display = 'none';
-            switchAuth('registerView');
-            document.getElementById('registerView').style.display = 'block';
+            switchAuth('loginView');
         }
 
         async function saveCurrentSessionToDatabase() {
             if(!currentSession) return;
-            try {
-                await updateDoc(doc(db, "users", currentSession.phone), currentSession);
-            } catch (error) { console.error(error); }
+            try { await updateDoc(doc(db, "users", currentSession.phone), currentSession); } catch (e) {}
         }
 
         function switchView(viewId) {
@@ -614,7 +611,6 @@
             document.getElementById('plansView').style.display = 'none';
             document.getElementById('tasksView').style.display = 'none';
             document.getElementById('withdrawView').style.display = 'none';
-            document.getElementById('adminPanelView').style.display = 'none';
             
             document.getElementById(viewId).style.display = 'block';
             document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
@@ -622,12 +618,11 @@
             if(viewId === 'homeView') { document.getElementById('nav-home').classList.add('active'); updateUI(); }
             if(viewId === 'plansView') { document.getElementById('nav-plans').classList.add('active'); renderPlansHighlight(); }
             if(viewId === 'withdrawView') document.getElementById('nav-withdraw').classList.add('active');
-            if(viewId === 'adminPanelView') { document.getElementById('nav-admin-link').classList.add('active'); loadAdminMasterDashboard(); }
         }
 
         function checkPlanBeforeTasks() {
             if(!currentSession.activePlanName || currentSession.activePlanPrice === 0) {
-                alert("Pehle koi plan buy karein ya approval ka wait karein!");
+                alert("Pehle koi plan buy karein!");
                 switchView('plansView');
             } else {
                 currentVideoIndex = 1;
@@ -639,9 +634,7 @@
         function openCheckoutGateway(name, price, videosCount) {
             pendingCheckout = { type: "plan", name: name, price: price, videosCount: videosCount };
             document.getElementById('checkout-plan-name').innerText = `Activate ${name} - Rs ${price}`;
-            document.getElementById('payment-amount-label').innerText = "SENT AMOUNT (PKR)";
             document.getElementById('pay-amount').value = price;
-            document.getElementById('pay-screenshot').value = "";
             document.getElementById('checkoutGateway').style.display = 'flex';
         }
 
@@ -649,9 +642,7 @@
             if(!currentSession.isLocked) return;
             pendingCheckout = { type: "unblock_fee", name: "Unblock Activation Fee", price: currentSession.lockFee, videosCount: 0 };
             document.getElementById('checkout-plan-name').innerText = `Solve Error - Pay Rs ${currentSession.lockFee}`;
-            document.getElementById('payment-amount-label').innerText = "PAID ACTIVATION FEE (PKR)";
             document.getElementById('pay-amount').value = currentSession.lockFee;
-            document.getElementById('pay-screenshot').value = "";
             document.getElementById('checkoutGateway').style.display = 'flex';
         }
 
@@ -663,15 +654,10 @@
         async function submitDepositToAdminQueue() {
             const enteredAmount = parseFloat(document.getElementById('pay-amount').value);
             const fileInput = document.getElementById('pay-screenshot').files[0];
-
-            if(!enteredAmount || !fileInput) {
-                alert("Meherbani karke saari details aur screenshot attach karein!");
-                return;
-            }
+            if(!enteredAmount || !fileInput) { alert("Meherbani karke screenshot attach karein!"); return; }
 
             const reader = new FileReader();
             reader.onloadend = async function () {
-                const base64Screenshot = reader.result;
                 try {
                     await addDoc(collection(db, "deposits"), {
                         userPhone: currentSession.phone,
@@ -680,14 +666,14 @@
                         planPrice: pendingCheckout.price,
                         videosCount: pendingCheckout.videosCount,
                         amountSent: enteredAmount,
-                        screenshotData: base64Screenshot,
+                        screenshotData: reader.result,
                         type: pendingCheckout.type,
                         status: "pending"
                     });
                     closeCheckoutGateway();
-                    alert(`🎉 Verification screenshot submitted successfully! Wait for admin review.`);
+                    alert(`🎉 Verification screenshot submitted successfully! Review ka wait karein.`);
                     switchView('homeView');
-                } catch (e) { alert("Submission failed."); }
+                } catch (e) {}
             }
             reader.readAsDataURL(fileInput);
         }
@@ -699,7 +685,7 @@
                 if(badge) badge.remove();
             });
             if(currentSession && currentSession.activePlanPrice > 0) {
-                let planId = currentSession.activePlanPrice === 1000 ? 'p1' : currentSession.activePlanPrice === 1500 ? 'p2' : currentSession.activePlanPrice === 2000 ? 'p3' : 'p4';
+                let planId = currentSession.activePlanPrice === 1000 ? 'p1' : 'p2';
                 let activeCard = document.getElementById(planId);
                 if(activeCard) {
                     activeCard.classList.add('active-plan-border');
@@ -715,27 +701,17 @@
             const progressStatus = document.getElementById('task-progress-status');
             
             if (currentVideoIndex > currentSession.dailyVideosLimit) {
-                container.innerHTML = `
-                    <div style="text-align:center; padding: 40px 10px; color:#64748b;">
-                        <i class="fa-solid fa-circle-check" style="font-size:3.5rem; color:#10b981; margin-bottom:15px;"></i>
-                        <h2 style="color:#0f172a; margin-bottom:8px;">All Tasks Completed!</h2>
-                        <p>Kal dubara check karein!</p>
-                    </div>
-                `;
+                container.innerHTML = `<div style="text-align:center; padding: 40px 10px; color:#64748b;"><i class="fa-solid fa-circle-check" style="font-size:3.5rem; color:#10b981; margin-bottom:15px;"></i><h2>All Tasks Completed!</h2></div>`;
                 progressStatus.innerText = `Completed: All Done!`;
                 return;
             }
-
             progressStatus.innerText = `Video: ${currentVideoIndex} / ${currentSession.dailyVideosLimit}`;
-            const youtubePool = ["dQw4w9WgXcQ", "3JZ_D3ELwOQ", "tgbNymZ7vqY"];
-            let randomVidId = youtubePool[currentVideoIndex % youtubePool.length];
-
             container.innerHTML = `
                 <div class="task-card">
                     <div class="task-info"><h3>Premium Task Video #${currentVideoIndex}</h3><p>Reward: Rs 50.00</p></div>
                     <div class="video-wrapper">
                         <div class="timer-badge" id="videoTimerCountdown">30s</div>
-                        <iframe src="https://www.youtube.com/embed/${randomVidId}?autoplay=1" allow="autoplay"></iframe>
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" allow="autoplay"></iframe>
                     </div>
                     <button class="claim-btn" id="claimRewardActionBtn" onclick="claimRewardAndNext()">CLAIM REWARD 🎉</button>
                 </div>
@@ -745,15 +721,13 @@
 
         function startTaskTimer() {
             let timeRemaining = 30;
-            const badge = document.getElementById('videoTimerCountdown');
-            const claimBtn = document.getElementById('claimRewardActionBtn');
             const countdownInterval = setInterval(() => {
                 timeRemaining--;
-                if(badge) badge.innerText = timeRemaining + "s";
+                if(document.getElementById('videoTimerCountdown')) document.getElementById('videoTimerCountdown').innerText = timeRemaining + "s";
                 if (timeRemaining <= 0) {
                     clearInterval(countdownInterval);
-                    if(badge) badge.style.display = 'none';
-                    if(claimBtn) claimBtn.style.display = 'block';
+                    if(document.getElementById('videoTimerCountdown')) document.getElementById('videoTimerCountdown').style.display = 'none';
+                    if(document.getElementById('claimRewardActionBtn')) document.getElementById('claimRewardActionBtn').style.display = 'block';
                 }
             }, 1000);
         }
@@ -767,223 +741,30 @@
         }
 
         async function submitWithdrawToAdminQueue() {
-            if(currentSession.isLocked === true) {
-                alert(`⚠️ Naya withdrawal tab tak nahi lag sakta jab tak aapka error issue solve nahi ho jata! Home screen par red banner par click karke fee pay karein.`);
-                return;
-            }
-
+            if(currentSession.isLocked === true) { alert(`⚠️ Restriction active.`); return; }
             const method = document.getElementById('method').value;
             const number = document.getElementById('acc-num').value.trim();
             const amount = parseFloat(document.getElementById('amount').value);
 
-            if(!number || !amount) { alert("Please fill all details completely."); return; }
-            if(amount < 2000) { alert("Minimum withdrawal limit is Rs 2,000!"); return; }
-            if(amount > currentSession.balance) { alert("Insufficient balance!"); return; }
-
+            if(!number || !amount || amount < 2000 || amount > currentSession.balance) { alert("Check fields or balance!"); return; }
             try {
                 currentSession.balance -= amount;
                 await saveCurrentSessionToDatabase();
-
-                await addDoc(collection(db, "withdrawals"), {
-                    userPhone: currentSession.phone,
-                    username: currentSession.username,
-                    method: method,
-                    accountNumber: number,
-                    amount: amount,
-                    status: "pending"
-                });
-
-                alert(`Withdrawal request of Rs ${amount} submitted!`);
-                document.getElementById('acc-num').value = "";
-                document.getElementById('amount').value = "";
+                await addDoc(collection(db, "withdrawals"), { userPhone: currentSession.phone, username: currentSession.username, method: method, accountNumber: number, amount: amount, status: "pending" });
+                alert(`Request submitted!`);
                 switchView('homeView');
-            } catch (e) { alert("Failed."); }
+            } catch (e) {}
         }
 
         async function loadUserTransactionLogs() {
             const container = document.getElementById('user-history-logs-box');
             container.innerHTML = "";
-
             try {
                 const depSnap = await getDocs(collection(db, "deposits"));
                 depSnap.forEach(d => {
-                    const data = d.data();
-                    if(data.userPhone === currentSession.phone) {
-                        container.innerHTML += `<div class="log-item"><div><b>${data.planName}</b><br><small>Rs ${data.amountSent}</small></div><span class="status-badge status-${data.status}">${data.status.toUpperCase()}</span></div>`;
-                    }
-                });
-                const witSnap = await getDocs(collection(db, "withdrawals"));
-                witSnap.forEach(w => {
-                    const data = w.data();
-                    if(data.userPhone === currentSession.phone) {
-                        container.innerHTML += `<div class="log-item"><div><b>${data.method} Withdraw</b><br><small>Rs ${data.amount}</small></div><span class="status-badge status-${data.status}">${data.status.toUpperCase()}</span></div>`;
-                    }
+                    if(d.data().userPhone === currentSession.phone) container.innerHTML += `<div class="log-item"><div><b>${d.data().planName}</b><br><small>Rs ${d.data().amountSent}</small></div><span class="status-badge status-${d.data().status}">${d.data().status.toUpperCase()}</span></div>`;
                 });
             } catch (err) {}
-        }
-
-        // ================= MASTER ARCHITECTURE ADMIN CORE ENGINE =================
-        async function loadAdminMasterDashboard() {
-            if(currentSession.phone !== ADMIN_GATEWAY_EMAIL) return;
-            
-            // 1. Users DB Controls
-            const listContainer = document.getElementById('admin-users-list-container');
-            listContainer.innerHTML = "";
-            const querySnapshot = await getDocs(collection(db, "users"));
-            querySnapshot.forEach((userDoc) => {
-                const data = userDoc.data();
-                if(data.phone === ADMIN_GATEWAY_EMAIL) return;
-                const lockStatusText = data.isLocked ? `<span style="color:red; font-weight:700;">[LOCKED: Fee Rs ${data.lockFee}]</span>` : `<span style="color:green;">[CLEAR]</span>`;
-                listContainer.innerHTML += `
-                    <div class="admin-card">
-                        <div class="admin-user-title">${data.username} ${lockStatusText}</div>
-                        <div style="font-size:0.8rem; color:#64748b;">Phone: ${data.phone} | Wallet: Rs ${data.balance}</div>
-                        <div class="admin-action-row">
-                            <input type="number" class="admin-input-small" id="input-balance-${data.phone}" placeholder="Update Balance">
-                            <button class="admin-btn-action" onclick="adminUpdateUserBalance('${data.phone}')">Save</button>
-                            ${data.isLocked ? `<button class="admin-btn-action admin-btn-success" onclick="adminClearUserRestriction('${data.phone}')">Direct Unblock</button>` : ''}
-                        </div>
-                    </div>
-                `;
-            });
-
-            // 2. Pending Deposits & Fee Screenshots
-            const depContainer = document.getElementById('admin-deposits-queue');
-            depContainer.innerHTML = "";
-            const depSnapshot = await getDocs(collection(db, "deposits"));
-            let highDepCheck = false;
-            depSnapshot.forEach((docObj) => {
-                const data = docObj.data();
-                if(data.status === "pending") {
-                    highDepCheck = true;
-                    const isFee = data.type === "unblock_fee";
-                    depContainer.innerHTML += `
-                        <div class="admin-card" style="border-left: 4px solid ${isFee ? '#6b21a8' : '#d97706'};">
-                            <div><span style="background:${isFee ? '#faf5ff' : '#fffbeb'}; color:${isFee ? '#6b21a8' : '#b45309'}; padding:2px 8px; font-size:0.75rem; font-weight:800; border-radius:4px;">${isFee ? 'RESTRICTION FEE' : 'PLAN DEPOSIT'}</span></div>
-                            <div style="margin-top:5px;"><b>User:</b> ${data.username} (${data.userPhone})</div>
-                            <div><b>Item/Title:</b> ${data.planName}</div>
-                            <div><b>Sent Amount:</b> Rs ${data.amountSent}</div>
-                            <div><span class="view-proof-link" onclick="viewProofImage('${docObj.id}')"><i class="fa-solid fa-image"></i> View Screenshot Proof</span></div>
-                            <div class="admin-action-row">
-                                <button class="admin-btn-action admin-btn-success" onclick="adminProcessDeposit('${docObj.id}', 'approved')">Approve Request</button>
-                                <button class="admin-btn-action admin-btn-danger" onclick="adminProcessDeposit('${docObj.id}', 'rejected')">Reject</button>
-                            </div>
-                            <div id="proof-container-${docObj.id}" style="display:none; margin-top:10px;"><img src="${data.screenshotData || ''}" style="width:100%; max-height:300px; border-radius:12px; object-fit:contain; border:1px solid #ccc;"/></div>
-                        </div>
-                    `;
-                }
-            });
-            if(!highDepCheck) depContainer.innerHTML = "<p style='font-size:0.8rem; color:#64748b;'>No pending submissions.</p>";
-
-            // 3. Pending Withdrawals
-            const witContainer = document.getElementById('admin-withdrawals-queue');
-            witContainer.innerHTML = "";
-            const witSnapshot = await getDocs(collection(db, "withdrawals"));
-            let highWitCheck = false;
-            witSnapshot.forEach((docObj) => {
-                const data = docObj.data();
-                if(data.status === "pending") {
-                    highWitCheck = true;
-                    witContainer.innerHTML += `
-                        <div class="admin-card" style="border-left: 4px solid #ef4444;">
-                            <div><b>User:</b> ${data.username} (${data.userPhone})</div>
-                            <div><b>Payout:</b> ${data.method} -> ${data.accountNumber}</div>
-                            <div><b>Amount:</b> Rs ${data.amount}</div>
-                            <div class="admin-action-row">
-                                <button class="admin-btn-action admin-btn-success" onclick="adminProcessWithdrawal('${docObj.id}', 'approved')">Accept & Send</button>
-                                <button class="admin-btn-action admin-btn-danger" onclick="adminProcessWithdrawal('${docObj.id}', 'rejected')">Reject & Lock Dashboard</button>
-                            </div>
-                        </div>
-                    `;
-                }
-            });
-            if(!highWitCheck) witContainer.innerHTML = "<p style='font-size:0.8rem; color:#64748b;'>No pending withdrawal requests.</p>";
-        }
-
-        function viewProofImage(id) {
-            const el = document.getElementById(`proof-container-${id}`);
-            el.style.display = el.style.display === 'none' ? 'block' : 'none';
-        }
-
-        async function adminProcessDeposit(id, actionStatus) {
-            try {
-                const depRef = doc(db, "deposits", id);
-                const depSnap = await getDoc(depRef);
-                const depData = depSnap.data();
-                await updateDoc(depRef, { status: actionStatus });
-
-                if(actionStatus === "approved") {
-                    const userRef = doc(db, "users", depData.userPhone);
-                    const userSnap = await getDoc(userRef);
-                    const userData = userSnap.data();
-
-                    if(depData.type === "unblock_fee") {
-                        await updateDoc(userRef, {
-                            isLocked: false, lockReason: "", lockFee: 0,
-                            total_deposit: userData.total_deposit + depData.amountSent
-                        });
-                        alert("User restriction fee approved. Dashboard Unlocked!");
-                    } else {
-                        await updateDoc(userRef, {
-                            activePlanName: depData.planName, activePlanPrice: depData.planPrice,
-                            dailyVideosLimit: depData.videosCount, total_deposit: userData.total_deposit + depData.planPrice
-                        });
-                        alert("Plan activated successfully.");
-                    }
-                } else { alert("Submission rejected."); }
-                loadAdminMasterDashboard();
-            } catch(e) { alert("Error handling process."); }
-        }
-
-        async function adminProcessWithdrawal(id, actionStatus) {
-            try {
-                const witRef = doc(db, "withdrawals", id);
-                const witSnap = await getDoc(witRef);
-                const witData = witSnap.data();
-                await updateDoc(witRef, { status: actionStatus });
-
-                const userRef = doc(db, "users", witData.userPhone);
-                const userSnap = await getDoc(userRef);
-                const userData = userSnap.data();
-
-                if(actionStatus === "approved") {
-                    await updateDoc(userRef, { total_withdraw: userData.total_withdraw + witData.amount });
-                    alert("Withdrawal successfully approved!");
-                } else {
-                    const reason = prompt("Withdrawal Reject karne ki wajah likhein (User Banner pe show hogi):", "Incorrect account details / Verification failed");
-                    const feeStr = prompt("Is problem ko solve karne ki required solution fee kitni hai? (PKR):", "500");
-                    const feeVal = parseFloat(feeStr) || 0;
-
-                    await updateDoc(userRef, {
-                        balance: userData.balance + witData.amount,
-                        isLocked: true,
-                        lockReason: reason || "Admin Rejected",
-                        lockFee: feeVal
-                    });
-                    alert("Withdrawal rejected! All funds returned to user wallet & dashboard locked.");
-                }
-                loadAdminMasterDashboard();
-            } catch(e) { alert("Error processing withdrawal."); }
-        }
-
-        async function adminClearUserRestriction(userPhoneId) {
-            try {
-                await updateDoc(doc(db, "users", userPhoneId), {
-                    isLocked: false, lockReason: "", lockFee: 0
-                });
-                alert("User unblocked successfully!");
-                loadAdminMasterDashboard();
-            } catch(e) { alert("Failed to clear restriction."); }
-        }
-
-        async function adminUpdateUserBalance(userPhoneId) {
-            const targetVal = parseFloat(document.getElementById(`input-balance-${userPhoneId}`).value);
-            if(isNaN(targetVal)) { alert("Enter proper amount!"); return; }
-            try {
-                await updateDoc(doc(db, "users", userPhoneId), { balance: targetVal });
-                alert("Balance updated!");
-                loadAdminMasterDashboard();
-            } catch (error) { alert("Failed."); }
         }
 
         window.addEventListener('DOMContentLoaded', async () => {
@@ -991,23 +772,11 @@
             if (savedPhone) {
                 try {
                     const userSnap = await getDoc(doc(db, "users", savedPhone));
-                    if (userSnap.exists()) {
-                        currentSession = userSnap.data();
-                        enterAppDashboard();
-                        return;
-                    }
+                    if (userSnap.exists()) { currentSession = userSnap.data(); enterAppDashboard(); return; }
                 } catch (e) {}
             }
             switchAuth('registerView');
         });
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then((reg) => { console.log('PWA Scope:', reg.scope); })
-                    .catch((err) => { console.log('PWA Failed:', err); });
-            });
-        }
     </script>
 </body>
 </html>
